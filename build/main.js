@@ -86,8 +86,8 @@ app.get('/hello', function (req, res) {
     return res.send('Hello CodeLab');
 });
 
-app.listen(port, function () {
-    console.log('Express is listening on port', port);
+app.listen(process.env.port || port, function () {
+    console.log('Express is listening on port', process.env.port || port);
 });
 
 if (process.env.NODE_ENV == 'development') {
@@ -101,7 +101,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 // 소켓 통신 관련
-var io = require('socket.io').listen(3303);
+var io = require('socket.io').listen(process.env.port || 3303);
 console.log("socket server run!!");
 
 // 소켓 통신 날린 사람만 받을 수 있는 것.
