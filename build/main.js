@@ -85,10 +85,10 @@ app.use(function (err, req, res, next) {
 app.get('/hello', function (req, res) {
     return res.send('Hello CodeLab');
 });
-
-app.listen(process.env.PORT || port, function () {
-    console.log('Express is listening on port update', process.env.PORT || port);
-});
+/*
+app.listen(process.env.PORT||port, () => {
+    console.log('Express is listening on port update', process.env.PORT||port);
+});*/
 
 if (process.env.NODE_ENV == 'development') {
     console.log('Server is running on development mode');
@@ -100,20 +100,41 @@ if (process.env.NODE_ENV == 'development') {
     });
 }
 
-// 소켓 통신 관련
-var io = require('socket.io').listen(3303);
+// 소켓 통신 관련 일반
+/*var io = require('socket.io').listen(3303);
 console.log("socket server run!!");
 
+
+
+
 // 소켓 통신 날린 사람만 받을 수 있는 것.
-io.sockets.on("connection", function (socket) {
-    socket.on('private', function (msg) {
-        // 응답
-        socket.emit('private', msg); // 요청
-    });
+io.sockets.on("connection", function(socket){
+  socket.on('private', function(msg){ // 응답
+    socket.emit('private',msg); // 요청
+  });
 });
 
+
 // 커넥션된 모드에게 날려주는 것
+io.on('connection', function(socket){
+  socket.on('chat', function(msg){
+    io.emit('chat', msg);
+  });
+});*/
+
+// 소켓통신 heriku 용
+
+var server = app.use(function (req, res) {
+    return res.sendFile(_path2.default.resolve(__dirname, './../public/index.html'));
+}).listen(process.env.PORT || port, function () {
+    return console.log('Listening on ' + (process.env.PORT || port));
+});
+
+var socketIO = require('socket.io');
+var io = socketIO(server);
+
 io.on('connection', function (socket) {
+    console.log('Client connected');
     socket.on('chat', function (msg) {
         io.emit('chat', msg);
     });

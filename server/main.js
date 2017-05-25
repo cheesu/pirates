@@ -53,10 +53,10 @@ app.use(function(err, req, res, next) {
 app.get('/hello', (req, res) => {
     return res.send('Hello CodeLab');
 });
-
+/*
 app.listen(process.env.PORT||port, () => {
     console.log('Express is listening on port update', process.env.PORT||port);
-});
+});*/
 
 if(process.env.NODE_ENV == 'development') {
     console.log('Server is running on development mode');
@@ -71,9 +71,12 @@ if(process.env.NODE_ENV == 'development') {
 }
 
 
-// 소켓 통신 관련
-var io = require('socket.io').listen(3303);
+// 소켓 통신 관련 일반
+/*var io = require('socket.io').listen(3303);
 console.log("socket server run!!");
+
+
+
 
 // 소켓 통신 날린 사람만 받을 수 있는 것.
 io.sockets.on("connection", function(socket){
@@ -85,6 +88,25 @@ io.sockets.on("connection", function(socket){
 
 // 커넥션된 모드에게 날려주는 것
 io.on('connection', function(socket){
+  socket.on('chat', function(msg){
+    io.emit('chat', msg);
+  });
+});*/
+
+
+
+// 소켓통신 heriku 용
+
+const server = app
+  .use((req, res) => res.sendFile(path.resolve(__dirname, './../public/index.html')) )
+  .listen(process.env.PORT||port, () => console.log(`Listening on ${ process.env.PORT||port }`));
+
+var socketIO = require('socket.io');
+const io = socketIO(server);
+
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
   socket.on('chat', function(msg){
     io.emit('chat', msg);
   });

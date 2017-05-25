@@ -19661,9 +19661,11 @@ var Home = function (_React$Component) {
     function Home(props, context) {
         _classCallCheck(this, Home);
 
+        //this.socket = io.connect('http://127.0.0.1:3303');
         var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props, context));
 
-        _this.socket = io.connect('http://127.0.0.1:3303');
+        _this.socket = io();
+
         return _this;
     }
 

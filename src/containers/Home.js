@@ -11,7 +11,9 @@ class Home extends React.Component {
   constructor(props, context) {
           super(props, context);
 
-          this.socket = io.connect('http://127.0.0.1:3303');
+          //this.socket = io.connect('http://127.0.0.1:3303');
+          this.socket =io();
+
       }
 
       componentDidMount() {

@@ -32,6 +32,10 @@ class Chat extends React.Component {
       this.setState({
           msg: ''
       });
+
+
+    
+
    }
 
 
