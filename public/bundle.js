@@ -19160,6 +19160,7 @@ var Chat = function (_React$Component) {
         };
         _this.handleChange = _this.handleChange.bind(_this);
         _this.sendMsg = _this.sendMsg.bind(_this);
+        _this.handleKeyPress = _this.handleKeyPress.bind(_this);
         return _this;
     }
 
@@ -19175,6 +19176,14 @@ var Chat = function (_React$Component) {
             var nextState = {};
             nextState[e.target.name] = e.target.value;
             this.setState(nextState);
+        }
+    }, {
+        key: "handleKeyPress",
+        value: function handleKeyPress(e) {
+            console.log("핸들 키 프레스");
+            if (e.charCode == 13) {
+                this.sendMsg();
+            }
         }
     }, {
         key: "sendMsg",
@@ -19198,7 +19207,9 @@ var Chat = function (_React$Component) {
                     type: "text",
                     className: "validate input-chat",
                     onChange: this.handleChange,
-                    value: this.state.msg }),
+                    value: this.state.msg,
+                    onKeyPress: this.handleKeyPress }),
+                "/>",
                 _react2.default.createElement(
                     "button",
                     { onClick: this.sendMsg },

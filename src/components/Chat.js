@@ -10,6 +10,7 @@ class Chat extends React.Component {
           };
           this.handleChange = this.handleChange.bind(this);
           this.sendMsg = this.sendMsg.bind(this);
+          this.handleKeyPress = this.handleKeyPress.bind(this);
       }
 
 
@@ -24,7 +25,12 @@ class Chat extends React.Component {
           this.setState(nextState);
       }
 
-
+      handleKeyPress(e) {
+        console.log("핸들 키 프레스");
+             if(e.charCode==13) {
+                     this.sendMsg();
+             }
+         }
     sendMsg(){
       let sendMsgText = this.props.username + " : " + this.state.msg;
 
@@ -34,7 +40,7 @@ class Chat extends React.Component {
       });
 
 
-    
+
 
    }
 
@@ -50,7 +56,8 @@ class Chat extends React.Component {
                   type="text"
                   className="validate input-chat"
                   onChange={this.handleChange}
-                  value={this.state.msg}/>
+                  value={this.state.msg}
+                  onKeyPress={this.handleKeyPress}/>/>
 
                 <button onClick={this.sendMsg}>
                   send
