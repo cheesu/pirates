@@ -10,10 +10,17 @@ class Home extends React.Component {
 
   constructor(props, context) {
           super(props, context);
-
+          console.log("홈 컨스트럭트 소켓 커넥션");
           //this.socket = io.connect('http://127.0.0.1:3303');
-          this.socket =io();
+          this.socket =io({'forceNew': true});
+          var userName = this.props.status.currentUser;
+          this.socket.emit('addUser', userName);
+      }
 
+      componentWillUnmount(){
+        console.log("home 윌 언마운트 소켓 디스커넥트 고침");
+
+        this.socket.disconnect();
       }
 
       componentDidMount() {
@@ -34,7 +41,6 @@ class Home extends React.Component {
            console.log("통과1");
            // decode base64 & parse json
            loginData = JSON.parse(atob(loginData));
-console.log(loginData);
            // if not logged in, do nothing
            if(!loginData.isLoggedIn) return;
            console.log("통과2");

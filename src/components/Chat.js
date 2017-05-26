@@ -17,6 +17,10 @@ class Chat extends React.Component {
       componentDidMount(){
         let sendMsgText = this.props.username + " 님이 입장 하셨습니다. " ;
         this.props.socket.emit('chat', sendMsgText); // 요청
+        let addUserName = this.props.username;
+        this.props.socket.emit('totalCount', addUserName); // 요청
+
+
       }
 
       handleChange(e) {
@@ -26,13 +30,24 @@ class Chat extends React.Component {
       }
 
       handleKeyPress(e) {
-        console.log("핸들 키 프레스");
              if(e.charCode==13) {
                      this.sendMsg();
              }
          }
     sendMsg(){
       let sendMsgText = this.props.username + " : " + this.state.msg;
+      if(this.state.msg.length==0){
+        return false;
+      }
+
+      if(this.state.msg=='/누구'){
+        this.props.socket.emit('callUserList', ""); // 요청
+        this.setState({
+            msg: ''
+        });
+
+        return false;
+      }
 
       this.props.socket.emit('chat', sendMsgText); // 요청
       this.setState({
@@ -50,16 +65,18 @@ class Chat extends React.Component {
     render(){
 
         return (
-          <div className="input-field">
+          <div className="input-field chat-input-wrapper">
                   <input
                   name="msg"
                   type="text"
                   className="validate input-chat"
                   onChange={this.handleChange}
                   value={this.state.msg}
-                  onKeyPress={this.handleKeyPress}/>/>
+                  onKeyPress={this.handleKeyPress}/>
 
-                <button onClick={this.sendMsg}>
+                <button
+                  className="chat-send-btn waves-effect waves-light btn"
+                  onClick={this.sendMsg}>
                   send
                 </button>
             </div>

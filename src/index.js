@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import { App, Home, Login, Register, Game } from 'Containers';
+import { App, Home, Login, Register, Game, Wall } from 'Containers';
 // Redux
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
@@ -22,6 +22,7 @@ ReactDOM.render(<Provider store={store}>
                           <Route exact path="/login" component={Login}/>
                           <Route exact path="/register" component={Register}/>
                           <Route exact path="/game" component={Game}/>
+                          <Route exact path="/wall" component={Wall}/>
                        </div>
                      </div>
                    </Router>

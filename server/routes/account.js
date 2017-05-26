@@ -15,7 +15,7 @@ const router = express.Router();
 router.post('/signup', (req, res) => {
     /* to be implemented */
     // CHECK USERNAME FORMAT
-    let usernameRegex = /^[a-z0-9]+$/;
+    let usernameRegex = /^[가-힣a-zA-Z0-9]+$/;
 
     if(!usernameRegex.test(req.body.username)) {
         return res.status(400).json({

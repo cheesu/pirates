@@ -104,10 +104,56 @@ const server = app
 var socketIO = require('socket.io');
 const io = socketIO(server);
 
+var chatUserList = []; // 채팅 소켓 접속자 목록
 
 io.on('connection', (socket) => {
-  console.log('Client connected');
-  socket.on('chat', function(msg){
-    io.emit('chat', msg);
+    socket.on('chat', function(msg){
+      io.emit('chat', msg);
+    });
+
+    socket.on('totalCount', function(addUserName){
+      const msg = addUserName+"포함 총인원:"+io.eio.clientsCount;
+      io.emit('chat', msg);
+    });
+
+
+
+    socket.on('addUser', function(addUserName){
+      let userSocketId =socket.id;
+      let userObj = new Object();
+      userObj.userID = addUserName;
+      userObj.socketID = userSocketId;
+      chatUserList.push(userObj);
+      console.log(addUserName+":접속");
+      const msg = addUserName+"포함 총인원:"+io.eio.clientsCount;
+      io.emit('chat', msg);
+    });
+
+    socket.on('disconnect', () =>{
+      let disUserSocketId =socket.id;
+      var disUserName = "";
+      var disArrIndex;
+      // 나간 사용자 삭제
+      for(var count=0;count<chatUserList.length;count++){
+        let disSocketId  =chatUserList[count].socketID;
+        if(disSocketId == disUserSocketId ){
+          disUserName = chatUserList[count].userID;
+          disArrIndex = count;
+        }
+      }
+    //제거
+    chatUserList.splice(disArrIndex, 1);
+
+    io.emit('chat', disUserName+"님이 퇴장 하셨습니다.");
+    io.emit('nowUserList', chatUserList);
+    console.log('Client disconnected');
+  }
+ );
+});
+
+io.sockets.on("connection", function(socket){
+  socket.on('callUserList', function(addUserName){
+    console.log("유저목록 요청");
+    io.emit('callUserList', JSON.stringify(chatUserList));
   });
 });

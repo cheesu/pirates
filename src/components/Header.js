@@ -1,14 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-class Header extends React.Component {
+import { Search, RightMenu } from 'Components';
+import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
+class Header extends React.Component {
 
   constructor(props) {
       super(props);
-
+      /* IMPLEMENT: CREATE A SEARCH STATUS */
+      this.state = {
+          search: false,
+          rightMenu:false
+      };
+      this.toggleSearch = this.toggleSearch.bind(this);
+      this.toggleRightMenu = this.toggleRightMenu.bind(this);
   }
 
+  toggleSearch(){
+      console.log("토글 서치");
+      this.setState({
+          search: !this.state.search
+      });
+  }
 
+  toggleRightMenu(){
+      console.log("토글 RightMenu");
+      this.setState({
+          rightMenu: !this.state.rightMenu
+      });
+  }
 
     render() {
       const loginButton = (
@@ -21,33 +41,43 @@ class Header extends React.Component {
 
               const logoutButton = (
             <li>
-                <a onClick={this.props.onLogout}>
+                <Link onClick={this.props.onLogout} to="/main">
                     <i className="material-icons">lock_open</i>
-                </a>
+              </Link>
             </li>
         );
 
         return (
-          <nav>
-             <div className="nav-wrapper blue darken-1">
-                 <Link to="/" className="brand-logo center">The Pirates</Link>
+            <div>
+              <nav>
+                 <div className="nav-wrapper blue darken-1">
+                     <Link to="/home" className="brand-logo center">The Pirates</Link>
 
-                 <ul>
-                     <li><a><i className="material-icons">search</i></a></li>
-                 </ul>
-
-                 <div className="right">
                      <ul>
-                        { this.props.isLoggedIn ? logoutButton : loginButton }
-                        <li>
-                            <a>
-                                <i className="material-icons">menu</i>
-                            </a>
-                        </li>
+                         <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
                      </ul>
+
+                     <div className="right">
+                         <ul>
+                            { this.props.isLoggedIn ? logoutButton : loginButton }
+                            <li><a onClick={this.toggleRightMenu}><i className="material-icons">menu</i></a></li>
+                         </ul>
+                     </div>
                  </div>
-             </div>
-         </nav>
+             </nav>
+             <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                  { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
+                  {this.state.search ? <Search onClose={this.toggleSearch}
+                                               onSearch={this.props.onSearch}
+                                               /> : undefined }
+             </ReactCSSTransitionGroup>
+             <ReactCSSTransitionGroup transitionName="right-menu" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                  { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
+                  {this.state.rightMenu ? <RightMenu onClose={this.toggleRightMenu}
+                                               onRightMenu={this.props.onRightMenu}
+                                               /> : undefined }
+             </ReactCSSTransitionGroup>
+           </div>
         );
     }
 }
