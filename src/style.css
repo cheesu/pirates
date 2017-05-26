@@ -86,6 +86,11 @@ a {
   color:#fff;
 }
 
+
+.game-view
+{
+  height: 90%;
+}
 /*chat*/
 .chat-input-wrapper
 {
