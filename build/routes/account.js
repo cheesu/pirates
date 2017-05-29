@@ -27,7 +27,7 @@ var router = _express2.default.Router();
 router.post('/signup', function (req, res) {
     /* to be implemented */
     // CHECK USERNAME FORMAT
-    var usernameRegex = /^[a-z0-9]+$/;
+    var usernameRegex = /^[가-힣a-zA-Z0-9]+$/;
 
     if (!usernameRegex.test(req.body.username)) {
         return res.status(400).json({
@@ -135,6 +135,23 @@ router.post('/logout', function (req, res) {
         if (err) throw err;
     });
     return res.json({ sucess: true });
+});
+
+/*
+ SEARCH USER: GET /api/account/search/:username
+ */
+router.get('/search/:username', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var re = new RegExp('^' + req.params.username);
+    _account2.default.find({ username: { $regex: re } }, { _id: false, username: true }).limit(5).sort({ username: 1 }).exec(function (err, accounts) {
+        if (err) throw err;
+        res.json(accounts);
+    });
+});
+
+// EMPTY SEARCH REQUEST: GET /api/account/search
+router.get('/search', function (req, res) {
+    res.json([]);
 });
 
 exports.default = router;

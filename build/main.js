@@ -55,16 +55,16 @@ app.use(_bodyParser2.default.json());
 var db = _mongoose2.default.connection;
 db.on('error', console.error);
 db.once('open', function () {
-    console.log('Connected to mongodb server');
+  console.log('Connected to mongodb server');
 });
 _mongoose2.default.connect('mongodb://cheesu:duswkr88##@ds145389.mlab.com:45389/cheesustudy');
 //mongoose.connect('mongodb://127.0.0.1:27017/codelab');
 
 /* use session */
 app.use((0, _expressSession2.default)({
-    secret: 'CodeLab1$1$234',
-    resave: false,
-    saveUninitialized: true
+  secret: 'CodeLab1$1$234',
+  resave: false,
+  saveUninitialized: true
 }));
 
 app.use('/', _express2.default.static(_path2.default.join(__dirname, './../public')));
@@ -73,17 +73,17 @@ app.use('/api', _routes2.default);
 
 /* support client-side routing */
 app.get('*', function (req, res) {
-    res.sendFile(_path2.default.resolve(__dirname, './../public/index.html'));
+  res.sendFile(_path2.default.resolve(__dirname, './../public/index.html'));
 });
 
 /* handle error */
 app.use(function (err, req, res, next) {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 app.get('/hello', function (req, res) {
-    return res.send('Hello CodeLab');
+  return res.send('Hello CodeLab');
 });
 /*
 app.listen(process.env.PORT||port, () => {
@@ -91,13 +91,13 @@ app.listen(process.env.PORT||port, () => {
 });*/
 
 if (process.env.NODE_ENV == 'development') {
-    console.log('Server is running on development mode');
-    var config = require('../webpack.dev.config');
-    var compiler = (0, _webpack2.default)(config);
-    var devServer = new _webpackDevServer2.default(compiler, config.devServer);
-    devServer.listen(devPort, function () {
-        console.log('webpack-dev-server is listening on port', devPort);
-    });
+  console.log('Server is running on development mode');
+  var config = require('../webpack.dev.config');
+  var compiler = (0, _webpack2.default)(config);
+  var devServer = new _webpackDevServer2.default(compiler, config.devServer);
+  devServer.listen(devPort, function () {
+    console.log('webpack-dev-server is listening on port', devPort);
+  });
 }
 
 // 소켓 통신 관련 일반
@@ -125,17 +125,61 @@ io.on('connection', function(socket){
 // 소켓통신 heriku 용
 
 var server = app.use(function (req, res) {
-    return res.sendFile(_path2.default.resolve(__dirname, './../public/index.html'));
+  return res.sendFile(_path2.default.resolve(__dirname, './../public/index.html'));
 }).listen(process.env.PORT || port, function () {
-    return console.log('Listening on ' + (process.env.PORT || port));
+  return console.log('Listening on ' + (process.env.PORT || port));
 });
 
 var socketIO = require('socket.io');
 var io = socketIO(server);
 
+var chatUserList = []; // 채팅 소켓 접속자 목록
+
 io.on('connection', function (socket) {
-    console.log('Client connected');
-    socket.on('chat', function (msg) {
-        io.emit('chat', msg);
-    });
+  socket.on('chat', function (msg) {
+    io.emit('chat', msg);
+  });
+
+  socket.on('totalCount', function (addUserName) {
+    var msg = addUserName + "포함 총인원:" + io.eio.clientsCount;
+    io.emit('chat', msg);
+  });
+
+  socket.on('addUser', function (addUserName) {
+    var userSocketId = socket.id;
+    var userObj = new Object();
+    userObj.userID = addUserName;
+    userObj.socketID = userSocketId;
+    chatUserList.push(userObj);
+    console.log(addUserName + ":접속");
+    var msg = addUserName + "포함 총인원:" + io.eio.clientsCount;
+    io.emit('chat', msg);
+  });
+
+  socket.on('disconnect', function () {
+    var disUserSocketId = socket.id;
+    var disUserName = "";
+    var disArrIndex;
+    // 나간 사용자 삭제
+    for (var count = 0; count < chatUserList.length; count++) {
+      var disSocketId = chatUserList[count].socketID;
+      if (disSocketId == disUserSocketId) {
+        disUserName = chatUserList[count].userID;
+        disArrIndex = count;
+      }
+    }
+    //제거
+    chatUserList.splice(disArrIndex, 1);
+
+    io.emit('chat', disUserName + "님이 퇴장 하셨습니다.");
+    io.emit('nowUserList', chatUserList);
+    console.log('Client disconnected');
+  });
+});
+
+io.sockets.on("connection", function (socket) {
+  socket.on('callUserList', function (addUserName) {
+    console.log("유저목록 요청");
+    io.emit('callUserList', JSON.stringify(chatUserList));
+  });
 });
