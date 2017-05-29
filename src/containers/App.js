@@ -2,12 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Header } from 'Components';
 import { getStatusRequest, logoutRequest  } from 'Actions/authentication';
+import { searchRequest} from 'Actions/search';
 import { connect } from 'react-redux';
 
 class App extends React.Component {
   constructor(props) {
       super(props);
       this.handleLogout = this.handleLogout.bind(this);
+      this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
@@ -52,6 +54,9 @@ class App extends React.Component {
        );
    }
 
+   handleSearch(keyword) {
+       this.props.searchRequest(keyword);
+   }
 
    handleLogout() {
            this.props.logoutRequest().then(
@@ -76,7 +81,9 @@ class App extends React.Component {
         return (
             <div>
               {isAuth ? undefined : <Header isLoggedIn={this.props.status.isLoggedIn}
-                                              onLogout={this.handleLogout}/>}
+                                              onLogout={this.handleLogout}
+                                              onSearch={this.handleSearch}
+                                              usernames={this.props.searchResults}/>}
 
             </div>
         );
@@ -87,7 +94,8 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        status: state.authentication.status
+        status: state.authentication.status,
+        searchResults: state.search.usernames
     };
 };
 
@@ -98,6 +106,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         logoutRequest: () => {
             return dispatch(logoutRequest());
+        },
+        searchRequest: (keyword) => {
+            return dispatch(searchRequest(keyword));
         }
     };
 };

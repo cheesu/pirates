@@ -74,7 +74,6 @@ a {
 
 
 
-
 /*Gameview*/
 
 .game-view
@@ -87,10 +86,6 @@ a {
 }
 
 
-.game-view
-{
-  height: 90%;
-}
 /*chat*/
 .chat-input-wrapper
 {

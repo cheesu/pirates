@@ -1,62 +1,88 @@
 import React from 'react';
-import { browserHistory, Link } from 'react-router';
+import { browserHistory, Link } from 'react-router-dom';
 
 class Search extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            userList: [],
+            keyword: ''
         };
 
-        this.addUserDataList = this.addUserDataList.bind(this);
-
         this.handleClose = this.handleClose.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
 
         // LISTEN ESC KEY, CLOSE IF PRESSED
         const listenEscKey = (evt) => {
             evt = evt || window.event;
             if (evt.keyCode == 27) {
+                console.log("리슨 esc키 ");
                 this.handleClose();
             }
         };
 
         document.onkeydown = listenEscKey;
 
-
-
-    }
-
-
-    componentDidMount(){
-      io().emit('callUserList', '');
-      let addUserData = this.addUserDataList.bind(this);
-      io().on('callUserList', function(data){ //응답
-        console.log("유저목록 출력");
-        console.log(eval(data));
-        addUserData(eval(data));
-      });
     }
 
     handleClose() {
+        this.handleSearch('');
+        document.onkeydown = null;
         this.props.onClose();
     }
 
-    addUserDataList(data){
-      this.setState({
-        userList: this.state.userList.concat(data)
-      })
+    handleChange(e) {
+        this.setState({
+            keyword: e.target.value
+        });
+        this.handleSearch(e.target.value);
     }
 
+    handleSearch(keyword) {
+        // TO BE IMPLEMENTED
+        console.log("컴포넌트 핸들 서치");
+        this.props.onSearch(keyword);
+    }
+
+    handleKeyDown(e) {
+        // IF PRESSED ENTER, TRIGGER TO NAVIGATE TO THE FIRST USER SHOWN
+        if(e.keyCode === 13) {
+            if(this.props.usernames.length > 0) {
+                browserHistory.push('/wall/' + this.props.usernames[0].username);
+                console.log("핸들 키다운 브라우저 히스토리 ");
+                this.handleClose();
+            }
+        }
+    }
 
     render() {
 
-
+        const mapToComponents = data => {
+            return data.map((memo, i) => {
+                return (
+                    <Memo
+                        data={memo}
+                        ownership={ memo.writer===this.props.currentUser }
+                        key={memo._id}
+                        onEdit={this.props.onEdit}
+                        onRemove={this.props.onRemove}
+                        onStar={this.props.onStar}
+                        index={i}
+                        currentUser={this.props.currentUser}
+                    />
+                );
+            });
+        };
 
         const mapDataToLinks = (data) => {
-            return this.state.userList.map((userData, i) => {
+            return data.map((user, i) => {
+              console.log("사용자 찾기 돌기");
                 return (
-                    <p className="bla-bla-class" key={i}>{userData.userID}</p>
+                    <Link onClick={this.handleClose} to={`/wall/${user.username}`} key={i}>
+                        {user.username}
+                    </Link>
                  );
             });
         };
@@ -65,12 +91,15 @@ class Search extends React.Component {
             <div className="search-screen white-text">
                 <div className="right">
                     <a className="waves-effect waves-light btn red lighten-1"
-                        onClick={this.handleClose}>CLOSE</a>
+                       onClick={this.handleClose}>CLOSE</a>
                 </div>
                 <div className="container">
+                    <input placeholder="Search a user"
+                           value={this.state.keyword}
+                           onChange={this.handleChange}
+                           onKeyDown={this.handleKeyDown}></input>
                     <ul className="search-results">
-                      <li>현재 접속자</li>
-                      { mapDataToLinks(this.props.usernames) }
+                        { mapDataToLinks(this.props.usernames) }
                     </ul>
 
                 </div>
@@ -81,12 +110,16 @@ class Search extends React.Component {
 
 Search.propTypes = {
     onClose: React.PropTypes.func,
+    onSearch: React.PropTypes.func,
     usernames: React.PropTypes.array
 };
 
 Search.defaultProps = {
     onClose: () => {
         console.error('onClose not defined');
+    },
+    onSearch: () => {
+        console.error('onSearch not defined');
     },
     usernames: []
 };

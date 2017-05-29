@@ -33,23 +33,16 @@ class Home extends React.Component {
 
            // get loginData from cookie
            let loginData = getCookie('key');
-
-           console.log(loginData);
-           console.log("통과 이전");
            // if loginData is undefined, do nothing
            if(typeof loginData === "undefined") return;
-           console.log("통과1");
            // decode base64 & parse json
            loginData = JSON.parse(atob(loginData));
            // if not logged in, do nothing
            if(!loginData.isLoggedIn) return;
-           console.log("통과2");
            // page refreshed & has a session in cookie,
            // check whether this cookie is valid or not
            this.props.getStatusRequest().then(
                () => {
-                 console.log("겟 스테이터스 리퀘스트 home");
-                   console.log(this.props.status);
                    // if session is not valid
                    if(!this.props.status.valid) {
                        // logout the session
@@ -71,7 +64,7 @@ class Home extends React.Component {
 
     render() {
       const game = (
-            <div>
+            <div className="view-container">
               <Gameview
                 socket={this.socket}
                 />

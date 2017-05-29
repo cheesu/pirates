@@ -19,8 +19,6 @@ class Chat extends React.Component {
         this.props.socket.emit('chat', sendMsgText); // 요청
         let addUserName = this.props.username;
         this.props.socket.emit('totalCount', addUserName); // 요청
-
-
       }
 
       handleChange(e) {

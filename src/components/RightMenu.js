@@ -1,5 +1,7 @@
 import React from 'react';
 import { browserHistory, Link } from 'react-router';
+import { connect } from 'react-redux';
+import { getStatusRequest  } from 'Actions/authentication';
 class RightMenu extends React.Component {
     constructor(props) {
         super(props);
@@ -10,7 +12,8 @@ class RightMenu extends React.Component {
 
         this.handleClose = this.handleClose.bind(this);
         this.handleRightMenu = this.handleRightMenu.bind(this);
-
+  var userName = this.props.status.currentUser;
+  console.log(userName);
     }
 
     handleClose() {
@@ -39,28 +42,34 @@ class RightMenu extends React.Component {
                         onClick={this.handleClose}>CLOSE</a>
                 </div>
                 <div className="container">
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br><br></br><br></br>
                     <div className="user-info">
-                      <dt>ID:</dt><dd>ME</dd>
-                      <dt>LV:</dt><dd>ME</dd>
-                      <dt>JOB:</dt><dd>ME</dd>
+                      <ul className="right-menu-results">
+                          <li> ID: <span>{this.props.status.currentUser}</span></li>
+                          <li> LV: <span>1</span></li>
+                          <li> JOB: <span>test</span></li>
+                          <li>  </li>
+                      </ul>
                     </div>
+
+
+
                     <ul className="right-menu-results">
                         <li> INVEN </li>
                         <li> STATUS </li>
                         <li>  </li>
                     </ul>
 
-                    <div className="collection">
-                      <a href="#!" className="collection-item"><span className="badge">INVEN</span>Alan</a>
-                      <a href="#!" className="collection-item"><span className="new badge">STATUS</span>Alan</a>
-                      <a href="#!" className="collection-item">Alan</a>
-                      <a href="#!" className="collection-item"><span className="badge">14</span>Alan</a>
-                    </div>
+
 
                     <div className="collection skill-set">
                       <a href="#!" className="collection-item"><span className="badge">10mp</span>스킬1</a>
                       <a href="#!" className="new collection-item"><span className="badge">20mp</span>스킬2</a>
-                      <a href="#!" className="collection-item">Alan</a>
+                      <a href="#!" className="collection-item"><span className="badge">40mp</span>스킬4</a>
                       <a href="#!" className="collection-item"><span className="badge">14</span>스킬3</a>
                     </div>
 
@@ -74,6 +83,7 @@ class RightMenu extends React.Component {
         );
     }
 }
+
 
 RightMenu.propTypes = {
     onClose: React.PropTypes.func,
@@ -89,4 +99,19 @@ RightMenu.defaultProps = {
     }
 };
 
-export default RightMenu;
+const mapStateToProps = (state) => {
+    return {
+        status: state.authentication.status
+    };
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getStatusRequest: () => {
+            return dispatch(getStatusRequest());
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RightMenu);

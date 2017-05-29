@@ -40,12 +40,14 @@ class Header extends React.Component {
               );
 
               const logoutButton = (
-            <li>
-                <Link onClick={this.props.onLogout} to="/main">
-                    <i className="material-icons">lock_open</i>
-              </Link>
-            </li>
-        );
+                    <li>
+                        <Link onClick={this.props.onLogout} to="/main">
+                            <i className="material-icons">lock_open</i>
+                      </Link>
+                    </li>
+                );
+
+              const rightMenu = (<li><a onClick={this.toggleRightMenu}><i className="material-icons">menu</i></a></li>);
 
         return (
             <div>
@@ -60,7 +62,8 @@ class Header extends React.Component {
                      <div className="right">
                          <ul>
                             { this.props.isLoggedIn ? logoutButton : loginButton }
-                            <li><a onClick={this.toggleRightMenu}><i className="material-icons">menu</i></a></li>
+                            { this.props.isLoggedIn ? rightMenu : null }
+
                          </ul>
                      </div>
                  </div>
@@ -69,12 +72,13 @@ class Header extends React.Component {
                   { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                   {this.state.search ? <Search onClose={this.toggleSearch}
                                                onSearch={this.props.onSearch}
+                                               usernames={this.props.usernames}
                                                /> : undefined }
              </ReactCSSTransitionGroup>
              <ReactCSSTransitionGroup transitionName="right-menu" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                   { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                   {this.state.rightMenu ? <RightMenu onClose={this.toggleRightMenu}
-                                               onRightMenu={this.props.onRightMenu}
+                                                    onRightMenu={this.props.onRightMenu}
                                                /> : undefined }
              </ReactCSSTransitionGroup>
            </div>
@@ -85,12 +89,16 @@ class Header extends React.Component {
 
 Header.propTypes = {
     isLoggedIn: React.PropTypes.bool,
-    onLogout: React.PropTypes.func
+    onLogout: React.PropTypes.func,
+    usernames:React.PropTypes.array
 };
+
+
 
 Header.defaultProps = {
     isLoggedIn: false,
-    onLogout: () => { console.error("logout function not defined");}
+    onLogout: () => { console.error("logout function not defined");},
+    usernames:[]
 };
 
 
