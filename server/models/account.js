@@ -7,6 +7,13 @@ const Account = new Schema({
     username: String,
     password: String,
     job:String,
+    lv:Number(),
+    exp:Number(),
+    hp:Number(),
+    mp:Number(),
+    str:Number(),
+    int:Number(),
+    dex:Number(),
     created: { type: Date, default: Date.now }
 });
 

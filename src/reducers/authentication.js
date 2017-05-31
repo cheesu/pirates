@@ -13,6 +13,8 @@ const initialState = {
         valid: false,
         isLoggedIn: false,
         currentUser: '',
+        job:'',
+        lv:0
     }
 };
 
@@ -78,7 +80,9 @@ export default function authentication(state, action) {
             return update(state, {
                 status: {
                     valid: { $set: true },
-                    currentUser: { $set: action.username }
+                    currentUser: { $set: action.username },
+                    job: { $set: action.job },
+                    lv: { $set: action.lv }
                 }
             });
         case types.AUTH_GET_STATUS_FAILURE:
@@ -94,7 +98,9 @@ export default function authentication(state, action) {
               return update(state, {
                   status: {
                       isLoggedIn: { $set: false },
-                      currentUser: { $set: '' }
+                      currentUser: { $set: '' },
+                      job: { $set: '' },
+                      lv: { $set: 0 },
                   }
               });
 

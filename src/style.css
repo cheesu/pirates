@@ -1,6 +1,11 @@
+html ,body{
+  height: 100%;
+}
+
 body {
     background-color: #000;
 }
+
 
 
 /* Authentication */
@@ -79,6 +84,8 @@ a {
 .game-view
 {
   color:#fff;
+  height: 30em;
+  background: #AAA;
 }
 .input-chat
 {
@@ -89,7 +96,7 @@ a {
 /*chat*/
 .chat-input-wrapper
 {
-  position: absolute;
+
   bottom: 0;
   width: 100%;
 }
@@ -315,4 +322,16 @@ ul.right-menu-results {
     animation-duration: 0.3s;
     -webkit-animation-name: right-menu-leave;
     animation-name: right-menu-leave;
+}
+
+
+
+
+/*controller*/
+
+.controller-container
+{
+  position: absolute;
+  height: 30%;
+  width: 100%;
 }

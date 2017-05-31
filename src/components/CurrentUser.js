@@ -31,8 +31,6 @@ class Search extends React.Component {
       this.socket.emit('callUserList', '');
       let addUserData = this.addUserDataList.bind(this);
       this.socket.on('callUserList', function(data){
-          console.log("유저목록 출력");
-          console.log(eval(data));
           addUserData(eval(data));
         });
     }

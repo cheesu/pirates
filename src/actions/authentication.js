@@ -99,7 +99,7 @@ export function getStatusRequest() {
 
         return axios.get('/api/account/getInfo')
         .then((response) => {
-            dispatch(getStatusSuccess(response.data.info.username));
+            dispatch(getStatusSuccess(response.data.info[0]));
         }).catch((error) => {
             dispatch(getStatusFailure());
         });
@@ -112,10 +112,12 @@ export function getStatus() {
     };
 }
 
-export function getStatusSuccess(username) {
+export function getStatusSuccess(info) {
     return {
         type: AUTH_GET_STATUS_SUCCESS,
-        username
+        username:info.username,
+        job :info.job,
+        lv:info.lv,
     };
 }
 

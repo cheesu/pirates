@@ -64,6 +64,12 @@ class Header extends React.Component {
                             { this.props.isLoggedIn ? logoutButton : loginButton }
                             { this.props.isLoggedIn ? rightMenu : null }
 
+                            <li>
+                                <Link to="/game">
+                                    <i className="material-icons">input</i>
+                                </Link>
+                            </li>
+
                          </ul>
                      </div>
                  </div>

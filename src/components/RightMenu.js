@@ -12,8 +12,7 @@ class RightMenu extends React.Component {
 
         this.handleClose = this.handleClose.bind(this);
         this.handleRightMenu = this.handleRightMenu.bind(this);
-  var userName = this.props.status.currentUser;
-  console.log(userName);
+      var userName = this.props.status.currentUser;
     }
 
     handleClose() {
@@ -26,7 +25,9 @@ class RightMenu extends React.Component {
         // TO BE IMPLEMENTED
     }
 
-
+  componentDidMount(){
+      this.props.getStatusRequest();
+  }
 
     render() {
 
@@ -50,8 +51,8 @@ class RightMenu extends React.Component {
                     <div className="user-info">
                       <ul className="right-menu-results">
                           <li> ID: <span>{this.props.status.currentUser}</span></li>
-                          <li> LV: <span>1</span></li>
-                          <li> JOB: <span>test</span></li>
+                          <li> LV: <span>{this.props.status.lv}</span></li>
+                          <li> JOB: <span>{this.props.status.job}</span></li>
                           <li>  </li>
                       </ul>
                     </div>

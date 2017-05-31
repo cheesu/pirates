@@ -121,12 +121,12 @@ class Authentication extends React.Component {
                 <div className="row">
                     {inputBoxes}
                     <div onChange={this.setGender.bind(this)}>
-                         <input name="group1" type="radio" id="test1" value="sw"/>
-                         <label htmlFor="test1">ㅈㅅ</label>
-                         <input name="group1" type="radio" id="test2" value="ma"/>
-                         <label htmlFor="test2">ㅁㅄ</label>
-                         <input  name="group1" type="radio" id="test3" value="as"/>
-                         <label htmlFor="test3">ㅇㅅㅈ</label>
+                         <input name="group1" type="radio" id="test1" value="검사"/>
+                         <label htmlFor="test1">검사</label>
+                         <input name="group1" type="radio" id="test2" value="마법사"/>
+                         <label htmlFor="test2">마법사</label>
+                         <input  name="group1" type="radio" id="test3" value="암살자"/>
+                         <label htmlFor="test3">암살자</label>
                      </div>
                      <a className="waves-effect waves-light btn"
                          onClick={this.handleRegister}>CREATE</a>
