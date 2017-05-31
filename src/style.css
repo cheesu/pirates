@@ -85,8 +85,17 @@ a {
 {
   color:#fff;
   height: 30em;
-  background: #AAA;
+  overflow: scroll;
+  word-break: break-all;
 }
+
+.current-user-list-btn
+{
+  position: absolute;
+  right: 2em;
+
+}
+
 .input-chat
 {
   color:#fff;
@@ -103,13 +112,13 @@ a {
 .input-chat
 {
   display: inline-block;
-  width: 90% !important;
+  width: 80% !important;
   float:left;
 }
 .chat-send-btn
 {
   display: inline-block;
-  width: 10%;
+  width: 20%;
   margin-top: 0.6em;
 }
 
@@ -143,7 +152,7 @@ a {
 ul.search-results {
     text-align: center;
     font-size: 30px;
-    margin-top: 0px;
+    margin-top: 2em;
 }
 
 .search-results a {
@@ -325,13 +334,17 @@ ul.right-menu-results {
 }
 
 
-
+nav .brand-logo.center
+{
+  left: 35%;
+}
 
 /*controller*/
 
 .controller-container
 {
   position: absolute;
+  margin-top: 2em;
   height: 30%;
   width: 100%;
 }

@@ -47,14 +47,14 @@ class Gameview extends React.Component {
       this.setState({
         chat: this.state.chat.concat(data)
       });
-      /*this.state.chat.push(data);
-      this.forceUpdate();*/
+
+      var objDiv = document.getElementById("gameChatView"); objDiv.scrollTop = objDiv.scrollHeight;
     }
 
     render(){
         return (
-          <div className="game-view">
-            <div>
+          <div id="gameChatView" className="game-view">
+            <div className="current-user-list-btn">
               <ul>
                   <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
               </ul>
