@@ -58,7 +58,14 @@ router.post('/signup', function (req, res) {
         var account = new _account2.default({
             username: req.body.username,
             password: req.body.password,
-            job: req.body.job
+            job: req.body.job,
+            lv: 1,
+            hp: 100,
+            mp: 100,
+            str: 10,
+            int: 10,
+            dex: 10
+
         });
 
         account.password = account.generateHash(account.password);
@@ -104,7 +111,6 @@ router.post('/signin', function (req, res) {
                 code: 1
             });
         }
-
         // ALTER SESSION
         var session = req.session;
         session.loginInfo = {
@@ -126,8 +132,12 @@ router.get('/getinfo', function (req, res) {
             error: 1
         });
     }
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, account) {
+        if (err) throw err;
+        res.json({ info: account });
+    });
 
-    res.json({ info: req.session.loginInfo });
+    //res.json({ info: req.session.loginInfo });
 });
 
 router.post('/logout', function (req, res) {

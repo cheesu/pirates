@@ -133,6 +133,21 @@ var server = app.use(function (req, res) {
 var socketIO = require('socket.io');
 var io = socketIO(server);
 
+var nsp = io.of('/twon');
+
+nsp.on('connection', function (socket) {
+  console.log("twon 커넥트");
+  socket.on('callUserList', function (addUserName) {
+    console.log("유저목록 요청");
+    io.emit('callUserList', JSON.stringify(chatUserList));
+  });
+
+  socket.on('chat', function (msg) {
+    console.log(msg);
+    nsp.emit('chat', msg);
+  });
+});
+
 var chatUserList = []; // 채팅 소켓 접속자 목록
 
 io.on('connection', function (socket) {
