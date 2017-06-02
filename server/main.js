@@ -105,39 +105,24 @@ var socketIO = require('socket.io');
 const io = socketIO(server);
 
 
-const nsp = io.of('/twon');
-
-
-nsp.on('connection', (socket) => {
-  console.log("twon 커넥트");
-  socket.on('callUserList', function(addUserName){
-    console.log("유저목록 요청");
-    io.emit('callUserList', JSON.stringify(chatUserList));
-  });
-
-  socket.on('chat', function(msg){
-
-    let ch = msg.split(":ch:");
-    console.log("nsp 소켓"+ch[0]);
-    nsp.emit(ch[0], ch[1]);
-  });
-
-});
 
 
 var chatUserList = []; // 채팅 소켓 접속자 목록
 
 io.on('connection', (socket) => {
-    socket.on('chat', function(msg){
-      console.log("글로벌 챗 io");
-      io.emit('chat', msg);
+    socket.on('Gchat', function(msg){
+      io.emit('Gchat', msg);
     });
 
     socket.on('totalCount', function(addUserName){
-      const msg = addUserName+"포함 총인원:"+io.eio.clientsCount;
+      const msg = addUserName+"포함 총인원:"+chatUserList.length;
       io.emit('chat', msg);
     });
 
+    socket.on('chat', function(msg){
+      let ch = msg.split(":ch:");
+      io.emit(ch[0], ch[1]);
+    });
 
 
     socket.on('addUser', function(addUserName){
@@ -147,8 +132,8 @@ io.on('connection', (socket) => {
       userObj.socketID = userSocketId;
       chatUserList.push(userObj);
       console.log(addUserName+":접속");
-      const msg = addUserName+"포함 총인원:"+io.eio.clientsCount;
-      io.emit('chat', msg);
+      const msg = addUserName+"포함 총인원:"+chatUserList.length;
+      io.emit('Gchat', msg);
     });
 
     socket.on('disconnect', () =>{
@@ -168,16 +153,16 @@ io.on('connection', (socket) => {
 
     io.emit('chat', disUserName+"님이 퇴장 하셨습니다.");
     io.emit('nowUserList', chatUserList);
-    console.log('Client disconnected');
+    console.log('Client disconnected'+disUserName);
   }
  );
 });
 
-io.sockets.on("connection", function(socket){
 
+
+io.sockets.on("connection", function(socket){
   socket.on('callUserList', function(addUserName){
-    console.log("유저목록 요청");
-    io.emit('callUserList', JSON.stringify(chatUserList));
+    socket.emit('callUserList', JSON.stringify(chatUserList));
   });
 
 
@@ -196,15 +181,15 @@ io.sockets.on("connection", function(socket){
           }
       }
     }
-    io.emit('move', msg);
+    socket.emit('move', msg);
   });
 
   socket.on('move', function(msg){
-    io.emit('move', msg);
+    socket.emit('move', msg);
   });
 
   socket.on('setLocalCh', function(msg){
     console.log("소켓 셋 로컬 채널 "+msg);
-    io.emit('setLocalCh', msg);
+    socket.emit('setLocalCh', msg);
   });
 });

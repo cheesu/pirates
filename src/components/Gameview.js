@@ -31,12 +31,16 @@ class Gameview extends React.Component {
         addChat(data);
       });
 
-      this.props.socketG.on('move', function(data){ //응답
+      this.props.socket.on('move', function(data){ //응답
+        addChat(data);
+      });
+
+      this.props.socket.on('Gchat', function(data){ //응답
         addChat(data);
       });
 
       let setSocketCh = this.setSocketCh.bind(this);
-      this.props.socketG.on('setLocalCh', function(data){ //응답
+      this.props.socket.on('setLocalCh', function(data){ //응답
         console.log("소켓G 셋팅 게임뷰");
         setSocketCh(data);
       });
@@ -46,7 +50,7 @@ class Gameview extends React.Component {
     }
 
     setSocketCh(ch){
-      console.log(ch+"<-셋팅");
+      this.socket.off(this.state.socketCh);
       this.setState({
         socketCh:ch
       });

@@ -12,19 +12,17 @@ class Game extends React.Component {
           super(props, context);
           //this.socket = io.connect('http://127.0.0.1:3303');
         //  this.socket =io('http://localhost:4000/twon',{'forceNew': true});
-          this.socketG =io({'forceNew': true});
-          this.socket =io(location.host+'/twon',{'forceNew': true});
+          this.socket =io({'forceNew': true});
         //  this.socket =io('http://localhost:4000/twon');
           var userName = this.props.status.currentUser;
-      //    this.socket.emit('addUser', userName);
-          this.socket.emit('chat', userName);
+          this.socket.emit('addUser', userName);
+          //this.socket.emit('chat', userName);
       }
 
       componentWillUnmount(){
         console.log("home 윌 언마운트 소켓 디스커넥트 고침");
 
         this.socket.disconnect();
-        this.socketG.disconnect();
       }
 
       componentDidMount() {

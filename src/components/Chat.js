@@ -23,8 +23,7 @@ class Chat extends React.Component {
         this.props.socket.emit('totalCount', addUserName); // 요청
 
         let setSocketCh = this.setSocketCh.bind(this);
-        this.props.socketG.on('setLocalCh', function(data){
-          console.log("소켓 셋팅 챗"+data);
+        this.props.socket.on('setLocalCh', function(data){
           setSocketCh(data);
         });
       }
@@ -52,7 +51,17 @@ class Chat extends React.Component {
         return false;
       }
 
-      console.log("샌드 채널 "+this.state.socketCh );
+
+      console.log(sendMsgText.indexOf('/전체'));
+      if(this.state.msg.indexOf('/전체')==0){
+        let sendMG ="[All] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
+        this.props.socket.emit('Gchat', sendMG); // 요청
+        this.setState({
+            msg: ''
+        });
+        return false;
+      }
+
       this.props.socket.emit('chat', this.state.socketCh+":ch:"+sendMsgText); // 요청
       this.setState({
           msg: ''
