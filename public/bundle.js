@@ -19884,7 +19884,7 @@ var Controller = function (_React$Component) {
         map[0] = map[0] + 1;
         if (map[0] > 3) {
           this.props.socket.emit('move', "막혀서 못감"); // 요청
-          map[1] = 3;
+          map[0] = 3;
           return false;
         }
       }
