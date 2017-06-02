@@ -101,6 +101,11 @@ a {
   color:#fff;
 }
 
+.notice-chat
+{
+  color:#F012FF;
+  font-size: 17px;
+}
 
 /*chat*/
 .chat-input-wrapper
@@ -121,6 +126,7 @@ a {
   width: 20%;
   margin-top: 0.6em;
 }
+
 
 
 /* SEARCH */

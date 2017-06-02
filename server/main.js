@@ -113,6 +113,10 @@ io.on('connection', (socket) => {
     socket.on('Gchat', function(msg){
       io.emit('Gchat', msg);
     });
+    socket.on('NoticeChat', function(msg){
+      io.emit('NoticeChat', msg);
+    });
+
 
     socket.on('totalCount', function(addUserName){
       const msg = addUserName+"포함 총인원:"+chatUserList.length;

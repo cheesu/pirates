@@ -39,6 +39,10 @@ class Gameview extends React.Component {
         addChat(data);
       });
 
+      this.props.socket.on('NoticeChat', function(data){ //응답
+        addChat(data);
+      });
+
       let setSocketCh = this.setSocketCh.bind(this);
       this.props.socket.on('setLocalCh', function(data){ //응답
         console.log("소켓G 셋팅 게임뷰");
@@ -73,6 +77,9 @@ class Gameview extends React.Component {
       var objDiv = document.getElementById("gameChatView"); objDiv.scrollTop = objDiv.scrollHeight;
     }
 
+
+
+
     render(){
         return (
           <div id="gameChatView" className="game-view">
@@ -82,7 +89,14 @@ class Gameview extends React.Component {
               </ul>
             </div>
             {this.state.chat.map(function(chat,i){
-              return <p className="bla-bla-class" key={i}>{chat}</p>})}
+              if(chat.indexOf('[공지사항]')==0){
+                return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
+              }
+              else{
+                return <p className="bla-bla-class" key={i}>{chat}</p>
+              }
+            })}
+
 
                 <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}

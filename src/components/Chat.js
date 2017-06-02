@@ -51,6 +51,7 @@ class Chat extends React.Component {
     sendMsg(){
 
 
+
       var d = new Date();
       var moveTimerS = d.getSeconds();
 
@@ -65,8 +66,15 @@ class Chat extends React.Component {
         return false;
       }
 
+      if(this.props.username == "운영자" && this.state.msg.indexOf('/공지')==0){
+        let sendMG ="[공지사항] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
+        this.props.socket.emit('NoticeChat', sendMG); // 요청
+        this.setState({
+            msg: ''
+        });
+        return false;
+      }
 
-      console.log(sendMsgText.indexOf('/전체'));
       if(this.state.msg.indexOf('/전체')==0){
         let sendMG ="[All] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
         this.props.socket.emit('Gchat', sendMG); // 요청
