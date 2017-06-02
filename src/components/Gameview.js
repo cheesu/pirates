@@ -8,9 +8,11 @@ class Gameview extends React.Component {
           this.state = {
               search: false,
               chat: ['test'],
+              socketCh:'0-0'
           };
           this.addChatData = this.addChatData.bind(this);
           this.toggleSearch = this.toggleSearch.bind(this);
+          this.setSocketCh = this.setSocketCh.bind(this);
           this.socket = this.props.socket
           console.log("생성");
       }
@@ -25,18 +27,34 @@ class Gameview extends React.Component {
     componentDidMount(){
       console.log("디드 마운트");
       let addChat = this.addChatData.bind(this);
-      this.props.socket.on('chat', function(data){ //응답
+      this.props.socket.on(this.state.socketCh, function(data){ //응답
         addChat(data);
       });
 
-    /*  this.props.socket.on('callUserList', function(data){ //응답
-      console.log("유저목록 출력");
-      console.log(data);
-      //  addChat(data);
+      this.props.socketG.on('move', function(data){ //응답
+        addChat(data);
       });
-*/
-      }
 
+      let setSocketCh = this.setSocketCh.bind(this);
+      this.props.socketG.on('setLocalCh', function(data){ //응답
+        console.log("소켓G 셋팅 게임뷰");
+        setSocketCh(data);
+      });
+
+
+
+    }
+
+    setSocketCh(ch){
+      console.log(ch+"<-셋팅");
+      this.setState({
+        socketCh:ch
+      });
+      let addChat = this.addChatData.bind(this);
+      this.props.socket.on(this.state.socketCh, function(data){ //응답
+        addChat(data);
+      });
+    }
 
 
     componentWillUnmount () {

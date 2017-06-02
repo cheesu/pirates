@@ -10,10 +10,9 @@ class Game extends React.Component {
 
   constructor(props, context) {
           super(props, context);
-          console.log("홈 컨스트럭트 소켓 커넥션");
           //this.socket = io.connect('http://127.0.0.1:3303');
         //  this.socket =io('http://localhost:4000/twon',{'forceNew': true});
-        console.log(location.host);
+          this.socketG =io({'forceNew': true});
           this.socket =io(location.host+'/twon',{'forceNew': true});
         //  this.socket =io('http://localhost:4000/twon');
           var userName = this.props.status.currentUser;
@@ -25,6 +24,7 @@ class Game extends React.Component {
         console.log("home 윌 언마운트 소켓 디스커넥트 고침");
 
         this.socket.disconnect();
+        this.socketG.disconnect();
       }
 
       componentDidMount() {
@@ -71,13 +71,17 @@ class Game extends React.Component {
             <div className="view-container">
               <Gameview
                 socket={this.socket}
+                socketG={this.socketG}
+
                 />
               <Chat
                 socket={this.socket}
+                socketG={this.socketG}
                 username = {this.props.status.currentUser}
                 />
               <Controller
                 socket={this.socket}
+                socketG={this.socketG}
                 username = {this.props.status.currentUser}
                 />
             </div>

@@ -28,7 +28,7 @@ class Login extends React.Component {
                      console.log(loginData);
                      Materialize.toast('Welcome, ' + id + '!', 2000);
                      //browserHistory.push('/');
-                     this.props.history.push('/home');
+                     this.props.history.push('/game');
 
                      return true;
                  } else {

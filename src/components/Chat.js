@@ -7,18 +7,32 @@ class Chat extends React.Component {
 
           this.state = {
               msg: "",
+              socketCh:'0-0'
           };
           this.handleChange = this.handleChange.bind(this);
           this.sendMsg = this.sendMsg.bind(this);
           this.handleKeyPress = this.handleKeyPress.bind(this);
+          this.setSocketCh = this.setSocketCh.bind(this);
       }
 
 
       componentDidMount(){
         let sendMsgText = this.props.username + " 님이 입장 하셨습니다. " ;
-        this.props.socket.emit('chat', sendMsgText); // 요청
+        this.props.socket.emit('chat', this.state.socketCh+":ch:"+sendMsgText); // 요청
         let addUserName = this.props.username;
         this.props.socket.emit('totalCount', addUserName); // 요청
+
+        let setSocketCh = this.setSocketCh.bind(this);
+        this.props.socketG.on('setLocalCh', function(data){
+          console.log("소켓 셋팅 챗"+data);
+          setSocketCh(data);
+        });
+      }
+
+      setSocketCh(ch){
+        this.setState({
+          socketCh:ch
+        });
       }
 
       handleChange(e) {
@@ -38,16 +52,8 @@ class Chat extends React.Component {
         return false;
       }
 
-      if(this.state.msg=='/누구'){
-        this.props.socket.emit('callUserList', ""); // 요청
-        this.setState({
-            msg: ''
-        });
-
-        return false;
-      }
-
-      this.props.socket.emit('chat', sendMsgText); // 요청
+      console.log("샌드 채널 "+this.state.socketCh );
+      this.props.socket.emit('chat', this.state.socketCh+":ch:"+sendMsgText); // 요청
       this.setState({
           msg: ''
       });
