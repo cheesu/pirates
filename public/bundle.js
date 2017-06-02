@@ -19601,7 +19601,7 @@ exports.default = Authentication;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -19619,92 +19619,99 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Chat = function (_React$Component) {
-    _inherits(Chat, _React$Component);
+  _inherits(Chat, _React$Component);
 
-    function Chat(props, context) {
-        _classCallCheck(this, Chat);
+  function Chat(props, context) {
+    _classCallCheck(this, Chat);
 
-        var _this = _possibleConstructorReturn(this, (Chat.__proto__ || Object.getPrototypeOf(Chat)).call(this, props, context));
+    var _this = _possibleConstructorReturn(this, (Chat.__proto__ || Object.getPrototypeOf(Chat)).call(this, props, context));
 
-        _this.state = {
-            msg: ""
-        };
-        _this.handleChange = _this.handleChange.bind(_this);
-        _this.sendMsg = _this.sendMsg.bind(_this);
-        _this.handleKeyPress = _this.handleKeyPress.bind(_this);
-        return _this;
+    _this.state = {
+      msg: "",
+      socketCh: '0-0'
+    };
+    _this.handleChange = _this.handleChange.bind(_this);
+    _this.sendMsg = _this.sendMsg.bind(_this);
+    _this.handleKeyPress = _this.handleKeyPress.bind(_this);
+    _this.setSocketCh = _this.setSocketCh.bind(_this);
+    return _this;
+  }
+
+  _createClass(Chat, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var sendMsgText = this.props.username + " 님이 입장 하셨습니다. ";
+      this.props.socket.emit('chat', this.state.socketCh + ":ch:" + sendMsgText); // 요청
+      var addUserName = this.props.username;
+      this.props.socket.emit('totalCount', addUserName); // 요청
+
+      var setSocketCh = this.setSocketCh.bind(this);
+      this.props.socketG.on('setLocalCh', function (data) {
+        console.log("소켓 셋팅 챗" + data);
+        setSocketCh(data);
+      });
     }
+  }, {
+    key: 'setSocketCh',
+    value: function setSocketCh(ch) {
+      this.setState({
+        socketCh: ch
+      });
+    }
+  }, {
+    key: 'handleChange',
+    value: function handleChange(e) {
+      var nextState = {};
+      nextState[e.target.name] = e.target.value;
+      this.setState(nextState);
+    }
+  }, {
+    key: 'handleKeyPress',
+    value: function handleKeyPress(e) {
+      if (e.charCode == 13) {
+        this.sendMsg();
+      }
+    }
+  }, {
+    key: 'sendMsg',
+    value: function sendMsg() {
+      var sendMsgText = this.props.username + " : " + this.state.msg;
+      if (this.state.msg.length == 0) {
+        return false;
+      }
 
-    _createClass(Chat, [{
-        key: "componentDidMount",
-        value: function componentDidMount() {
-            var sendMsgText = this.props.username + " 님이 입장 하셨습니다. ";
-            this.props.socket.emit('chat', sendMsgText); // 요청
-            var addUserName = this.props.username;
-            this.props.socket.emit('totalCount', addUserName); // 요청
-        }
-    }, {
-        key: "handleChange",
-        value: function handleChange(e) {
-            var nextState = {};
-            nextState[e.target.name] = e.target.value;
-            this.setState(nextState);
-        }
-    }, {
-        key: "handleKeyPress",
-        value: function handleKeyPress(e) {
-            if (e.charCode == 13) {
-                this.sendMsg();
-            }
-        }
-    }, {
-        key: "sendMsg",
-        value: function sendMsg() {
-            var sendMsgText = this.props.username + " : " + this.state.msg;
-            if (this.state.msg.length == 0) {
-                return false;
-            }
+      console.log("샌드 채널 " + this.state.socketCh);
+      this.props.socket.emit('chat', this.state.socketCh + ":ch:" + sendMsgText); // 요청
+      this.setState({
+        msg: ''
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
 
-            if (this.state.msg == '/누구') {
-                this.props.socket.emit('callUserList', ""); // 요청
-                this.setState({
-                    msg: ''
-                });
+      return _react2.default.createElement(
+        'div',
+        { className: 'input-field chat-input-wrapper' },
+        _react2.default.createElement('input', {
+          name: 'msg',
+          type: 'text',
+          className: 'validate input-chat',
+          onChange: this.handleChange,
+          value: this.state.msg,
+          onKeyPress: this.handleKeyPress }),
+        _react2.default.createElement(
+          'button',
+          {
+            className: 'chat-send-btn waves-effect waves-light btn',
+            onClick: this.sendMsg },
+          'send'
+        )
+      );
+    }
+  }]);
 
-                return false;
-            }
-
-            this.props.socket.emit('chat', sendMsgText); // 요청
-            this.setState({
-                msg: ''
-            });
-        }
-    }, {
-        key: "render",
-        value: function render() {
-
-            return _react2.default.createElement(
-                "div",
-                { className: "input-field chat-input-wrapper" },
-                _react2.default.createElement("input", {
-                    name: "msg",
-                    type: "text",
-                    className: "validate input-chat",
-                    onChange: this.handleChange,
-                    value: this.state.msg,
-                    onKeyPress: this.handleKeyPress }),
-                _react2.default.createElement(
-                    "button",
-                    {
-                        className: "chat-send-btn waves-effect waves-light btn",
-                        onClick: this.sendMsg },
-                    "send"
-                )
-            );
-        }
-    }]);
-
-    return Chat;
+  return Chat;
 }(_react2.default.Component);
 
 exports.default = Chat;
@@ -19742,39 +19749,128 @@ var Controller = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Controller.__proto__ || Object.getPrototypeOf(Controller)).call(this, props, context));
 
+    var mapArr = [[2, 0, 0, -1, -1, 0, -1, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0]];
+
     _this.state = {
-      msg: ""
+      msg: "",
+      mapLocal: [0, 0],
+      map: mapArr,
+      socketCh: '0-0'
     };
     _this.handleChange = _this.handleChange.bind(_this);
     _this.sendMsg = _this.sendMsg.bind(_this);
+
+    _this.moveUp = _this.moveUp.bind(_this);
+    _this.moveLeft = _this.moveLeft.bind(_this);
+    _this.moveRight = _this.moveRight.bind(_this);
+    _this.moveDown = _this.moveDown.bind(_this);
+    _this.actionMove = _this.actionMove.bind(_this);
     _this.handleKeyPress = _this.handleKeyPress.bind(_this);
+    _this.viewLocalMap = _this.viewLocalMap.bind(_this);
+
     return _this;
   }
 
   _createClass(Controller, [{
-    key: "componentDidMount",
+    key: 'componentDidMount',
     value: function componentDidMount() {
-      var sendMsgText = this.props.username + " 님이 도착했습니다. ";
-      this.props.socket.emit('chat', sendMsgText); // 요청
-      var addUserName = this.props.username;
-      this.props.socket.emit('totalCount', addUserName); // 요청
+      /*  let sendMsgText = this.props.username + " 님이 도착했습니다. " ;
+        this.props.socket.emit('chat', sendMsgText); // 요청
+        let addUserName = this.props.username;
+        this.props.socket.emit('totalCount', addUserName); // 요청
+      */
+
     }
   }, {
-    key: "handleChange",
+    key: 'handleChange',
     value: function handleChange(e) {
       var nextState = {};
       nextState[e.target.name] = e.target.value;
       this.setState(nextState);
     }
   }, {
-    key: "handleKeyPress",
+    key: 'handleKeyPress',
     value: function handleKeyPress(e) {
       if (e.charCode == 13) {
         this.sendMsg();
       }
     }
+
+    //맵 보여주기
+
   }, {
-    key: "sendMsg",
+    key: 'viewLocalMap',
+    value: function viewLocalMap() {
+      var map = this.state.map;
+
+      this.props.socket.emit('viewMap', map); // 요청
+    }
+
+    /*유저 이동 이벤트*/
+
+  }, {
+    key: 'moveUp',
+    value: function moveUp() {
+      this.actionMove("up");
+    }
+  }, {
+    key: 'moveLeft',
+    value: function moveLeft() {
+      this.actionMove("left");
+    }
+  }, {
+    key: 'moveRight',
+    value: function moveRight() {
+      this.actionMove("right");
+    }
+  }, {
+    key: 'moveDown',
+    value: function moveDown() {
+
+      this.actionMove("down");
+    }
+  }, {
+    key: 'actionMove',
+    value: function actionMove(dir) {
+      //this.props.socketG.emit('move', dir+"쪽으로 이동"); // 요청
+      var map = this.state.mapLocal;
+      if (dir == "up") {
+        map[0] = map[0] - 1;
+        if (map[0] < 0) {
+          map[0] = 0;
+          this.props.socketG.emit('move', "막혀서 못감"); // 요청
+          return false;
+        }
+      } else if (dir == "left") {
+        map[1] = map[1] - 1;
+        if (map[1] < 0) {
+          this.props.socketG.emit('move', "막혀서 못감"); // 요청
+          map[1] = 0;
+          return false;
+        }
+      } else if (dir == "right") {
+        map[1] = map[1] + 1;
+      } else if (dir == "down") {
+        console.log("아래로 이동");
+        map[0] = map[0] + 1;
+      }
+
+      this.setState({
+        mapLocal: map,
+        socketCh: map[0] + '-' + map[1]
+      });
+
+      console.log("컨트롤러 소켓채널 " + this.state.socketCh);
+
+      this.props.socketG.emit('setLocalCh', this.state.socketCh);
+      this.props.socket.emit('chat', this.state.socketCh + ":ch:" + "도착도착도착");
+      this.viewLocalMap();
+    }
+
+    /*유저 이동 이벤트 끝*/
+
+  }, {
+    key: 'sendMsg',
     value: function sendMsg() {
       var sendMsgText = this.props.username + " : " + this.state.msg;
       if (this.state.msg.length == 0) {
@@ -19796,39 +19892,39 @@ var Controller = function (_React$Component) {
       });
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
 
       return _react2.default.createElement(
-        "div",
-        { className: "controller-container" },
+        'div',
+        { className: 'controller-container' },
         _react2.default.createElement(
-          "button",
+          'button',
           {
-            className: "controller-btn up",
-            onClick: this.sendMsg },
-          "\uC704"
+            className: 'controller-btn up',
+            onClick: this.moveUp },
+          '\uC704'
         ),
         _react2.default.createElement(
-          "button",
+          'button',
           {
-            className: "controller-btn left",
-            onClick: this.sendMsg },
-          "\uC67C\uCABD"
+            className: 'controller-btn left',
+            onClick: this.moveLeft },
+          '\uC67C\uCABD'
         ),
         _react2.default.createElement(
-          "button",
+          'button',
           {
-            className: "controller-btn right",
-            onClick: this.sendMsg },
-          "\uC624\uB978\uCABD"
+            className: 'controller-btn right',
+            onClick: this.moveRight },
+          '\uC624\uB978\uCABD'
         ),
         _react2.default.createElement(
-          "button",
+          'button',
           {
-            className: "controller-btn down",
-            onClick: this.sendMsg },
-          "\uC544\uB798"
+            className: 'controller-btn down',
+            onClick: this.moveDown },
+          '\uC544\uB798'
         )
       );
     }
@@ -19992,7 +20088,7 @@ exports.default = Search;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -20016,110 +20112,130 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Gameview = function (_React$Component) {
-    _inherits(Gameview, _React$Component);
+  _inherits(Gameview, _React$Component);
 
-    function Gameview(props, context) {
-        _classCallCheck(this, Gameview);
+  function Gameview(props, context) {
+    _classCallCheck(this, Gameview);
 
-        var _this = _possibleConstructorReturn(this, (Gameview.__proto__ || Object.getPrototypeOf(Gameview)).call(this, props, context));
+    var _this = _possibleConstructorReturn(this, (Gameview.__proto__ || Object.getPrototypeOf(Gameview)).call(this, props, context));
 
-        _this.state = {
-            search: false,
-            chat: ['test']
-        };
-        _this.addChatData = _this.addChatData.bind(_this);
-        _this.toggleSearch = _this.toggleSearch.bind(_this);
-        _this.socket = _this.props.socket;
-        console.log("생성");
-        return _this;
+    _this.state = {
+      search: false,
+      chat: ['test'],
+      socketCh: '0-0'
+    };
+    _this.addChatData = _this.addChatData.bind(_this);
+    _this.toggleSearch = _this.toggleSearch.bind(_this);
+    _this.setSocketCh = _this.setSocketCh.bind(_this);
+    _this.socket = _this.props.socket;
+    console.log("생성");
+    return _this;
+  }
+
+  _createClass(Gameview, [{
+    key: 'toggleSearch',
+    value: function toggleSearch() {
+      console.log("인게임 토글 서치");
+      this.setState({
+        search: !this.state.search
+      });
     }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      console.log("디드 마운트");
+      var addChat = this.addChatData.bind(this);
+      this.props.socket.on(this.state.socketCh, function (data) {
+        //응답
+        addChat(data);
+      });
 
-    _createClass(Gameview, [{
-        key: 'toggleSearch',
-        value: function toggleSearch() {
-            console.log("인게임 토글 서치");
-            this.setState({
-                search: !this.state.search
-            });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            console.log("디드 마운트");
-            var addChat = this.addChatData.bind(this);
-            this.props.socket.on('chat', function (data) {
-                //응답
-                addChat(data);
-            });
+      this.props.socketG.on('move', function (data) {
+        //응답
+        addChat(data);
+      });
 
-            /*  this.props.socket.on('callUserList', function(data){ //응답
-              console.log("유저목록 출력");
-              console.log(data);
-              //  addChat(data);
-              });
-            */
-        }
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            console.log("윌언마운트");
-        }
-    }, {
-        key: 'addChatData',
-        value: function addChatData(data) {
-            this.setState({
-                chat: this.state.chat.concat(data)
-            });
+      var setSocketCh = this.setSocketCh.bind(this);
+      this.props.socketG.on('setLocalCh', function (data) {
+        //응답
+        console.log("소켓G 셋팅 게임뷰");
+        setSocketCh(data);
+      });
+    }
+  }, {
+    key: 'setSocketCh',
+    value: function setSocketCh(ch) {
+      console.log(ch + "<-셋팅");
+      this.setState({
+        socketCh: ch
+      });
+      var addChat = this.addChatData.bind(this);
+      this.props.socket.on(this.state.socketCh, function (data) {
+        //응답
+        addChat(data);
+      });
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      console.log("윌언마운트");
+    }
+  }, {
+    key: 'addChatData',
+    value: function addChatData(data) {
+      this.setState({
+        chat: this.state.chat.concat(data)
+      });
 
-            var objDiv = document.getElementById("gameChatView");objDiv.scrollTop = objDiv.scrollHeight;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { id: 'gameChatView', className: 'game-view' },
+      var objDiv = document.getElementById("gameChatView");objDiv.scrollTop = objDiv.scrollHeight;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { id: 'gameChatView', className: 'game-view' },
+        _react2.default.createElement(
+          'div',
+          { className: 'current-user-list-btn' },
+          _react2.default.createElement(
+            'ul',
+            null,
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'a',
+                { onClick: this.toggleSearch },
                 _react2.default.createElement(
-                    'div',
-                    { className: 'current-user-list-btn' },
-                    _react2.default.createElement(
-                        'ul',
-                        null,
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            _react2.default.createElement(
-                                'a',
-                                { onClick: this.toggleSearch },
-                                _react2.default.createElement(
-                                    'i',
-                                    { className: 'material-icons' },
-                                    'search'
-                                )
-                            )
-                        )
-                    )
-                ),
-                this.state.chat.map(function (chat, i) {
-                    return _react2.default.createElement(
-                        'p',
-                        { className: 'bla-bla-class', key: i },
-                        chat
-                    );
-                }),
-                _react2.default.createElement(
-                    _CSSTransitionGroup2.default,
-                    { transitionName: 'search', transitionEnterTimeout: 300, transitionLeaveTimeout: 300 },
-                    this.state.search ? _react2.default.createElement(_Components.CurrentUser, { onClose: this.toggleSearch,
-                        onSearch: this.props.onSearch,
-                        socket: this.socket
-                    }) : undefined
+                  'i',
+                  { className: 'material-icons' },
+                  'search'
                 )
-            );
-        }
-    }]);
+              )
+            )
+          )
+        ),
+        this.state.chat.map(function (chat, i) {
+          return _react2.default.createElement(
+            'p',
+            { className: 'bla-bla-class', key: i },
+            chat
+          );
+        }),
+        _react2.default.createElement(
+          _CSSTransitionGroup2.default,
+          { transitionName: 'search', transitionEnterTimeout: 300, transitionLeaveTimeout: 300 },
+          this.state.search ? _react2.default.createElement(_Components.CurrentUser, { onClose: this.toggleSearch,
+            onSearch: this.props.onSearch,
+            socket: this.socket
+          }) : undefined
+        )
+      );
+    }
+  }]);
 
-    return Gameview;
+  return Gameview;
 }(_react2.default.Component);
 
 exports.default = Gameview;
@@ -20943,12 +21059,11 @@ var Game = function (_React$Component) {
     function Game(props, context) {
         _classCallCheck(this, Game);
 
-        var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props, context));
-
-        console.log("홈 컨스트럭트 소켓 커넥션");
         //this.socket = io.connect('http://127.0.0.1:3303');
         //  this.socket =io('http://localhost:4000/twon',{'forceNew': true});
-        console.log(location.host);
+        var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props, context));
+
+        _this.socketG = io({ 'forceNew': true });
         _this.socket = io(location.host + '/twon', { 'forceNew': true });
         //  this.socket =io('http://localhost:4000/twon');
         var userName = _this.props.status.currentUser;
@@ -20963,6 +21078,7 @@ var Game = function (_React$Component) {
             console.log("home 윌 언마운트 소켓 디스커넥트 고침");
 
             this.socket.disconnect();
+            this.socketG.disconnect();
         }
     }, {
         key: 'componentDidMount',
@@ -21010,14 +21126,18 @@ var Game = function (_React$Component) {
                 'div',
                 { className: 'view-container' },
                 _react2.default.createElement(_Components.Gameview, {
-                    socket: this.socket
+                    socket: this.socket,
+                    socketG: this.socketG
+
                 }),
                 _react2.default.createElement(_Components.Chat, {
                     socket: this.socket,
+                    socketG: this.socketG,
                     username: this.props.status.currentUser
                 }),
                 _react2.default.createElement(_Components.Controller, {
                     socket: this.socket,
+                    socketG: this.socketG,
                     username: this.props.status.currentUser
                 })
             );
@@ -21251,7 +21371,7 @@ var Login = function (_React$Component) {
                     console.log(loginData);
                     Materialize.toast('Welcome, ' + id + '!', 2000);
                     //browserHistory.push('/');
-                    _this2.props.history.push('/home');
+                    _this2.props.history.push('/game');
 
                     return true;
                 } else {

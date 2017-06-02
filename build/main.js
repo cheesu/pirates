@@ -143,8 +143,10 @@ nsp.on('connection', function (socket) {
   });
 
   socket.on('chat', function (msg) {
-    console.log(msg);
-    nsp.emit('chat', msg);
+
+    var ch = msg.split(":ch:");
+    console.log("nsp 소켓" + ch[0]);
+    nsp.emit(ch[0], ch[1]);
   });
 });
 
@@ -152,6 +154,7 @@ var chatUserList = []; // 채팅 소켓 접속자 목록
 
 io.on('connection', function (socket) {
   socket.on('chat', function (msg) {
+    console.log("글로벌 챗 io");
     io.emit('chat', msg);
   });
 
@@ -193,8 +196,34 @@ io.on('connection', function (socket) {
 });
 
 io.sockets.on("connection", function (socket) {
+
   socket.on('callUserList', function (addUserName) {
     console.log("유저목록 요청");
     io.emit('callUserList', JSON.stringify(chatUserList));
+  });
+
+  socket.on('viewMap', function (msg) {
+    for (var countY = 0; countY < msg.length; countY++) {
+      for (var countX = 0; countX < msg[countY].length; countX++) {
+        var val = msg[countY][countX];
+        if (val == 0) {
+          msg[countY][countX] = '□';
+        } else if (val == -1) {
+          msg[countY][countX] = '■';
+        } else if (val == 2) {
+          msg[countY][countX] = '☆';
+        }
+      }
+    }
+    io.emit('move', msg);
+  });
+
+  socket.on('move', function (msg) {
+    io.emit('move', msg);
+  });
+
+  socket.on('setLocalCh', function (msg) {
+    console.log("소켓 셋 로컬 채널 " + msg);
+    io.emit('setLocalCh', msg);
   });
 });
