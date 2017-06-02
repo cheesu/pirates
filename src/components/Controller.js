@@ -1,7 +1,6 @@
 import React from 'react';
 
 class Controller extends React.Component {
-
   constructor(props, context) {
           super(props, context);
 
@@ -13,11 +12,14 @@ class Controller extends React.Component {
 
           this.state = {
               msg: "",
-              mapLocal:[0,0],
-              map:mapArr,
-              socketCh:'0-0'
+              map:mapArr
           };
 
+
+          this.endTime = 99;
+          this.socketCh = '0-0';
+          this.map = mapArr;
+          this.mapLocal = [0,0];
           this.moveUp = this.moveUp.bind(this);
           this.moveLeft = this.moveLeft.bind(this);
           this.moveRight = this.moveRight.bind(this);
@@ -62,8 +64,16 @@ class Controller extends React.Component {
       }
 
       actionMove(dir){
-        //this.props.socket.emit('move', dir+"쪽으로 이동"); // 요청
-        var map = this.state.mapLocal;
+        var d = new Date();
+        var moveTimerS = d.getSeconds();
+
+        if(this.endTime==moveTimerS){
+          console.log("연속 클릭 하지 마라");
+          return false;
+        }
+        this.endTime = moveTimerS;
+
+        var map = this.mapLocal;
         var mapArr = this.state.map;
         var mapY =map[0];
         var mapX =map[1];
@@ -110,15 +120,15 @@ class Controller extends React.Component {
         mapArr[mapY][mapX] = 2;
         var socketChan = mapY+"-"+mapX;
         this.setState({
-          mapLocal: map,
-          socketCh:socketChan,
           map:mapArr
         });
-
+        this.socketCh = socketChan;
+        this.mapLocal = map;
         this.props.socket.emit('setLocalCh', socketChan);
         //this.props.socket.emit('chat', socketChan+":ch:"+"도착도착도착");
         this.viewLocalMap();
         this.props.socket.emit('chat', socketChan+":ch:"+"현재 위치 ["+socketChan+"]");
+
       }
 
       /*유저 이동 이벤트 끝*/

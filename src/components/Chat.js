@@ -9,10 +9,13 @@ class Chat extends React.Component {
               msg: "",
               socketCh:'0-0'
           };
+
+          this.endTime = 99;
           this.handleChange = this.handleChange.bind(this);
           this.sendMsg = this.sendMsg.bind(this);
           this.handleKeyPress = this.handleKeyPress.bind(this);
           this.setSocketCh = this.setSocketCh.bind(this);
+
       }
 
 
@@ -46,6 +49,17 @@ class Chat extends React.Component {
              }
          }
     sendMsg(){
+
+
+      var d = new Date();
+      var moveTimerS = d.getSeconds();
+
+      if(this.endTime==moveTimerS){
+        console.log("연속 채팅 하지 마라");
+        return false;
+      }
+      this.endTime = moveTimerS;
+
       let sendMsgText = this.props.username + " : " + this.state.msg;
       if(this.state.msg.length==0){
         return false;
