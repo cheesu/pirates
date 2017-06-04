@@ -136,7 +136,7 @@ class Authentication extends React.Component {
 
       return (
           <div className="container auth">
-              <Link className="logo" to="/">MEMOPAD</Link>
+              <Link className="logo" to="/">PIRATES</Link>
               <div className="card">
                   <div className="header blue white-text center">
                       <div className="card-content">{this.props.mode ? "LOGIN" : "REGISTER"}</div>
