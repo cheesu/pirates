@@ -110,6 +110,10 @@ a {
   font-size: 17px;
 }
 
+.whisper-chat{
+  color:#B0FFFF;
+}
+
 .chat-line
 {
   border-top: solid;

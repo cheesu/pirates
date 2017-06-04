@@ -9,10 +9,11 @@ class Controller extends React.Component {
                       [0,0,0,0,0,-1,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,-1,0,0,0]
                       ]
-
+          let monster = {name:'오크', lv:10, msg:"오크 한마리가 서성거리며 주위를 둘러 봅니다."};
           this.state = {
               msg: "",
-              map:mapArr
+              map:mapArr,
+              monster:monster,
           };
 
 
@@ -143,13 +144,12 @@ class Controller extends React.Component {
         this.mapLocal = map;
         this.props.socket.emit('chat', socketChan+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
         this.props.socket.emit('setLocalCh', socketChan);
+
+        this.props.socket.emit('private', this.state.monster.msg);
         //this.props.socket.emit('chat', socketChan+":ch:"+"도착도착도착");
         //this.viewLocalMap();
 
-
-
         this.props.socket.emit('chat', prevCh+":ch:"+this.props.username+"님께서 "+dirText+"쪽으로 이동 하셨습니다.");
-
       }
 
       /*유저 이동 이벤트 끝*/
@@ -164,9 +164,19 @@ class Controller extends React.Component {
           return false;
         }
         this.endTime = moveTimerS;
+        //this.props.socket.emit('private',"공격 대상이 없습니다.");
 
-        this.props.socket.emit('private',"공격 대상이 없습니다.");
+        let attackInfo = new Object();
+        attackInfo.userName = this.props.username;
+        attackInfo.ch = this.socketCh;
+        attackInfo.target = this.state.monster.name;
+
+        console.log(attackInfo);
+
+        this.props.socket.emit('attack',attackInfo);
       }
+
+
 
 
     render(){

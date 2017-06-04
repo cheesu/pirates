@@ -40,10 +40,13 @@ var _routes = require('./routes');
 
 var _routes2 = _interopRequireDefault(_routes);
 
+var _Fight = require('./game/Fight');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// HTTP REQUEST LOGGER
-var app = (0, _express2.default)(); // PARSE HTML BODY
+// PARSE HTML BODY
+
+var app = (0, _express2.default)(); // HTTP REQUEST LOGGER
 
 var port = 3000;
 var devPort = 4000;
@@ -162,6 +165,19 @@ io.on('connection', function (socket) {
     console.log(addUserName + ":접속");
     var msg = addUserName + "포함 총인원:" + chatUserList.length;
     io.emit('Gchat', msg);
+  });
+
+  //귓말
+  socket.on('whisper', function (wObj) {
+    console.log(wObj);
+
+    var sedMsg = "[귓속말] " + wObj.sendUser + ": " + wObj.msg;
+
+    io.emit(wObj.target, sedMsg);
+  });
+
+  socket.on('attack', function (info) {
+    var result = (0, _Fight.fight)(io, info);
   });
 
   socket.on('disconnect', function () {

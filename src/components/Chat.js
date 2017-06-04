@@ -84,6 +84,34 @@ class Chat extends React.Component {
         return false;
       }
 
+      if(this.state.msg.indexOf('/귓')==0){
+
+        let wMsg =   this.state.msg.substring(3,this.state.msg.length); // 귓 제거
+
+        let targetUser =   wMsg.split(" "); // 타겟유저 아이디
+        targetUser = targetUser[0];
+        let sendUser = this.props.username;
+         wMsg = wMsg.substring(targetUser.length,this.state.msg.length);
+
+        console.log("받는사람:"+targetUser);
+        console.log("보내는사람:"+sendUser);
+        console.log("메세지:"+wMsg);
+
+        let wObj = new Object();
+        wObj.target = targetUser;
+        wObj.sendUser = sendUser;
+        wObj.msg = wMsg;
+
+        //let sendMG ="[All] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
+        this.props.socket.emit('whisper', wObj); // 요청
+        this.setState({
+            msg: ''
+        });
+        return false;
+      }
+
+
+
       this.props.socket.emit('chat', this.state.socketCh+":ch:"+sendMsgText); // 요청
       this.setState({
           msg: ''

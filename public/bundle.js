@@ -19710,6 +19710,32 @@ var Chat = function (_React$Component) {
                         return false;
                   }
 
+                  if (this.state.msg.indexOf('/귓') == 0) {
+
+                        var wMsg = this.state.msg.substring(3, this.state.msg.length); // 귓 제거
+
+                        var targetUser = wMsg.split(" "); // 타겟유저 아이디
+                        targetUser = targetUser[0];
+                        var sendUser = this.props.username;
+                        wMsg = wMsg.substring(targetUser.length, this.state.msg.length);
+
+                        console.log("받는사람:" + targetUser);
+                        console.log("보내는사람:" + sendUser);
+                        console.log("메세지:" + wMsg);
+
+                        var wObj = new Object();
+                        wObj.target = targetUser;
+                        wObj.sendUser = sendUser;
+                        wObj.msg = wMsg;
+
+                        //let sendMG ="[All] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
+                        this.props.socket.emit('whisper', wObj); // 요청
+                        this.setState({
+                              msg: ''
+                        });
+                        return false;
+                  }
+
                   this.props.socket.emit('chat', this.state.socketCh + ":ch:" + sendMsgText); // 요청
                   this.setState({
                         msg: ''
@@ -19779,10 +19805,11 @@ var Controller = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Controller.__proto__ || Object.getPrototypeOf(Controller)).call(this, props, context));
 
     var mapArr = [[2, 0, 0, -1, -1, 0, -1, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0]];
-
+    var monster = { name: '오크', lv: 10, msg: "오크 한마리가 서성거리며 주위를 둘러 봅니다." };
     _this.state = {
       msg: "",
-      map: mapArr
+      map: mapArr,
+      monster: monster
     };
 
     _this.endTime = 99;
@@ -19918,9 +19945,10 @@ var Controller = function (_React$Component) {
       this.mapLocal = map;
       this.props.socket.emit('chat', socketChan + ":ch:" + this.props.username + "님께서 도착 하셨습니다.");
       this.props.socket.emit('setLocalCh', socketChan);
+
+      this.props.socket.emit('private', this.state.monster.msg);
       //this.props.socket.emit('chat', socketChan+":ch:"+"도착도착도착");
       //this.viewLocalMap();
-
 
       this.props.socket.emit('chat', prevCh + ":ch:" + this.props.username + "님께서 " + dirText + "쪽으로 이동 하셨습니다.");
     }
@@ -19938,8 +19966,16 @@ var Controller = function (_React$Component) {
         return false;
       }
       this.endTime = moveTimerS;
+      //this.props.socket.emit('private',"공격 대상이 없습니다.");
 
-      this.props.socket.emit('private', "공격 대상이 없습니다.");
+      var attackInfo = new Object();
+      attackInfo.userName = this.props.username;
+      attackInfo.ch = this.socketCh;
+      attackInfo.target = this.state.monster.name;
+
+      console.log(attackInfo);
+
+      this.props.socket.emit('attack', attackInfo);
     }
   }, {
     key: 'render',
@@ -20232,14 +20268,12 @@ var Gameview = function (_React$Component) {
     _this.toggleSearch = _this.toggleSearch.bind(_this);
     _this.setSocketCh = _this.setSocketCh.bind(_this);
     _this.socket = _this.props.socket;
-    console.log("생성");
     return _this;
   }
 
   _createClass(Gameview, [{
     key: 'toggleSearch',
     value: function toggleSearch() {
-      console.log("인게임 토글 서치");
       this.setState({
         search: !this.state.search
       });
@@ -20247,33 +20281,37 @@ var Gameview = function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      console.log("디드 마운트");
       var addChat = this.addChatData.bind(this);
       this.props.socket.on(this.state.socketCh, function (data) {
-        //응답
+        //현재공간 채팅
+        addChat(data);
+      });
+
+      this.props.socket.on(this.props.username, function (data) {
+        //귓말
+        //  addChat(data);
         addChat(data);
       });
 
       this.props.socket.on('private', function (data) {
-        //응답
+        //개인
         //  addChat(data);
         addChat(data);
       });
 
       this.props.socket.on('Gchat', function (data) {
-        //응답
+        //전챗
         addChat(data);
       });
 
       this.props.socket.on('NoticeChat', function (data) {
-        //응답
+        //공지
         addChat(data);
       });
 
       var setSocketCh = this.setSocketCh.bind(this);
       this.props.socket.on('setLocalCh', function (data) {
-        //응답
-        console.log("소켓G 셋팅 게임뷰");
+        //채널 셋팅
         setSocketCh(data);
       });
     }
@@ -20292,9 +20330,7 @@ var Gameview = function (_React$Component) {
     }
   }, {
     key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      console.log("윌언마운트");
-    }
+    value: function componentWillUnmount() {}
   }, {
     key: 'addChatData',
     value: function addChatData(data) {
@@ -20342,11 +20378,16 @@ var Gameview = function (_React$Component) {
           )
         ),
         this.state.chat.map(function (chat, i) {
+
           if (chat.indexOf('[line098098098]') == 0) {
             return _react2.default.createElement('p', { className: 'bla-bla-class chat-line', key: i });
-          }
-
-          if (chat.indexOf('[공지사항]') == 0) {
+          } else if (chat.indexOf('[귓속말]') == 0) {
+            return _react2.default.createElement(
+              'p',
+              { className: 'bla-bla-class whisper-chat', key: i },
+              chat
+            );
+          } else if (chat.indexOf('[공지사항]') == 0) {
             return _react2.default.createElement(
               'p',
               { className: 'bla-bla-class notice-chat', key: i },
@@ -20500,7 +20541,7 @@ var Header = function (_React$Component) {
                         { className: 'nav-wrapper blue darken-1' },
                         _react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: '/home', className: 'brand-logo center' },
+                            { to: '/game', className: 'brand-logo center' },
                             'The Pirates'
                         ),
                         _react2.default.createElement(
@@ -21262,8 +21303,8 @@ var Game = function (_React$Component) {
                 { className: 'view-container' },
                 _react2.default.createElement(_Components.Gameview, {
                     socket: this.socket,
-                    socketG: this.socketG
-
+                    socketG: this.socketG,
+                    username: this.props.status.currentUser
                 }),
                 _react2.default.createElement(_Components.Chat, {
                     socket: this.socket,
@@ -26156,7 +26197,7 @@ exports = module.exports = __webpack_require__(462)(undefined);
 
 
 // module
-exports.push([module.i, "html ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 30em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 17px;\r\n}\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 0px;\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 2em;\r\n  height: 30%;\r\n  width: 100%;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n", ""]);
+exports.push([module.i, "html ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 30em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 17px;\r\n}\r\n\r\n.whisper-chat{\r\n  color:#B0FFFF;\r\n}\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 0px;\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 2em;\r\n  height: 30%;\r\n  width: 100%;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n", ""]);
 
 // exports
 

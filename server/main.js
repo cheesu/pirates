@@ -13,6 +13,7 @@ import session from 'express-session';
 
 import api from './routes';
 
+import { fight } from './game/Fight';
 
 const app = express();
 const port = 3000;
@@ -139,6 +140,23 @@ io.on('connection', (socket) => {
       const msg = addUserName+"포함 총인원:"+chatUserList.length;
       io.emit('Gchat', msg);
     });
+
+    //귓말
+    socket.on('whisper', function(wObj){
+      console.log(wObj);
+
+      let sedMsg = "[귓속말] "+ wObj.sendUser + ": "+wObj.msg;
+
+      io.emit(wObj.target, sedMsg);
+    });
+
+
+    socket.on('attack', function(info){
+      let result = fight(io,info);
+
+    });
+
+
 
     socket.on('disconnect', () =>{
       let disUserSocketId =socket.id;

@@ -14,41 +14,41 @@ class Gameview extends React.Component {
           this.toggleSearch = this.toggleSearch.bind(this);
           this.setSocketCh = this.setSocketCh.bind(this);
           this.socket = this.props.socket;
-          console.log("생성");
       }
 
       toggleSearch(){
-          console.log("인게임 토글 서치");
           this.setState({
               search: !this.state.search
           });
       }
 
     componentDidMount(){
-      console.log("디드 마운트");
       let addChat = this.addChatData.bind(this);
-      this.props.socket.on(this.state.socketCh, function(data){ //응답
+      this.props.socket.on(this.state.socketCh, function(data){ //현재공간 채팅
         addChat(data);
       });
 
-
-
-      this.props.socket.on('private', function(data){ //응답
+      this.props.socket.on(this.props.username, function(data){ //귓말
       //  addChat(data);
       addChat(data);
       });
 
-      this.props.socket.on('Gchat', function(data){ //응답
+
+      this.props.socket.on('private', function(data){ //개인
+      //  addChat(data);
+      addChat(data);
+      });
+
+      this.props.socket.on('Gchat', function(data){ //전챗
         addChat(data);
       });
 
-      this.props.socket.on('NoticeChat', function(data){ //응답
+      this.props.socket.on('NoticeChat', function(data){ //공지
         addChat(data);
       });
 
       let setSocketCh = this.setSocketCh.bind(this);
-      this.props.socket.on('setLocalCh', function(data){ //응답
-        console.log("소켓G 셋팅 게임뷰");
+      this.props.socket.on('setLocalCh', function(data){ //채널 셋팅
         setSocketCh(data);
       });
 
@@ -69,7 +69,6 @@ class Gameview extends React.Component {
 
 
     componentWillUnmount () {
-      console.log("윌언마운트");
     }
 
     addChatData(data){
@@ -93,11 +92,14 @@ class Gameview extends React.Component {
               </ul>
             </div>
             {this.state.chat.map(function(chat,i){
+
               if(chat.indexOf('[line098098098]')==0){
                 return <p className="bla-bla-class chat-line" key={i}></p>
               }
-
-              if(chat.indexOf('[공지사항]')==0){
+              else if(chat.indexOf('[귓속말]')==0){
+                return <p className="bla-bla-class whisper-chat" key={i}>{chat}</p>
+              }
+              else if(chat.indexOf('[공지사항]')==0){
                 return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
               }
               else{

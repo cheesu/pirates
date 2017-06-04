@@ -70,7 +70,7 @@ class Game extends React.Component {
               <Gameview
                 socket={this.socket}
                 socketG={this.socketG}
-
+                username = {this.props.status.currentUser}
                 />
               <Chat
                 socket={this.socket}
