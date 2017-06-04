@@ -203,11 +203,18 @@ io.sockets.on("connection", function (socket) {
         }
       }
     }
-    socket.emit('move', msg);
+
+    socket.emit('private', "[line098098098]");
+    socket.emit('private', msg);
+    socket.emit('private', "[line098098098]");
   });
 
   socket.on('move', function (msg) {
-    socket.emit('move', msg);
+    socket.emit('private', msg);
+  });
+
+  socket.on('private', function (msg) {
+    socket.emit('private', msg);
   });
 
   socket.on('setLocalCh', function (msg) {

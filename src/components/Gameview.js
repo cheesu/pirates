@@ -13,7 +13,7 @@ class Gameview extends React.Component {
           this.addChatData = this.addChatData.bind(this);
           this.toggleSearch = this.toggleSearch.bind(this);
           this.setSocketCh = this.setSocketCh.bind(this);
-          this.socket = this.props.socket
+          this.socket = this.props.socket;
           console.log("생성");
       }
 
@@ -31,8 +31,11 @@ class Gameview extends React.Component {
         addChat(data);
       });
 
-      this.props.socket.on('move', function(data){ //응답
-        addChat(data);
+
+
+      this.props.socket.on('private', function(data){ //응답
+      //  addChat(data);
+      addChat(data);
       });
 
       this.props.socket.on('Gchat', function(data){ //응답
@@ -85,10 +88,15 @@ class Gameview extends React.Component {
           <div id="gameChatView" className="game-view">
             <div className="current-user-list-btn">
               <ul>
+                  <li>현재 위치:<span>{this.state.socketCh}</span></li>
                   <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
               </ul>
             </div>
             {this.state.chat.map(function(chat,i){
+              if(chat.indexOf('[line098098098]')==0){
+                return <p className="bla-bla-class chat-line" key={i}></p>
+              }
+
               if(chat.indexOf('[공지사항]')==0){
                 return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
               }

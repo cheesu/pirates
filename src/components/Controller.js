@@ -26,6 +26,7 @@ class Controller extends React.Component {
           this.moveDown = this.moveDown.bind(this);
           this.actionMove = this.actionMove.bind(this);
           this.viewLocalMap = this.viewLocalMap.bind(this);
+          this.attack = this.attack.bind(this);
 
 
       }
@@ -79,39 +80,53 @@ class Controller extends React.Component {
         var mapX =map[1];
           mapArr[mapY][mapX] = 0;
 
+        var dirText ="";
+
         if(dir=="up"){
+          dirText= "북";
           map[0] = map[0]-1;
           if(map[0]<0){
             map[0] = 0;
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             return false;
+          }else{
+
+            this.props.socket.emit('move', "북쪽으로 이동 합니다." );
           }
         }
         else if(dir=="left"){
+          dirText= "서";
           map[1] = map[1]-1;
           if(map[1]<0){
             console.log(map);
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             map[1] = 0;
             return false;
+          }else{
+            this.props.socket.emit('move', "서쪽으로 이동 합니다." );
           }
         }
         else if(dir=="right"){
+          dirText= "동";
           map[1] = map[1]+1;
           if(map[1]>11){
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             map[1] = 11;
             return false;
+          }else{
+            this.props.socket.emit('move', "동쪽으로 이동 합니다." );
           }
         }
         else if(dir=="down"){
+          dirText= "남";
           map[0] = map[0]+1;
           if(map[0]>3){
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             map[0] = 3;
             return false;
+          }else{
+            this.props.socket.emit('move', "남쪽으로 이동 합니다." );
           }
-
         }
 
 
@@ -122,19 +137,36 @@ class Controller extends React.Component {
         this.setState({
           map:mapArr
         });
+
+        var prevCh = this.socketCh;
         this.socketCh = socketChan;
         this.mapLocal = map;
+        this.props.socket.emit('chat', socketChan+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
         this.props.socket.emit('setLocalCh', socketChan);
         //this.props.socket.emit('chat', socketChan+":ch:"+"도착도착도착");
-        this.viewLocalMap();
-        this.props.socket.emit('chat', socketChan+":ch:"+"현재 위치 ["+socketChan+"]");
+        //this.viewLocalMap();
+
+
+
+        this.props.socket.emit('chat', prevCh+":ch:"+this.props.username+"님께서 "+dirText+"쪽으로 이동 하셨습니다.");
 
       }
 
       /*유저 이동 이벤트 끝*/
 
 
+      attack(){
+        var d = new Date();
+        var moveTimerS = d.getSeconds();
 
+        if(this.endTime==moveTimerS){
+          console.log("연속 클릭 하지 마라");
+          return false;
+        }
+        this.endTime = moveTimerS;
+
+        this.props.socket.emit('private',"공격 대상이 없습니다.");
+      }
 
 
     render(){
@@ -142,29 +174,20 @@ class Controller extends React.Component {
         return (
           <div className="controller-container">
 
-                <button
-                  className="controller-btn up"
-                  onClick={this.moveUp}>
-                  위
-                </button>
 
-                <button
-                  className="controller-btn left"
-                  onClick={this.moveLeft}>
-                  왼쪽
-                </button>
+                <ul>
+                    <li><a onClick={this.moveUp}  ><i className="medium  material-icons controller-btn up waves-effect waves-light">navigation</i></a></li>
+                    <li><a onClick={this.moveLeft}><i className="medium material-icons controller-btn left waves-effect waves-light">navigation</i></a></li>
+                    <li><a onClick={this.moveRight}><i className="medium material-icons controller-btn right waves-effect waves-light">navigation</i></a></li>
+                    <li><a onClick={this.moveDown}><i className="medium material-icons controller-btn down waves-effect waves-light">navigation</i></a></li>
+                </ul>
 
-                <button
-                  className="controller-btn right"
-                  onClick={this.moveRight}>
-                  오른쪽
-                </button>
+                <ul>
+                    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li>
+                    <li><a onClick={this.attack}  className="waves-effect waves-light btn red controller-btn attack-btn">Attack</a></li>
 
-                <button
-                  className="controller-btn down"
-                  onClick={this.moveDown}>
-                  아래
-                </button>
+                </ul>
+
 
             </div>
         );

@@ -87,12 +87,15 @@ a {
   height: 30em;
   overflow: scroll;
   word-break: break-all;
+  overflow-x: hidden;
 }
 
 .current-user-list-btn
 {
-  position: absolute;
-  right: 2em;
+  position: fixed;
+    right: 1em;
+    top: 0em;
+    margin-top: 4em;
 
 }
 
@@ -105,6 +108,11 @@ a {
 {
   color:#F012FF;
   font-size: 17px;
+}
+
+.chat-line
+{
+  border-top: solid;
 }
 
 /*chat*/
@@ -353,4 +361,54 @@ nav .brand-logo.center
   margin-top: 2em;
   height: 30%;
   width: 100%;
+}
+
+.controller-btn
+{
+  position: absolute;
+  border-radius: 2em;
+
+}
+
+.controller-btn.up
+{
+  margin-top: -1rem;
+  margin-left: 3rem;
+}
+.controller-btn.down
+{
+  margin-top: 5rem;
+  margin-left: 3rem;
+
+  -ms-transform: rotate(180deg);
+   -webkit-transform: rotate(180deg);
+   transform: rotate(180deg);
+}
+.controller-btn.left
+{
+  margin-top: 2rem;
+  margin-left: 0rem;
+
+  -ms-transform: rotate(270deg);
+   -webkit-transform: rotate(270deg);
+   transform: rotate(270deg);
+}
+.controller-btn.right
+{
+  margin-top: 2rem;
+  margin-left: 6rem;
+
+  -ms-transform: rotate(90deg);
+   -webkit-transform: rotate(90deg);
+   transform: rotate(90deg);
+}
+.controller-btn.map-location
+{
+  right: 2rem;
+  top: 6rem;
+}
+.controller-btn.attack-btn
+{
+  right: 2rem;
+  top: 0rem;
 }
