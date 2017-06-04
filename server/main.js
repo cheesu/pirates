@@ -13,7 +13,7 @@ import session from 'express-session';
 
 import api from './routes';
 
-import { fight } from './game/Fight';
+import { fight, monsters } from './game/Fight';
 
 const app = express();
 const port = 3000;
@@ -152,6 +152,9 @@ io.on('connection', (socket) => {
 
 
     socket.on('attack', function(info){
+
+      console.log(monsters);
+
       let result = fight(io,info);
 
     });

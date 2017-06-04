@@ -1,8 +1,17 @@
 
 import express from 'express';
 import Account from '../models/account';
-
+import Monster from '../models/monster';
 const router = express.Router();
+
+var monsters;
+Monster.find({type: "normal"})
+   .exec((err, monster) => {
+       if(err) throw err;
+       monsters =   eval(monster);
+   });
+
+
 
 var count = 10;
 
@@ -27,4 +36,4 @@ var fight = function (io,info){
   };
 
 
-export { fight };
+export { fight ,monsters};

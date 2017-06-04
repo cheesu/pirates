@@ -177,6 +177,9 @@ io.on('connection', function (socket) {
   });
 
   socket.on('attack', function (info) {
+
+    console.log(_Fight.monsters);
+
     var result = (0, _Fight.fight)(io, info);
   });
 
