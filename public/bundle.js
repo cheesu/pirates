@@ -19552,7 +19552,7 @@ var Authentication = function (_React$Component) {
                 _react2.default.createElement(
                     _reactRouterDom.Link,
                     { className: 'logo', to: '/' },
-                    'MEMOPAD'
+                    'PIRATES'
                 ),
                 _react2.default.createElement(
                     'div',
