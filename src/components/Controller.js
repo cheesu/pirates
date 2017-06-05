@@ -13,7 +13,7 @@ class Controller extends React.Component {
           this.state = {
               msg: "",
               map:mapArr,
-              monster:monster,
+              monster:{},
           };
 
 
@@ -28,6 +28,8 @@ class Controller extends React.Component {
           this.actionMove = this.actionMove.bind(this);
           this.viewLocalMap = this.viewLocalMap.bind(this);
           this.attack = this.attack.bind(this);
+          this.setLocalMonster = this.setLocalMonster.bind(this);
+
 
 
       }
@@ -38,8 +40,27 @@ class Controller extends React.Component {
         let addUserName = this.props.username;
         this.props.socket.emit('totalCount', addUserName); // 요청
 */
-
+        let setLocalMonster = this.setLocalMonster.bind(this);
+        this.props.socket.on("setMonster", function(data){ //현재공간 채팅
+          setLocalMonster(data);
+        });
       }
+
+
+      // 몹 설정
+      setLocalMonster(data){
+        console.log("받아온 몬스터 데이터");
+        console.log(data);
+        if(data!=null){
+          this.setState({
+            monster:data
+          });
+          this.props.socket.emit('private', data.appearMsg+" : "+ data.name+"의 남은 체력"+data.hp);
+        }else{
+          this.props.socket.emit('private', "스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
+        }
+      }
+
 
 
       //맵 보여주기
@@ -145,9 +166,7 @@ class Controller extends React.Component {
         this.props.socket.emit('chat', socketChan+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
         this.props.socket.emit('setLocalCh', socketChan);
 
-        this.props.socket.emit('private', this.state.monster.msg);
-        //this.props.socket.emit('chat', socketChan+":ch:"+"도착도착도착");
-        //this.viewLocalMap();
+
 
         this.props.socket.emit('chat', prevCh+":ch:"+this.props.username+"님께서 "+dirText+"쪽으로 이동 하셨습니다.");
       }
@@ -165,6 +184,11 @@ class Controller extends React.Component {
         }
         this.endTime = moveTimerS;
         //this.props.socket.emit('private',"공격 대상이 없습니다.");
+
+        if(this.state.monster==null){
+          this.props.socket.emit('private',"공격 대상이 없습니다.");
+          return false;
+        }
 
         let attackInfo = new Object();
         attackInfo.userName = this.props.username;

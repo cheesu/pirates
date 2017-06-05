@@ -5,14 +5,17 @@ const Schema = mongoose.Schema;
 const Monster = new Schema({
     name: String,
     lv: Number(),
-    lv:Number(),
     hp:Number(),
     mp:Number(),
     ap:Number(),
     dp:Number(),
     speed:Number(),
-    exist:String,
+    exist:{ type: Boolean, default: true },
     type:String,
+    area:String,
+    appearMsg:String,
+    attackMsg:String,
+    dieMsg:String,
 
 });
 

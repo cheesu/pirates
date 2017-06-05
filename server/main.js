@@ -13,7 +13,7 @@ import session from 'express-session';
 
 import api from './routes';
 
-import { fight, monsters } from './game/Fight';
+import { fight, localMonsterList, checkMonster } from './game/Fight';
 
 const app = express();
 const port = 3000;
@@ -152,11 +152,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('attack', function(info){
-
-      console.log(monsters);
-
       let result = fight(io,info);
-
     });
 
 
@@ -225,5 +221,9 @@ io.sockets.on("connection", function(socket){
   socket.on('setLocalCh', function(msg){
     console.log("소켓 셋 로컬 채널 "+msg);
     socket.emit('setLocalCh', msg);
+
+    let monster = checkMonster(msg);
+    socket.emit('setMonster', monster);
+
   });
 });
