@@ -177,9 +177,6 @@ io.on('connection', function (socket) {
   });
 
   socket.on('attack', function (info) {
-
-    console.log(_Fight.monsters);
-
     var result = (0, _Fight.fight)(io, info);
   });
 
@@ -239,5 +236,8 @@ io.sockets.on("connection", function (socket) {
   socket.on('setLocalCh', function (msg) {
     console.log("소켓 셋 로컬 채널 " + msg);
     socket.emit('setLocalCh', msg);
+
+    var monster = (0, _Fight.checkMonster)(msg);
+    socket.emit('setMonster', monster);
   });
 });

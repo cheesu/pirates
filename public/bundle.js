@@ -19809,7 +19809,7 @@ var Controller = function (_React$Component) {
     _this.state = {
       msg: "",
       map: mapArr,
-      monster: monster
+      monster: {}
     };
 
     _this.endTime = 99;
@@ -19823,18 +19823,42 @@ var Controller = function (_React$Component) {
     _this.actionMove = _this.actionMove.bind(_this);
     _this.viewLocalMap = _this.viewLocalMap.bind(_this);
     _this.attack = _this.attack.bind(_this);
+    _this.setLocalMonster = _this.setLocalMonster.bind(_this);
 
     return _this;
   }
 
   _createClass(Controller, [{
     key: 'componentDidMount',
-    value: function componentDidMount() {}
-    /*  let sendMsgText = this.props.username + " 님이 도착했습니다. " ;
-      this.props.socket.emit('chat', sendMsgText); // 요청
-      let addUserName = this.props.username;
-      this.props.socket.emit('totalCount', addUserName); // 요청
-    */
+    value: function componentDidMount() {
+      /*  let sendMsgText = this.props.username + " 님이 도착했습니다. " ;
+        this.props.socket.emit('chat', sendMsgText); // 요청
+        let addUserName = this.props.username;
+        this.props.socket.emit('totalCount', addUserName); // 요청
+      */
+      var setLocalMonster = this.setLocalMonster.bind(this);
+      this.props.socket.on("setMonster", function (data) {
+        //현재공간 채팅
+        setLocalMonster(data);
+      });
+    }
+
+    // 몹 설정
+
+  }, {
+    key: 'setLocalMonster',
+    value: function setLocalMonster(data) {
+      console.log("받아온 몬스터 데이터");
+      console.log(data);
+      if (data != null) {
+        this.setState({
+          monster: data
+        });
+        this.props.socket.emit('private', data.appearMsg + " : " + data.name + "의 남은 체력" + data.hp);
+      } else {
+        this.props.socket.emit('private', "스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
+      }
+    }
 
     //맵 보여주기
 
@@ -19946,10 +19970,6 @@ var Controller = function (_React$Component) {
       this.props.socket.emit('chat', socketChan + ":ch:" + this.props.username + "님께서 도착 하셨습니다.");
       this.props.socket.emit('setLocalCh', socketChan);
 
-      this.props.socket.emit('private', this.state.monster.msg);
-      //this.props.socket.emit('chat', socketChan+":ch:"+"도착도착도착");
-      //this.viewLocalMap();
-
       this.props.socket.emit('chat', prevCh + ":ch:" + this.props.username + "님께서 " + dirText + "쪽으로 이동 하셨습니다.");
     }
 
@@ -19967,6 +19987,11 @@ var Controller = function (_React$Component) {
       }
       this.endTime = moveTimerS;
       //this.props.socket.emit('private',"공격 대상이 없습니다.");
+
+      if (this.state.monster == null) {
+        this.props.socket.emit('private', "공격 대상이 없습니다.");
+        return false;
+      }
 
       var attackInfo = new Object();
       attackInfo.userName = this.props.username;
