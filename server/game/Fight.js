@@ -74,6 +74,11 @@ var fight = function (io,info){
           userInfo =   eval(userInfo[0])
           let monNum = checkFightMonster(info.ch);
 
+          if(monNum==null){
+
+            return false;
+          }
+
           let dmg =  ((userInfo.int+userInfo.str)*userInfo.lv) - localMonsterList[monNum].dp ;
           let result =  userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";
           localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;

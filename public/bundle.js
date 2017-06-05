@@ -19809,7 +19809,7 @@ var Controller = function (_React$Component) {
     _this.state = {
       msg: "",
       map: mapArr,
-      monster: {}
+      monster: null
     };
 
     _this.endTime = 99;
@@ -19838,7 +19838,7 @@ var Controller = function (_React$Component) {
       */
       var setLocalMonster = this.setLocalMonster.bind(this);
       this.props.socket.on("setMonster", function (data) {
-        //현재공간 채팅
+        //몹 채팅
         setLocalMonster(data);
       });
     }
@@ -19988,6 +19988,8 @@ var Controller = function (_React$Component) {
       this.endTime = moveTimerS;
       //this.props.socket.emit('private',"공격 대상이 없습니다.");
 
+      console.log("몬스터 체크");
+      console.log(this.state.monster);
       if (this.state.monster == null) {
         this.props.socket.emit('private', "공격 대상이 없습니다.");
         return false;

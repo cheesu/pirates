@@ -13,7 +13,7 @@ class Controller extends React.Component {
           this.state = {
               msg: "",
               map:mapArr,
-              monster:{},
+              monster:null,
           };
 
 
@@ -41,7 +41,7 @@ class Controller extends React.Component {
         this.props.socket.emit('totalCount', addUserName); // 요청
 */
         let setLocalMonster = this.setLocalMonster.bind(this);
-        this.props.socket.on("setMonster", function(data){ //현재공간 채팅
+        this.props.socket.on("setMonster", function(data){ //몹 채팅
           setLocalMonster(data);
         });
       }
@@ -185,6 +185,8 @@ class Controller extends React.Component {
         this.endTime = moveTimerS;
         //this.props.socket.emit('private',"공격 대상이 없습니다.");
 
+        console.log("몬스터 체크");
+        console.log(this.state.monster);
         if(this.state.monster==null){
           this.props.socket.emit('private',"공격 대상이 없습니다.");
           return false;
