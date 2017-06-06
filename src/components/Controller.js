@@ -53,7 +53,7 @@ class Controller extends React.Component {
         this.props.socket.on(this.props.username+"전투", function(data){ //몹 채팅
             console.log("[전투]"+data);
             if(data=="endFight"){
-              fighting(false);
+              fighting();
             }
             else if(data.indexOf('[HP]')==0){
               let dataArr = data.split("[HP]");
@@ -77,8 +77,9 @@ class Controller extends React.Component {
         }
       }
       // 전투중 설정
-      setFighting(data){
+      setFighting(){
         this.fighting = false;
+        console.log("전투 셋팅"+this.fighting);
       }
 
       // 몹 설정

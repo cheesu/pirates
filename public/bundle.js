@@ -19860,7 +19860,7 @@ var Controller = function (_React$Component) {
         //몹 채팅
         console.log("[전투]" + data);
         if (data == "endFight") {
-          fighting(false);
+          fighting();
         } else if (data.indexOf('[HP]') == 0) {
           var dataArr = data.split("[HP]");
           console.log(dataArr[1]);
@@ -19887,8 +19887,9 @@ var Controller = function (_React$Component) {
 
   }, {
     key: 'setFighting',
-    value: function setFighting(data) {
+    value: function setFighting() {
       this.fighting = false;
+      console.log("전투 셋팅" + this.fighting);
     }
 
     // 몹 설정
