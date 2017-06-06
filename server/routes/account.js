@@ -52,8 +52,10 @@ router.post('/signup', (req, res) => {
             mp: 100,
             str: 10,
             int: 10,
-            dex: 10
-
+            dex: 10,
+            exp:0,
+            max_hp:100,
+            max_mp:100,
         });
 
         account.password = account.generateHash(account.password);

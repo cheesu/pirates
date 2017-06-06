@@ -9,7 +9,7 @@ class Controller extends React.Component {
                       [0,0,0,0,0,-1,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,-1,0,0,0]
                       ]
-          let monster = {name:'오크', lv:10, msg:"오크 한마리가 서성거리며 주위를 둘러 봅니다."};
+
           this.state = {
               msg: "",
               map:mapArr,
@@ -21,6 +21,9 @@ class Controller extends React.Component {
           this.socketCh = '0-0';
           this.map = mapArr;
           this.mapLocal = [0,0];
+          this.fighting = false;
+          this.userHP = 1;
+
           this.moveUp = this.moveUp.bind(this);
           this.moveLeft = this.moveLeft.bind(this);
           this.moveRight = this.moveRight.bind(this);
@@ -29,32 +32,65 @@ class Controller extends React.Component {
           this.viewLocalMap = this.viewLocalMap.bind(this);
           this.attack = this.attack.bind(this);
           this.setLocalMonster = this.setLocalMonster.bind(this);
-
+          this.setFighting = this.setFighting.bind(this);
+          this.setFightingHP = this.setFightingHP.bind(this);
 
 
       }
 
       componentDidMount(){
-      /*  let sendMsgText = this.props.username + " 님이 도착했습니다. " ;
-        this.props.socket.emit('chat', sendMsgText); // 요청
-        let addUserName = this.props.username;
-        this.props.socket.emit('totalCount', addUserName); // 요청
-*/
+        console.log(this.props.username);
+        this.props.socket.emit('addUser', this.props.username);
+        // 몬스터 셋팅
         let setLocalMonster = this.setLocalMonster.bind(this);
         this.props.socket.on("setMonster", function(data){ //몹 채팅
           setLocalMonster(data);
         });
+
+        // 전투 상황
+        let fighting = this.setFighting.bind(this);
+        let fightingHP = this.setFightingHP.bind(this);
+        this.props.socket.on(this.props.username+"전투", function(data){ //몹 채팅
+            console.log("[전투]"+data);
+            if(data=="endFight"){
+              fighting(false);
+            }
+            else if(data.indexOf('[HP]')==0){
+              let dataArr = data.split("[HP]");
+              console.log(dataArr[1]);
+              fightingHP(dataArr[1]);
+            }
+
+        });
+
       }
 
+      // 체력
+      setFightingHP(data){
+        this.userHP = data;
+        if(this.userHP < 0){
+          this.fighting = false;
+          this.props.socket.emit('private',"전투중 의식을 잃고 쓰러집니다.");
+          this.props.socket.emit('setLocalCh', "0-0");
+          this.props.socket.emit('chat', "0-0:ch:"+this.props.username+"님께서 죽었다 깨어났습니다.");
+          this.props.socket.emit('private',"정신을 차려보니 시작점에서 깨어납니다.");
+        }
+      }
+      // 전투중 설정
+      setFighting(data){
+        this.fighting = false;
+      }
 
       // 몹 설정
       setLocalMonster(data){
         console.log("받아온 몬스터 데이터");
         console.log(data);
+
+        this.setState({
+          monster:data
+        });
+
         if(data!=null){
-          this.setState({
-            monster:data
-          });
           this.props.socket.emit('private', data.appearMsg+" : "+ data.name+"의 남은 체력"+data.hp);
         }else{
           this.props.socket.emit('private', "스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
@@ -96,23 +132,29 @@ class Controller extends React.Component {
         }
         this.endTime = moveTimerS;
 
+
+        if(this.fighting){
+          this.props.socket.emit('private',"전투중입니다. 이동 할 수 없습니다.");
+          return false;
+        }
+
         var map = this.mapLocal;
         var mapArr = this.state.map;
         var mapY =map[0];
         var mapX =map[1];
-          mapArr[mapY][mapX] = 0;
+
 
         var dirText ="";
 
         if(dir=="up"){
           dirText= "북";
           map[0] = map[0]-1;
+
           if(map[0]<0){
             map[0] = 0;
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             return false;
           }else{
-
             this.props.socket.emit('move', "북쪽으로 이동 합니다." );
           }
         }
@@ -150,6 +192,13 @@ class Controller extends React.Component {
             this.props.socket.emit('move', "남쪽으로 이동 합니다." );
           }
         }
+
+        if(mapArr[map[0]][map[1]]==-1){
+          this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+          return false;
+        }
+
+        mapArr[mapY][mapX] = 0;
 
 
          mapY =map[0];
@@ -196,10 +245,12 @@ class Controller extends React.Component {
         attackInfo.userName = this.props.username;
         attackInfo.ch = this.socketCh;
         attackInfo.target = this.state.monster.name;
+        attackInfo.fighting = this.fighting;
 
         console.log(attackInfo);
 
         this.props.socket.emit('attack',attackInfo);
+        this.fighting = true;
       }
 
 

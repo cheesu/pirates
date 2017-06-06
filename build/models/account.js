@@ -22,6 +22,8 @@ var Account = new Schema({
     job: String,
     lv: Number(),
     exp: Number(),
+    max_hp: Number(),
+    max_mp: Number(),
     hp: Number(),
     mp: Number(),
     str: Number(),

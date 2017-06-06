@@ -16,6 +16,7 @@ const Monster = new Schema({
     appearMsg:String,
     attackMsg:String,
     dieMsg:String,
+    exp:Number(),
 
 });
 

@@ -118,6 +118,14 @@ export function getStatusSuccess(info) {
         username:info.username,
         job :info.job,
         lv:info.lv,
+        exp:info.exp,
+        hp:info.hp,
+        mp:info.mp,
+        str:info.str,
+        int:info.int,
+        dex:info.dex,
+        max_mp:info.max_mp,
+        max_hp:info.max_hp,
     };
 }
 

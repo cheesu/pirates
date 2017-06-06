@@ -4360,7 +4360,15 @@ function getStatusSuccess(info) {
         type: _ActionTypes.AUTH_GET_STATUS_SUCCESS,
         username: info.username,
         job: info.job,
-        lv: info.lv
+        lv: info.lv,
+        exp: info.exp,
+        hp: info.hp,
+        mp: info.mp,
+        str: info.str,
+        int: info.int,
+        dex: info.dex,
+        max_mp: info.max_mp,
+        max_hp: info.max_hp
     };
 }
 
@@ -19805,7 +19813,7 @@ var Controller = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Controller.__proto__ || Object.getPrototypeOf(Controller)).call(this, props, context));
 
     var mapArr = [[2, 0, 0, -1, -1, 0, -1, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0]];
-    var monster = { name: '오크', lv: 10, msg: "오크 한마리가 서성거리며 주위를 둘러 봅니다." };
+
     _this.state = {
       msg: "",
       map: mapArr,
@@ -19816,6 +19824,9 @@ var Controller = function (_React$Component) {
     _this.socketCh = '0-0';
     _this.map = mapArr;
     _this.mapLocal = [0, 0];
+    _this.fighting = false;
+    _this.userHP = 1;
+
     _this.moveUp = _this.moveUp.bind(_this);
     _this.moveLeft = _this.moveLeft.bind(_this);
     _this.moveRight = _this.moveRight.bind(_this);
@@ -19824,6 +19835,8 @@ var Controller = function (_React$Component) {
     _this.viewLocalMap = _this.viewLocalMap.bind(_this);
     _this.attack = _this.attack.bind(_this);
     _this.setLocalMonster = _this.setLocalMonster.bind(_this);
+    _this.setFighting = _this.setFighting.bind(_this);
+    _this.setFightingHP = _this.setFightingHP.bind(_this);
 
     return _this;
   }
@@ -19831,16 +19844,51 @@ var Controller = function (_React$Component) {
   _createClass(Controller, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      /*  let sendMsgText = this.props.username + " 님이 도착했습니다. " ;
-        this.props.socket.emit('chat', sendMsgText); // 요청
-        let addUserName = this.props.username;
-        this.props.socket.emit('totalCount', addUserName); // 요청
-      */
+      console.log(this.props.username);
+      this.props.socket.emit('addUser', this.props.username);
+      // 몬스터 셋팅
       var setLocalMonster = this.setLocalMonster.bind(this);
       this.props.socket.on("setMonster", function (data) {
         //몹 채팅
         setLocalMonster(data);
       });
+
+      // 전투 상황
+      var fighting = this.setFighting.bind(this);
+      var fightingHP = this.setFightingHP.bind(this);
+      this.props.socket.on(this.props.username + "전투", function (data) {
+        //몹 채팅
+        console.log("[전투]" + data);
+        if (data == "endFight") {
+          fighting(false);
+        } else if (data.indexOf('[HP]') == 0) {
+          var dataArr = data.split("[HP]");
+          console.log(dataArr[1]);
+          fightingHP(dataArr[1]);
+        }
+      });
+    }
+
+    // 체력
+
+  }, {
+    key: 'setFightingHP',
+    value: function setFightingHP(data) {
+      this.userHP = data;
+      if (this.userHP < 0) {
+        this.fighting = false;
+        this.props.socket.emit('private', "전투중 의식을 잃고 쓰러집니다.");
+        this.props.socket.emit('setLocalCh', "0-0");
+        this.props.socket.emit('chat', "0-0:ch:" + this.props.username + "님께서 죽었다 깨어났습니다.");
+        this.props.socket.emit('private', "정신을 차려보니 시작점에서 깨어납니다.");
+      }
+    }
+    // 전투중 설정
+
+  }, {
+    key: 'setFighting',
+    value: function setFighting(data) {
+      this.fighting = false;
     }
 
     // 몹 설정
@@ -19850,10 +19898,12 @@ var Controller = function (_React$Component) {
     value: function setLocalMonster(data) {
       console.log("받아온 몬스터 데이터");
       console.log(data);
+
+      this.setState({
+        monster: data
+      });
+
       if (data != null) {
-        this.setState({
-          monster: data
-        });
         this.props.socket.emit('private', data.appearMsg + " : " + data.name + "의 남은 체력" + data.hp);
       } else {
         this.props.socket.emit('private', "스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
@@ -19904,23 +19954,27 @@ var Controller = function (_React$Component) {
       }
       this.endTime = moveTimerS;
 
+      if (this.fighting) {
+        this.props.socket.emit('private', "전투중입니다. 이동 할 수 없습니다.");
+        return false;
+      }
+
       var map = this.mapLocal;
       var mapArr = this.state.map;
       var mapY = map[0];
       var mapX = map[1];
-      mapArr[mapY][mapX] = 0;
 
       var dirText = "";
 
       if (dir == "up") {
         dirText = "북";
         map[0] = map[0] - 1;
+
         if (map[0] < 0) {
           map[0] = 0;
           this.props.socket.emit('move', "막혀서 못감"); // 요청
           return false;
         } else {
-
           this.props.socket.emit('move', "북쪽으로 이동 합니다.");
         }
       } else if (dir == "left") {
@@ -19955,6 +20009,13 @@ var Controller = function (_React$Component) {
           this.props.socket.emit('move', "남쪽으로 이동 합니다.");
         }
       }
+
+      if (mapArr[map[0]][map[1]] == -1) {
+        this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+        return false;
+      }
+
+      mapArr[mapY][mapX] = 0;
 
       mapY = map[0];
       mapX = map[1];
@@ -19999,10 +20060,12 @@ var Controller = function (_React$Component) {
       attackInfo.userName = this.props.username;
       attackInfo.ch = this.socketCh;
       attackInfo.target = this.state.monster.name;
+      attackInfo.fighting = this.fighting;
 
       console.log(attackInfo);
 
       this.props.socket.emit('attack', attackInfo);
+      this.fighting = true;
     }
   }, {
     key: 'render',
@@ -20745,9 +20808,6 @@ var RightMenu = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     _react2.default.createElement('br', null),
                     _react2.default.createElement('br', null),
-                    _react2.default.createElement('br', null),
-                    _react2.default.createElement('br', null),
-                    _react2.default.createElement('br', null),
                     _react2.default.createElement(
                         'div',
                         { className: 'user-info' },
@@ -20787,6 +20847,16 @@ var RightMenu = function (_React$Component) {
                             _react2.default.createElement(
                                 'li',
                                 null,
+                                ' EXP: ',
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    this.props.status.exp
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'li',
+                                null,
                                 '  '
                             )
                         )
@@ -20803,11 +20873,6 @@ var RightMenu = function (_React$Component) {
                             'li',
                             null,
                             ' STATUS '
-                        ),
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            '  '
                         )
                     ),
                     _react2.default.createElement(
@@ -21270,9 +21335,7 @@ var Game = function (_React$Component) {
 
         _this.socket = io({ 'forceNew': true });
         //  this.socket =io('http://localhost:4000/twon');
-        var userName = _this.props.status.currentUser;
-        _this.socket.emit('addUser', userName);
-        //this.socket.emit('chat', userName);
+
         return _this;
     }
 
@@ -21801,7 +21864,15 @@ var initialState = {
         isLoggedIn: false,
         currentUser: '',
         job: '',
-        lv: 0
+        lv: 0,
+        exp: 0,
+        hp: 0,
+        mp: 0,
+        str: 0,
+        int: 0,
+        dex: 0,
+        max_hp: 0,
+        max_mp: 0
     }
 };
 
@@ -21866,7 +21937,15 @@ function authentication(state, action) {
                     valid: { $set: true },
                     currentUser: { $set: action.username },
                     job: { $set: action.job },
-                    lv: { $set: action.lv }
+                    lv: { $set: action.lv },
+                    exp: { $set: action.exp },
+                    hp: { $set: action.hp },
+                    mp: { $set: action.mp },
+                    str: { $set: action.str },
+                    int: { $set: action.int },
+                    dex: { $set: action.dex },
+                    max_hp: { $set: action.max_hp },
+                    max_mp: { $set: action.max_mp }
                 }
             });
         case types.AUTH_GET_STATUS_FAILURE:
@@ -21883,7 +21962,13 @@ function authentication(state, action) {
                     isLoggedIn: { $set: false },
                     currentUser: { $set: '' },
                     job: { $set: '' },
-                    lv: { $set: 0 }
+                    lv: { $set: 0 },
+                    exp: { $set: 0 },
+                    hp: { $set: 0 },
+                    mp: { $set: 0 },
+                    str: { $set: 0 },
+                    int: { $set: 0 },
+                    dex: { $set: 0 }
                 }
             });
 

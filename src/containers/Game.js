@@ -14,9 +14,7 @@ class Game extends React.Component {
         //  this.socket =io('http://localhost:4000/twon',{'forceNew': true});
           this.socket =io({'forceNew': true});
         //  this.socket =io('http://localhost:4000/twon');
-          var userName = this.props.status.currentUser;
-          this.socket.emit('addUser', userName);
-          //this.socket.emit('chat', userName);
+          
       }
 
       componentWillUnmount(){

@@ -44,28 +44,21 @@ class RightMenu extends React.Component {
                 </div>
                 <div className="container">
                     <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
                     <br></br><br></br><br></br>
                     <div className="user-info">
                       <ul className="right-menu-results">
                           <li> ID: <span>{this.props.status.currentUser}</span></li>
                           <li> LV: <span>{this.props.status.lv}</span></li>
                           <li> JOB: <span>{this.props.status.job}</span></li>
+                          <li> EXP: <span>{this.props.status.exp}</span></li>
                           <li>  </li>
                       </ul>
                     </div>
 
-
-
                     <ul className="right-menu-results">
                         <li> INVEN </li>
                         <li> STATUS </li>
-                        <li>  </li>
                     </ul>
-
-
 
                     <div className="collection skill-set">
                       <a href="#!" className="collection-item"><span className="badge">10mp</span>스킬1</a>

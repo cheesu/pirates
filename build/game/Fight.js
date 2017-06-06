@@ -26,6 +26,8 @@ var regenMonster = setInterval(loadMonsterList, 1000 * 60 * 5);
 
 var monsters;
 var localMonsterList = [];
+var fightInterval = new Object();
+
 loadMonsterList();
 
 function loadMonsterList() {
@@ -50,6 +52,7 @@ function loadMonsterList() {
         monObj.appearMsg = monsters[monCount].appearMsg;
         monObj.attackMsg = monsters[monCount].attackMsg;
         monObj.dieMsg = monsters[monCount].dieMsg;
+        monObj.exp = monsters[monCount].exp;
         monObj.area = monLocalArr[localCount];
 
         localMonsterList.push(monObj);
@@ -86,24 +89,109 @@ var fight = function fight(io, info) {
     var monNum = checkFightMonster(info.ch);
 
     if (monNum == null) {
-
       return false;
     }
 
     var dmg = (userInfo.int + userInfo.str) * userInfo.lv - localMonsterList[monNum].dp;
     var result = userInfo.username + "님께서 " + info.target + "에게 " + dmg + "의 공격을 하였습니다.";
     localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
-
     var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + localMonsterList[monNum].hp;
     io.emit(info.ch, result);
     io.emit(info.ch, monHPMsg);
 
+    if (!info.fighting) {
+      // 몬스터가 유저를 공격하는 인터벌
+      fightInterval[userInfo.username + "fighting"] = true; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
+      fightInterval[userInfo.username + "HP"] = userInfo.hp;
+      fightInterval[userInfo.username] = setInterval(function () {
+        var reDmg = localMonsterList[monNum].ap;
+        var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
+        fightInterval[userInfo.username + "HP"] -= reDmg;
+
+        // 몬스터 처치후 발동되는 인터벌 막기위한 판단
+        if (!fightInterval[userInfo.username + "fighting"]) {
+          console.log(userInfo.username + "퐈이팅 중단");
+          return false;
+        }
+
+        _account2.default.update({ username: userInfo.username }, { $set: { hp: userHP } }, function (err, output) {
+          if (err) console.log(err);
+          io.emit(info.ch, localMonsterList[monNum].attackMsg + " " + userInfo.username + "님이" + reDmg + "의 피해를 입었습니다 현재 체력 :" + userHP);
+          io.emit(userInfo.username + "전투", "[HP]" + userHP);
+        });
+
+        if (userHP < 0) {
+          fightInterval[userInfo.username + "fighting"] = false;
+          clearInterval(fightInterval[userInfo.username]);
+          _account2.default.update({ username: userInfo.username }, { $set: { hp: userInfo.max_hp } }, function (err, output) {
+            if (err) console.log(err);
+            io.emit(userInfo.username, "[시스템] 운영자 cheesu님의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
+          });
+        }
+      }, localMonsterList[monNum].speed * 10);
+    }
+
+    // 몬스터 처치
     if (localMonsterList[monNum].hp <= 0) {
+      fightInterval[userInfo.username + "fighting"] = false; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
+      clearInterval(fightInterval[userInfo.username]);
       localMonsterList[monNum].exist = false;
       io.emit(info.ch, localMonsterList[monNum].dieMsg);
+      expLevelup(userInfo, io, monNum, info); // 렙업인지 경치만 획득인지 계산한다
     }
   });
 };
+
+//경험치 획득 &
+function expLevelup(userInfo, io, monNum, info) {
+  // 경험치 계산
+  var totalExp = userInfo.exp + localMonsterList[monNum].exp;
+
+  // 경험치 업데이트
+  _account2.default.update({ username: info.userName }, { $set: { exp: totalExp } }, function (err, output) {
+    if (err) console.log(err);
+    io.emit(userInfo.username, "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + localMonsterList[monNum].exp + "를 획득 하였습니다.");
+    io.emit(userInfo.username + "전투", "endFight");
+  });
+
+  // 레벨업 판단
+  if (logB(userInfo.lv, 20) * 1000 * userInfo.lv * 0.7 < totalExp) {
+    var lvUp = userInfo.lv + 1;
+    var strUP = userInfo.str + 2;
+    var dexUP = userInfo.dex + 2;
+    var intUP = userInfo.int + 2;
+    var max_mpUP = userInfo.max_mp;
+    var max_hpUP = userInfo.max_hp;
+    var jobBouns = 2;
+    if (userInfo.job == "검사") {
+      strUP = strUP + jobBouns;
+      intUP = intUP - 1;
+      max_mpUP += userInfo.lv * 10 * 0.2;
+      max_hpUP += userInfo.lv * 10 * 0.6;
+    } else if (userInfo.job == "마법사") {
+      intUP = intUP + jobBouns;
+      dexUP = dexUP - 1;
+      max_mpUP += userInfo.lv * 10 * 0.6;
+      max_hpUP += userInfo.lv * 10 * 0.2;
+    } else if (userInfo.job == "암살자") {
+      dexUP = dexUP + jobBouns;
+      strUP = strUP - 1;
+      max_mpUP += 15;
+      max_mpUP += userInfo.lv * 10 * 0.3;
+      max_hpUP += userInfo.lv * 10 * 0.5;
+    }
+
+    _account2.default.update({ username: userInfo.username }, { $set: { lv: lvUp, str: strUP, int: intUP, dex: dexUP, max_hp: max_hpUP, max_mp: max_mpUP, mp: max_mpUP, hp: max_hpUP } }, function (err, output) {
+      if (err) console.log(err);
+      io.emit(info.ch, userInfo.username + "님께서 레벨업 하셨습니다");
+    });
+  }
+}
+
+// 경험치 레벨 계산
+function logB(x, base) {
+  return Math.log(x) / Math.log(base);
+}
 
 exports.fight = fight;
 exports.localMonsterList = localMonsterList;

@@ -14,7 +14,15 @@ const initialState = {
         isLoggedIn: false,
         currentUser: '',
         job:'',
-        lv:0
+        lv:0,
+        exp:0,
+        hp:0,
+        mp:0,
+        str:0,
+        int:0,
+        dex:0,
+        max_hp:0,
+        max_mp:0,
     }
 };
 
@@ -82,7 +90,15 @@ export default function authentication(state, action) {
                     valid: { $set: true },
                     currentUser: { $set: action.username },
                     job: { $set: action.job },
-                    lv: { $set: action.lv }
+                    lv: { $set: action.lv },
+                    exp:{ $set: action.exp },
+                    hp:{ $set: action.hp },
+                    mp:{ $set: action.mp },
+                    str:{ $set: action.str },
+                    int:{ $set: action.int },
+                    dex:{ $set: action.dex },
+                    max_hp:{ $set: action.max_hp },
+                    max_mp:{ $set: action.max_mp },
                 }
             });
         case types.AUTH_GET_STATUS_FAILURE:
@@ -101,6 +117,12 @@ export default function authentication(state, action) {
                       currentUser: { $set: '' },
                       job: { $set: '' },
                       lv: { $set: 0 },
+                      exp:{ $set: 0 },
+                      hp:{ $set: 0 },
+                      mp:{ $set: 0 },
+                      str:{ $set: 0 },
+                      int:{ $set: 0 },
+                      dex:{ $set: 0 },
                   }
               });
 

@@ -159,22 +159,22 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () =>{
       let disUserSocketId =socket.id;
-      var disUserName = "";
-      var disArrIndex;
-      // 나간 사용자 삭제
-      for(var count=0;count<chatUserList.length;count++){
-        let disSocketId  =chatUserList[count].socketID;
+      for(var count=0; count<chatUserList.length; count++){
+        let disSocketId  = chatUserList[count].socketID;
         if(disSocketId == disUserSocketId ){
-          disUserName = chatUserList[count].userID;
-          disArrIndex = count;
+          let disUserName = chatUserList[count].userID;
+          //알림
+          io.emit('chat', disUserName+"님이 퇴장 하셨습니다.");
+          console.log('Client disconnected : '+disUserName);
+          // 리스트에서 삭제
+          chatUserList.splice(count, 1);
         }
       }
-    //제거
-    chatUserList.splice(disArrIndex, 1);
 
-    io.emit('chat', disUserName+"님이 퇴장 하셨습니다.");
+
+
     io.emit('nowUserList', chatUserList);
-    console.log('Client disconnected'+disUserName);
+
   }
  );
 });
