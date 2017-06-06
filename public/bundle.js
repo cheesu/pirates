@@ -19889,6 +19889,9 @@ var Controller = function (_React$Component) {
     key: 'setFighting',
     value: function setFighting() {
       this.fighting = false;
+      this.setState({
+        monster: null
+      });
       console.log("전투 셋팅" + this.fighting);
     }
 

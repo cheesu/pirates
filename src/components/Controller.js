@@ -79,6 +79,9 @@ class Controller extends React.Component {
       // 전투중 설정
       setFighting(){
         this.fighting = false;
+        this.setState({
+          monster:null
+        });
         console.log("전투 셋팅"+this.fighting);
       }
 
