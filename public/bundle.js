@@ -19812,7 +19812,7 @@ var Controller = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Controller.__proto__ || Object.getPrototypeOf(Controller)).call(this, props, context));
 
-    var mapArr = [[2, 0, 0, -1, -1, 0, -1, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0]];
+    var mapArr = [[2, 0, 0, 0, -1, 0, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0], [0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
     _this.state = {
       msg: "",
@@ -20034,8 +20034,8 @@ var Controller = function (_React$Component) {
       this.mapLocal = map;
       this.props.socket.emit('chat', socketChan + ":ch:" + this.props.username + "님께서 도착 하셨습니다.");
       this.props.socket.emit('setLocalCh', socketChan);
-
       this.props.socket.emit('chat', prevCh + ":ch:" + this.props.username + "님께서 " + dirText + "쪽으로 이동 하셨습니다.");
+      this.viewLocalMap();
     }
 
     /*유저 이동 이벤트 끝*/
