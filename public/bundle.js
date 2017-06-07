@@ -19844,6 +19844,13 @@ var Controller = function (_React$Component) {
   _createClass(Controller, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+
+      window.onpageshow = function (event) {
+        if (event.persisted) {
+          document.location.reload();
+        }
+      };
+
       console.log(this.props.username);
       this.props.socket.emit('addUser', this.props.username);
       // 몬스터 셋팅

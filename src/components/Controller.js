@@ -43,6 +43,14 @@ class Controller extends React.Component {
       }
 
       componentDidMount(){
+
+
+        window.onpageshow = function(event) {
+          if (event.persisted) {
+            document.location.reload();
+          }
+        };
+
         console.log(this.props.username);
         this.props.socket.emit('addUser', this.props.username);
         // 몬스터 셋팅
