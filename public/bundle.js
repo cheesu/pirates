@@ -19968,6 +19968,8 @@ var Controller = function (_React$Component) {
       var mapY = map[0];
       var mapX = map[1];
 
+      var mapYLimit = mapArr.length;
+      var mapXLimit = mapArr[0].length;
       var dirText = "";
 
       if (dir == "up") {
@@ -19995,9 +19997,9 @@ var Controller = function (_React$Component) {
       } else if (dir == "right") {
         dirText = "동";
         map[1] = map[1] + 1;
-        if (map[1] > 11) {
+        if (map[1] > mapXLimit) {
           this.props.socket.emit('move', "막혀서 못감"); // 요청
-          map[1] = 11;
+          map[1] = mapXLimit;
           return false;
         } else {
           this.props.socket.emit('move', "동쪽으로 이동 합니다.");
@@ -20005,9 +20007,9 @@ var Controller = function (_React$Component) {
       } else if (dir == "down") {
         dirText = "남";
         map[0] = map[0] + 1;
-        if (map[0] > 3) {
+        if (map[0] > mapYLimit) {
           this.props.socket.emit('move', "막혀서 못감"); // 요청
-          map[0] = 3;
+          map[0] = mapYLimit;
           return false;
         } else {
           this.props.socket.emit('move', "남쪽으로 이동 합니다.");
