@@ -135,8 +135,19 @@ io.on('connection', (socket) => {
       let userObj = new Object();
       userObj.userID = addUserName;
       userObj.socketID = userSocketId;
+
+      for(var count=0; count<chatUserList.length; count++){
+        if(chatUserList[count].userID==addUserName){
+          io.emit(addUserName+"[중복접속]", "");
+          chatUserList.splice(count, 1);
+          io.emit('Gchat', addUserName+"님이 중복 접속으로 퇴장 하셨습니다.");
+          return false;
+        }
+      }
+
       chatUserList.push(userObj);
       console.log(addUserName+":접속");
+
       const msg = addUserName+"포함 총인원:"+chatUserList.length;
       io.emit('Gchat', msg);
     });
@@ -164,7 +175,7 @@ io.on('connection', (socket) => {
         if(disSocketId == disUserSocketId ){
           let disUserName = chatUserList[count].userID;
           //알림
-          io.emit('chat', disUserName+"님이 퇴장 하셨습니다.");
+          io.emit('Gchat', disUserName+"님이 퇴장 하셨습니다.");
           console.log('Client disconnected : '+disUserName);
           // 리스트에서 삭제
           chatUserList.splice(count, 1);

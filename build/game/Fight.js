@@ -22,8 +22,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var router = _express2.default.Router();
 
 // 몬스터 리젠
-var regenMonster = setInterval(loadMonsterList, 1000 * 60 * 5);
-
+var initServer = false;
+var regenMonster = setInterval(loadMonsterList, 1000 * 60 * 3);
+var bossGen = 0;
 var monsters;
 var localMonsterList = [];
 var fightInterval = new Object();
@@ -31,10 +32,11 @@ var fightInterval = new Object();
 loadMonsterList();
 
 function loadMonsterList() {
-  _monster2.default.find({ type: "normal" }).exec(function (err, monster) {
+  _monster2.default.find().exec(function (err, monster) {
     if (err) throw err;
     monsters = eval(monster);
     console.log("몬스터 로드, 지역 배치 시작");
+    var genMonster = [];
     for (var monCount = 0; monCount < monsters.length; monCount++) {
       console.log(monsters[monCount].name + "배치 시작");
       var monLocalArr = monsters[monCount].area.split(",");
@@ -54,8 +56,16 @@ function loadMonsterList() {
         monObj.dieMsg = monsters[monCount].dieMsg;
         monObj.exp = monsters[monCount].exp;
         monObj.area = monLocalArr[localCount];
-
-        localMonsterList.push(monObj);
+        if (!initServer) {
+          localMonsterList.push(monObj);
+        } else {
+          if (!localMonsterList[monCount].exist && localMonsterList[monCount].type == "normal") {
+            localMonsterList[monCount] = monObj;
+          } else if (!localMonsterList[monCount].exist && localMonsterList[monCount].type == "boss" && bossGen == 4) {
+            localMonsterList[monCount] = monObj;
+          }
+          bossGen++;
+        }
       }
     }
   });
@@ -125,7 +135,7 @@ var fight = function fight(io, info) {
           clearInterval(fightInterval[userInfo.username]);
           _account2.default.update({ username: userInfo.username }, { $set: { hp: userInfo.max_hp } }, function (err, output) {
             if (err) console.log(err);
-            io.emit(userInfo.username, "[시스템] 운영자 cheesu님의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
+            io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
           });
         }
       }, localMonsterList[monNum].speed * 10);

@@ -19845,14 +19845,14 @@ var Controller = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
 
-      window.onpageshow = function (event) {
-        if (event.persisted) {
-          document.location.reload();
-        }
-      };
-
       console.log(this.props.username);
       this.props.socket.emit('addUser', this.props.username);
+
+      this.props.socket.on(this.props.username + "[중복접속]", function (data) {
+        //몹 채팅
+        location.href = "/login";
+      });
+
       // 몬스터 셋팅
       var setLocalMonster = this.setLocalMonster.bind(this);
       this.props.socket.on("setMonster", function (data) {
@@ -19885,6 +19885,7 @@ var Controller = function (_React$Component) {
       if (this.userHP < 0) {
         this.fighting = false;
         this.props.socket.emit('private', "전투중 의식을 잃고 쓰러집니다.");
+        this.mapLocal = [0, 0];
         this.props.socket.emit('setLocalCh', "0-0");
         this.props.socket.emit('chat', "0-0:ch:" + this.props.username + "님께서 죽었다 깨어났습니다.");
         this.props.socket.emit('private', "정신을 차려보니 시작점에서 깨어납니다.");
@@ -19982,7 +19983,11 @@ var Controller = function (_React$Component) {
       if (dir == "up") {
         dirText = "북";
         map[0] = map[0] - 1;
-
+        if (mapArr[map[0]][map[1]] == -1) {
+          map[0] = map[0] + 1;
+          this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+          return false;
+        }
         if (map[0] < 0) {
           map[0] = 0;
           this.props.socket.emit('move', "막혀서 못감"); // 요청
@@ -19993,6 +19998,11 @@ var Controller = function (_React$Component) {
       } else if (dir == "left") {
         dirText = "서";
         map[1] = map[1] - 1;
+        if (mapArr[map[0]][map[1]] == -1) {
+          map[1] = map[1] + 1;
+          this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+          return false;
+        }
         if (map[1] < 0) {
           console.log(map);
           this.props.socket.emit('move', "막혀서 못감"); // 요청
@@ -20004,6 +20014,11 @@ var Controller = function (_React$Component) {
       } else if (dir == "right") {
         dirText = "동";
         map[1] = map[1] + 1;
+        if (mapArr[map[0]][map[1]] == -1) {
+          map[1] = map[1] - 1;
+          this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+          return false;
+        }
         if (map[1] > mapXLimit) {
           this.props.socket.emit('move', "막혀서 못감"); // 요청
           map[1] = mapXLimit;
@@ -20014,6 +20029,13 @@ var Controller = function (_React$Component) {
       } else if (dir == "down") {
         dirText = "남";
         map[0] = map[0] + 1;
+
+        if (mapArr[map[0]][map[1]] == -1) {
+          map[0] = map[0] - 1;
+          this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+          return false;
+        }
+
         if (map[0] > mapYLimit) {
           this.props.socket.emit('move', "막혀서 못감"); // 요청
           map[0] = mapYLimit;
@@ -20021,11 +20043,6 @@ var Controller = function (_React$Component) {
         } else {
           this.props.socket.emit('move', "남쪽으로 이동 합니다.");
         }
-      }
-
-      if (mapArr[map[0]][map[1]] == -1) {
-        this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
-        return false;
       }
 
       mapArr[mapY][mapX] = 0;
