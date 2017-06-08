@@ -102,7 +102,7 @@ var fight = function fight(io, info) {
       return false;
     }
 
-    var dmg = (userInfo.int + userInfo.str) * userInfo.lv - localMonsterList[monNum].dp;
+    var dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str) * 0.2 - localMonsterList[monNum].dp;
     var result = userInfo.username + "님께서 " + info.target + "에게 " + dmg + "의 공격을 하였습니다.";
     localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
     var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + localMonsterList[monNum].hp;
@@ -165,7 +165,7 @@ function expLevelup(userInfo, io, monNum, info) {
   });
 
   // 레벨업 판단
-  if (logB(userInfo.lv, 20) * 1000 * userInfo.lv * 0.7 < totalExp) {
+  if (logB(userInfo.lv, 20) * 1000 * userInfo.lv * userInfo.lv / 6 < totalExp) {
     var lvUp = userInfo.lv + 1;
     var strUP = userInfo.str + 2;
     var dexUP = userInfo.dex + 2;
