@@ -95,6 +95,8 @@ var fight = function (io,info){
 
 
           let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.2) - localMonsterList[monNum].dp ;
+          dmg = Math.round(dmg);
+
           let result =  userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";
           localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
           let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+localMonsterList[monNum].hp;
