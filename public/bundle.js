@@ -20141,7 +20141,7 @@ var Controller = function (_React$Component) {
         }
       }
 
-      mapArr[mapY][mapX] = 0;
+      mapArr[mapY][mapX] = "□";
 
       mapY = map[0];
       mapX = map[1];
@@ -20211,6 +20211,76 @@ var Controller = function (_React$Component) {
           'a',
           { onClick: this.movePrevMap, className: 'waves-effect waves-light btn red controller-btn attack-btn' },
           '\uC774\uC804\uB9F5\uC73C\uB85C'
+        )
+      );
+
+      var skillSet = _react2.default.createElement(
+        'li',
+        null,
+        _react2.default.createElement(
+          'a',
+          { className: 'dropdown-button btn', href: '#', 'data-activates': 'dropdown1' },
+          'SKILL'
+        ),
+        _react2.default.createElement(
+          'ul',
+          { id: 'dropdown1', className: 'dropdown-content' },
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#!' },
+              'one'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#!' },
+              'two'
+            )
+          ),
+          _react2.default.createElement('li', { className: 'divider' }),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#!' },
+              'three'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#!' },
+              _react2.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'view_module'
+              ),
+              'four'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'a',
+              { href: '#!' },
+              _react2.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'cloud'
+              ),
+              'five'
+            )
+          )
         )
       );
 
@@ -20299,7 +20369,8 @@ var Controller = function (_React$Component) {
             )
           ),
           this.state.next ? nextMap : undefined,
-          this.state.prev ? prevMap : undefined
+          this.state.prev ? prevMap : undefined,
+          skillSet
         )
       );
     }
