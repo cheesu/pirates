@@ -39,7 +39,7 @@ function loadMonsterList(){
               monObj.attackMsg = monsters[monCount].attackMsg;
               monObj.dieMsg = monsters[monCount].dieMsg;
               monObj.exp = monsters[monCount].exp;
-              monObj.area=monLocalArr[localCount];
+              monObj.area= monsters[monCount].mapName+"-"+monLocalArr[localCount];
               if(!initServer){
                 localMonsterList.push(monObj);
               }else{
@@ -59,6 +59,7 @@ function loadMonsterList(){
 
 
 var checkMonster = function (ch){
+  console.log(ch);
   let monster=null;
   for(let count = 0; count < localMonsterList.length; count++){
     if(localMonsterList[count].area==ch && localMonsterList[count].exist == true){
@@ -94,7 +95,7 @@ var fight = function (io,info){
 
 
 
-          let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.2) - localMonsterList[monNum].dp ;
+          let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3) - localMonsterList[monNum].dp ;
           dmg = Math.round(dmg);
 
           let result =  userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";

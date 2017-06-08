@@ -1,5 +1,6 @@
 import express from 'express';
 import account from './account';
+import map from './map';
 
 const router = express.Router();
 
@@ -16,5 +17,5 @@ router.use('/*', (req, res, next) => {
 });
 
 router.use('/account', account);
-
+router.use('/map', map);
 export default router;

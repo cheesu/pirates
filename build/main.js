@@ -46,8 +46,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // PARSE HTML BODY
 
-var app = (0, _express2.default)(); // HTTP REQUEST LOGGER
+var RedisStore = require("connect-redis")(_expressSession2.default); // HTTP REQUEST LOGGER
 
+
+var app = (0, _express2.default)();
 var port = 3000;
 var devPort = 4000;
 
@@ -88,6 +90,7 @@ app.use(function (err, req, res, next) {
 app.get('/hello', function (req, res) {
   return res.send('Hello CodeLab');
 });
+
 /*
 app.listen(process.env.PORT||port, () => {
     console.log('Express is listening on port update', process.env.PORT||port);
@@ -175,6 +178,8 @@ io.on('connection', function (socket) {
     console.log(addUserName + ":접속");
 
     var msg = addUserName + "포함 총인원:" + chatUserList.length;
+    //socket.request.session = {};
+
     io.emit('Gchat', msg);
   });
 
@@ -224,6 +229,10 @@ io.sockets.on("connection", function (socket) {
           msg[countY][countX] = '■';
         } else if (val == 2) {
           msg[countY][countX] = '☆';
+        } else if (val == 3) {
+          msg[countY][countX] = '※';
+        } else if (val == 4) {
+          msg[countY][countX] = '※';
         }
       }
     }
@@ -247,5 +256,10 @@ io.sockets.on("connection", function (socket) {
 
     var monster = (0, _Fight.checkMonster)(msg);
     socket.emit('setMonster', monster);
+  });
+
+  socket.on('getMap', function (mapName) {
+
+    socket.emit('getMap', map);
   });
 });

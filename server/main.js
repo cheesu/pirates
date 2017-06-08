@@ -10,6 +10,7 @@ import bodyParser from 'body-parser'; // PARSE HTML BODY
 
 import mongoose from 'mongoose';
 import session from 'express-session';
+var RedisStore = require("connect-redis")(session);
 
 import api from './routes';
 
@@ -54,6 +55,9 @@ app.use(function(err, req, res, next) {
 app.get('/hello', (req, res) => {
     return res.send('Hello CodeLab');
 });
+
+
+
 /*
 app.listen(process.env.PORT||port, () => {
     console.log('Express is listening on port update', process.env.PORT||port);
@@ -70,6 +74,7 @@ if(process.env.NODE_ENV == 'development') {
         }
     );
 }
+
 
 
 // 소켓 통신 관련 일반
@@ -104,7 +109,6 @@ const server = app
 
 var socketIO = require('socket.io');
 const io = socketIO(server);
-
 
 
 
@@ -149,6 +153,8 @@ io.on('connection', (socket) => {
       console.log(addUserName+":접속");
 
       const msg = addUserName+"포함 총인원:"+chatUserList.length;
+      //socket.request.session = {};
+
       io.emit('Gchat', msg);
     });
 
@@ -211,6 +217,12 @@ io.sockets.on("connection", function(socket){
           else if(val == 2){
             msg[countY][countX] = '☆';
           }
+          else if(val == 3){
+            msg[countY][countX] = '※';
+          }
+          else if(val == 4){
+            msg[countY][countX] = '※';
+          }
       }
     }
 
@@ -237,4 +249,12 @@ io.sockets.on("connection", function(socket){
     socket.emit('setMonster', monster);
 
   });
+
+  socket.on('getMap', function(mapName){
+
+    socket.emit('getMap', map);
+
+  });
+
+
 });

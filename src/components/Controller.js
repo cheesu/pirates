@@ -1,28 +1,21 @@
 import React from 'react';
+import axios from 'axios';
 
 class Controller extends React.Component {
   constructor(props, context) {
           super(props, context);
 
-          let mapArr = [[2,0,0,0,-1,0,-1,0,-1,0,0,0,0,0,0,0,0,-1,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,-1,0,0,0,-1,0,0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,0,0,-1,0,0,0,0,0,0,0],
-                      [0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,-1,-1,0,0],
-                      [0,0,0,0,0,0,0,0,0,0,0,-1,0,0,0,-1,0,0,0,0,-1,0,0,0],
-                      [0,0,0,0,0,0,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0,0,0,0,-1,0,0,0,-1,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                      ]
 
           this.state = {
               msg: "",
-              map:mapArr,
+              map:[],
               monster:null,
+              next:false,
+              prev:false,
           };
 
           this.endTime = 99;
           this.socketCh = '0-0';
-          this.map = mapArr;
           this.mapLocal = [0,0];
           this.fighting = false;
           this.userHP = 1;
@@ -37,14 +30,18 @@ class Controller extends React.Component {
           this.setLocalMonster = this.setLocalMonster.bind(this);
           this.setFighting = this.setFighting.bind(this);
           this.setFightingHP = this.setFightingHP.bind(this);
+          this.getMapAxio = this.getMapAxio.bind(this);
+          this.moveNextMap = this.moveNextMap.bind(this);
+          this.movePrevMap = this.movePrevMap.bind(this);
 
+
+          this.mapName = "푸른해변";
 
       }
 
       componentDidMount(){
 
-
-        console.log(this.props.username);
+        this.getMapAxio();
         this.props.socket.emit('addUser', this.props.username);
 
         this.props.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
@@ -61,18 +58,85 @@ class Controller extends React.Component {
         let fighting = this.setFighting.bind(this);
         let fightingHP = this.setFightingHP.bind(this);
         this.props.socket.on(this.props.username+"전투", function(data){ //몹 채팅
-            console.log("[전투]"+data);
             if(data=="endFight"){
               fighting();
             }
             else if(data.indexOf('[HP]')==0){
               let dataArr = data.split("[HP]");
-              console.log(dataArr[1]);
               fightingHP(dataArr[1]);
             }
 
         });
 
+      }
+
+
+      getMapAxio(){
+         axios.get('/api/map/getMap/' + this.mapName)
+            .then((response) => {
+              var map = response.data.mapInfo.map;
+              var mapY = map.split("br");
+              var mapArr = [];
+              for(var count = 0; count<mapY.length; count++){
+                mapArr.push(mapY[count].split(","));
+              }
+              this.setState({
+                map:mapArr
+              });
+              this.mapName = response.data.mapInfo.mapName;
+            }).catch((error) => {
+                console.log(error);
+            });
+      }
+
+
+      moveNextMap(){
+        axios.get('/api/map/nextMap/' + this.mapName)
+           .then((response) => {
+             var map = response.data.mapInfo.map;
+             var mapY = map.split("br");
+             var mapArr = [];
+             for(var count = 0; count<mapY.length; count++){
+               mapArr.push(mapY[count].split(","));
+             }
+             this.setState({
+               map:mapArr
+             });
+             this.socketCh = '0-0';
+             this.mapLocal = [0,0];
+             this.mapName = response.data.mapInfo.mapName;
+
+             this.props.socket.emit('chat', this.mapName+"-"+this.socketCh+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
+             this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
+
+           }).catch((error) => {
+               console.log(error);
+           });
+      }
+
+      movePrevMap(){
+        axios.get('/api/map/prevMap/' + this.mapName)
+           .then((response) => {
+             var map = response.data.mapInfo.map;
+             var mapY = map.split("br");
+             var mapArr = [];
+             for(var count = 0; count<mapY.length; count++){
+               mapArr.push(mapY[count].split(","));
+             }
+             this.setState({
+               map:mapArr
+             });
+
+             this.socketCh = mapY.length+'-'+mapY[mapY.length].length;
+             this.mapLocal = [mapY.length,mapY[mapY.length].length];
+             this.mapName = response.data.mapInfo.mapName;
+
+             this.props.socket.emit('chat', this.mapName+"-"+this.socketCh+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
+             this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
+
+           }).catch((error) => {
+               console.log(error);
+           });
       }
 
       // 체력
@@ -93,14 +157,10 @@ class Controller extends React.Component {
         this.setState({
           monster:null
         });
-        console.log("전투 셋팅"+this.fighting);
       }
 
       // 몹 설정
       setLocalMonster(data){
-        console.log("받아온 몬스터 데이터");
-        console.log(data);
-
         this.setState({
           monster:data
         });
@@ -148,6 +208,10 @@ class Controller extends React.Component {
         this.endTime = moveTimerS;
 
 
+        if(this.socketCh=="0-0"){
+          this.fighting = false;
+        }
+
         if(this.fighting){
           this.props.socket.emit('private',"전투중입니다. 이동 할 수 없습니다.");
           return false;
@@ -155,6 +219,7 @@ class Controller extends React.Component {
 
         var map = this.mapLocal;
         var mapArr = this.state.map;
+
         var mapY =map[0];
         var mapX =map[1];
 
@@ -165,6 +230,7 @@ class Controller extends React.Component {
         if(dir=="up"){
           dirText= "북";
           map[0] = map[0]-1;
+
           if(mapArr[map[0]][map[1]]==-1){
             map[0] = map[0]+1;
             this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
@@ -187,7 +253,6 @@ class Controller extends React.Component {
             return false;
           }
           if(map[1]<0){
-            console.log(map);
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             map[1] = 0;
             return false;
@@ -230,14 +295,34 @@ class Controller extends React.Component {
           }
         }
 
-
+        // 다음맵으로 이동
+        if(mapArr[map[0]][map[1]]==3){
+          this.setState({
+            next:true,
+          });
+        }
+        else if(mapArr[map[0]][map[1]]==4){
+          this.setState({
+            prev:true,
+          });
+        }
+        else{
+          if(this.state.next||this.state.prev){
+            this.setState({
+              next:false,
+              prev:false
+            });
+          }
+        }
 
         mapArr[mapY][mapX] = 0;
 
 
          mapY =map[0];
          mapX =map[1];
+
         mapArr[mapY][mapX] = 2;
+
         var socketChan = mapY+"-"+mapX;
         this.setState({
           map:mapArr
@@ -246,9 +331,9 @@ class Controller extends React.Component {
         var prevCh = this.socketCh;
         this.socketCh = socketChan;
         this.mapLocal = map;
-        this.props.socket.emit('chat', socketChan+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
-        this.props.socket.emit('setLocalCh', socketChan);
-        this.props.socket.emit('chat', prevCh+":ch:"+this.props.username+"님께서 "+dirText+"쪽으로 이동 하셨습니다.");
+        this.props.socket.emit('chat', this.mapName+"-"+socketChan+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
+        this.props.socket.emit('setLocalCh', this.mapName+"-"+socketChan);
+        this.props.socket.emit('chat', this.mapName+"-"+prevCh+":ch:"+this.props.username+"님께서 "+dirText+"쪽으로 이동 하셨습니다.");
         this.viewLocalMap();
       }
 
@@ -266,8 +351,6 @@ class Controller extends React.Component {
         this.endTime = moveTimerS;
         //this.props.socket.emit('private',"공격 대상이 없습니다.");
 
-        console.log("몬스터 체크");
-        console.log(this.state.monster);
         if(this.state.monster==null){
           this.props.socket.emit('private',"공격 대상이 없습니다.");
           return false;
@@ -275,11 +358,9 @@ class Controller extends React.Component {
 
         let attackInfo = new Object();
         attackInfo.userName = this.props.username;
-        attackInfo.ch = this.socketCh;
+        attackInfo.ch = this.mapName+"-"+this.socketCh;
         attackInfo.target = this.state.monster.name;
         attackInfo.fighting = this.fighting;
-
-        console.log(attackInfo);
 
         this.props.socket.emit('attack',attackInfo);
         this.fighting = true;
@@ -289,6 +370,13 @@ class Controller extends React.Component {
 
 
     render(){
+
+      const nextMap = (
+              <li><a onClick={this.moveNextMap}  className="waves-effect waves-light btn red controller-btn attack-btn">다음맵으로</a></li>
+      );
+      const prevMap = (
+              <li><a onClick={this.movePrevMap}  className="waves-effect waves-light btn red controller-btn attack-btn">이전맵으로</a></li>
+      );
 
         return (
           <div className="controller-container">
@@ -304,8 +392,10 @@ class Controller extends React.Component {
                 <ul>
                     <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li>
                     <li><a onClick={this.attack}  className="waves-effect waves-light btn red controller-btn attack-btn">Attack</a></li>
-
+                    {this.state.next ? nextMap : undefined }
+                    {this.state.prev ? prevMap : undefined }
                 </ul>
+
 
 
             </div>

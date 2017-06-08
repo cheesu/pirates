@@ -12,6 +12,7 @@ const Monster = new Schema({
     speed:Number(),
     exist:{ type: Boolean, default: true },
     type:String,
+    mapName:String,
     area:String,
     appearMsg:String,
     attackMsg:String,
