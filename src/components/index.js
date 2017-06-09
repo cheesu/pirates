@@ -6,6 +6,7 @@ import Search from './Search';
 import RightMenu from './RightMenu';
 import CurrentUser from './CurrentUser';
 import Controller from './Controller';
+import Mapview from './Mapview';
 
 
-export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller};
+export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview};

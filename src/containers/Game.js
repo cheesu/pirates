@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Chat, Gameview , Controller} from 'Components';
+import { Chat, Gameview , Controller, Mapview} from 'Components';
 import { getStatusRequest  } from 'Actions/authentication';
 const uri = 'http://127.0.0.1:3303/';
 const options = { transports: ['websocket'] };
@@ -14,7 +14,7 @@ class Game extends React.Component {
         //  this.socket =io('http://localhost:4000/twon',{'forceNew': true});
           this.socket =io({'forceNew': true});
         //  this.socket =io('http://localhost:4000/twon');
-          
+
       }
 
       componentWillUnmount(){
@@ -65,19 +65,21 @@ class Game extends React.Component {
     render() {
       const game = (
             <div className="view-container">
+              <Mapview
+                socket={this.socket}
+                username = {this.props.status.currentUser}
+                />
+
               <Gameview
                 socket={this.socket}
-                socketG={this.socketG}
                 username = {this.props.status.currentUser}
                 />
               <Chat
                 socket={this.socket}
-                socketG={this.socketG}
                 username = {this.props.status.currentUser}
                 />
               <Controller
                 socket={this.socket}
-                socketG={this.socketG}
                 username = {this.props.status.currentUser}
                 />
             </div>

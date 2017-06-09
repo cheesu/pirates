@@ -416,3 +416,14 @@ nav .brand-logo.center
   right: 2rem;
   top: 0rem;
 }
+
+
+
+/*mapview*/
+.map-view
+{
+  color: #FFF;
+}
+.map-view > p{
+  margin: 0px;
+}

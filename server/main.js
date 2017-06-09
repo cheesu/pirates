@@ -225,10 +225,7 @@ io.sockets.on("connection", function(socket){
           }
       }
     }
-
-    socket.emit('private', "[line098098098]");
-    socket.emit('private', msg);
-    socket.emit('private', "[line098098098]");
+    socket.emit('viewMap', msg);
   });
 
 

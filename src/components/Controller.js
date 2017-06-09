@@ -83,6 +83,7 @@ class Controller extends React.Component {
               this.setState({
                 map:mapArr
               });
+              this.viewLocalMap();
               this.mapName = response.data.mapInfo.mapName;
             }).catch((error) => {
                 console.log(error);
@@ -379,20 +380,6 @@ class Controller extends React.Component {
               <li><a onClick={this.movePrevMap}  className="waves-effect waves-light btn red controller-btn attack-btn">이전맵으로</a></li>
       );
 
-      const skillSet = (
-        <li>
-          <a className='dropdown-button btn' href='#' data-activates='dropdown1'>SKILL</a>
-          <ul id='dropdown1' className='dropdown-content'>
-            <li><a href="#!">one</a></li>
-            <li><a href="#!">two</a></li>
-            <li className="divider"></li>
-            <li><a href="#!">three</a></li>
-            <li><a href="#!"><i className="material-icons">view_module</i>four</a></li>
-            <li><a href="#!"><i className="material-icons">cloud</i>five</a></li>
-          </ul>
-        </li>
-      );
-
         return (
           <div className="controller-container">
 
@@ -409,7 +396,6 @@ class Controller extends React.Component {
                     <li><a onClick={this.attack}  className="waves-effect waves-light btn red controller-btn attack-btn">Attack</a></li>
                     {this.state.next ? nextMap : undefined }
                     {this.state.prev ? prevMap : undefined }
-                    {skillSet}
                 </ul>
 
 
