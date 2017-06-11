@@ -14,7 +14,7 @@ var RedisStore = require("connect-redis")(session);
 
 import api from './routes';
 
-import { fight, localMonsterList, checkMonster } from './game/Fight';
+import { fight, run,localMonsterList, checkMonster } from './game/Fight';
 
 const app = express();
 const port = 3000;
@@ -161,15 +161,18 @@ io.on('connection', (socket) => {
     //귓말
     socket.on('whisper', function(wObj){
       console.log(wObj);
-
       let sedMsg = "[귓속말] "+ wObj.sendUser + ": "+wObj.msg;
-
       io.emit(wObj.target, sedMsg);
     });
 
 
     socket.on('attack', function(info){
       let result = fight(io,info);
+    });
+
+    socket.on('run', function(info){
+      console.log(info);
+      let result = run(io,info);
     });
 
 
@@ -208,7 +211,7 @@ io.sockets.on("connection", function(socket){
     for(let countY = 0; countY < msg.length; countY++){
       for(let countX = 0; countX < msg[countY].length; countX++){
           let val = msg[countY][countX];
-          if(val==0){
+          if(val == 0){
             msg[countY][countX] = '□';
           }
           else if(val == -1){

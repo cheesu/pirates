@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.checkMonster = exports.localMonsterList = exports.fight = undefined;
+exports.checkMonster = exports.localMonsterList = exports.run = exports.fight = undefined;
 
 var _express = require('express');
 
@@ -92,7 +92,15 @@ var checkFightMonster = function checkFightMonster(ch) {
   return monNum;
 };
 
+var run = function run(io, info) {
+  fightInterval[info.userName + "fighting"] = false;
+  clearInterval(fightInterval[info.userName + "monsterAttack"]);
+  clearInterval(fightInterval[info.userName + "userAttack"]);
+  io.emit(info.ch, info.userName + "님이 꽁지 빠지게 도망갑니다.");
+};
+
 var fight = function fight(io, info) {
+  console.log("전투 시작");
   _account2.default.find({ username: info.userName }).exec(function (err, account) {
     if (err) throw err;
     var userInfo = account;
@@ -103,20 +111,13 @@ var fight = function fight(io, info) {
       return false;
     }
 
-    var dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str) * 0.3 - localMonsterList[monNum].dp;
-    dmg = Math.round(dmg);
-
-    var result = userInfo.username + "님께서 " + info.target + "에게 " + dmg + "의 공격을 하였습니다.";
-    localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
-    var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + localMonsterList[monNum].hp;
-    io.emit(info.ch, result);
-    io.emit(info.ch, monHPMsg);
-
     if (!info.fighting) {
       // 몬스터가 유저를 공격하는 인터벌
       fightInterval[userInfo.username + "fighting"] = true; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
       fightInterval[userInfo.username + "HP"] = userInfo.hp;
-      fightInterval[userInfo.username] = setInterval(function () {
+
+      // 몬스터가 공격
+      fightInterval[userInfo.username + "monsterAttack"] = setInterval(function () {
         var reDmg = localMonsterList[monNum].ap;
         var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
         fightInterval[userInfo.username + "HP"] -= reDmg;
@@ -135,22 +136,46 @@ var fight = function fight(io, info) {
 
         if (userHP < 0) {
           fightInterval[userInfo.username + "fighting"] = false;
-          clearInterval(fightInterval[userInfo.username]);
+          clearInterval(fightInterval[userInfo.username + "monsterAttack"]);
+          clearInterval(fightInterval[userInfo.username + "userAttack"]);
           _account2.default.update({ username: userInfo.username }, { $set: { hp: userInfo.max_hp } }, function (err, output) {
             if (err) console.log(err);
             io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
           });
         }
       }, localMonsterList[monNum].speed * 10);
-    }
 
-    // 몬스터 처치
-    if (localMonsterList[monNum].hp <= 0) {
-      fightInterval[userInfo.username + "fighting"] = false; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
-      clearInterval(fightInterval[userInfo.username]);
-      localMonsterList[monNum].exist = false;
-      io.emit(info.ch, localMonsterList[monNum].dieMsg);
-      expLevelup(userInfo, io, monNum, info); // 렙업인지 경치만 획득인지 계산한다
+      // 유저 공격 속도
+      var attackSpeed = 1000 - userInfo.dex * 3;
+
+      // 유저가 공격
+      fightInterval[userInfo.username + "userAttack"] = setInterval(function () {
+
+        // 몬스터 처치후 발동되는 인터벌 막기위한 판단
+        if (!fightInterval[userInfo.username + "fighting"]) {
+          console.log(userInfo.username + "퐈이팅 중단");
+          return false;
+        }
+
+        var dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str) * 0.3 - localMonsterList[monNum].dp;
+        dmg = Math.round(dmg);
+
+        var result = userInfo.username + "님께서 " + info.target + "에게 " + dmg + "의 공격을 하였습니다.";
+        localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+        var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + localMonsterList[monNum].hp;
+        io.emit(info.ch, result);
+        io.emit(info.ch, monHPMsg);
+
+        // 몬스터 처치
+        if (localMonsterList[monNum].hp <= 0) {
+          fightInterval[userInfo.username + "fighting"] = false; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
+          clearInterval(fightInterval[userInfo.username + "monsterAttack"]);
+          clearInterval(fightInterval[userInfo.username + "userAttack"]);
+          localMonsterList[monNum].exist = false;
+          io.emit(info.ch, localMonsterList[monNum].dieMsg);
+          expLevelup(userInfo, io, monNum, info); // 렙업인지 경치만 획득인지 계산한다
+        }
+      }, attackSpeed);
     }
   });
 };
@@ -207,5 +232,6 @@ function logB(x, base) {
 }
 
 exports.fight = fight;
+exports.run = run;
 exports.localMonsterList = localMonsterList;
 exports.checkMonster = checkMonster;

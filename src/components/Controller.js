@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-
+import { Fight } from 'Components';
+import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 class Controller extends React.Component {
   constructor(props, context) {
           super(props, context);
@@ -12,14 +13,14 @@ class Controller extends React.Component {
               monster:null,
               next:false,
               prev:false,
+              fighting:false,
           };
 
           this.endTime = 99;
           this.socketCh = '0-0';
           this.mapLocal = [0,0];
-          this.fighting = false;
           this.userHP = 1;
-
+          this.attackInfo = null;
           this.moveUp = this.moveUp.bind(this);
           this.moveLeft = this.moveLeft.bind(this);
           this.moveRight = this.moveRight.bind(this);
@@ -33,10 +34,17 @@ class Controller extends React.Component {
           this.getMapAxio = this.getMapAxio.bind(this);
           this.moveNextMap = this.moveNextMap.bind(this);
           this.movePrevMap = this.movePrevMap.bind(this);
-
+          this.toggleFight = this.toggleFight.bind(this);
 
           this.mapName = "푸른해변";
 
+      }
+
+      toggleFight(){
+          this.setState({
+              fighting: !this.state.fighting
+          });
+          console.log(this.state.fighting);
       }
 
       componentDidMount(){
@@ -101,14 +109,16 @@ class Controller extends React.Component {
                mapArr.push(mapY[count].split(","));
              }
              this.setState({
-               map:mapArr
+               map:mapArr,
+               prev:true,
+               next:false,
              });
              this.socketCh = '0-0';
              this.mapLocal = [0,0];
              this.mapName = response.data.mapInfo.mapName;
-
              this.props.socket.emit('chat', this.mapName+"-"+this.socketCh+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
              this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
+             this.viewLocalMap();
 
            }).catch((error) => {
                console.log(error);
@@ -125,15 +135,17 @@ class Controller extends React.Component {
                mapArr.push(mapY[count].split(","));
              }
              this.setState({
-               map:mapArr
+               map:mapArr,
+               prev:false,
+               next:true,
              });
-
-             this.socketCh = mapY.length+'-'+mapY[mapY.length].length;
-             this.mapLocal = [mapY.length,mapY[mapY.length].length];
+             this.socketCh = (mapY.length-1)+'-'+(mapArr[mapArr.length-1].length-1);
+             this.mapLocal = [mapY.length-1,mapArr[mapArr.length-1].length-1];
              this.mapName = response.data.mapInfo.mapName;
 
              this.props.socket.emit('chat', this.mapName+"-"+this.socketCh+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
              this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
+             this.viewLocalMap();
 
            }).catch((error) => {
                console.log(error);
@@ -144,7 +156,6 @@ class Controller extends React.Component {
       setFightingHP(data){
         this.userHP = data;
         if(this.userHP < 0){
-          this.fighting = false;
           this.props.socket.emit('private',"전투중 의식을 잃고 쓰러집니다.");
           this.mapLocal = [0,0];
           this.props.socket.emit('setLocalCh', "0-0");
@@ -154,7 +165,6 @@ class Controller extends React.Component {
       }
       // 전투중 설정
       setFighting(){
-        this.fighting = false;
         this.setState({
           monster:null
         });
@@ -179,7 +189,6 @@ class Controller extends React.Component {
       viewLocalMap(){
           let map = this.state.map;
           this.props.socket.emit('viewMap',map); // 요청
-
       }
 
 
@@ -201,22 +210,15 @@ class Controller extends React.Component {
       actionMove(dir){
         var d = new Date();
         var moveTimerS = d.getSeconds();
-
+/*
         if(this.endTime==moveTimerS){
           console.log("연속 클릭 하지 마라");
           return false;
         }
         this.endTime = moveTimerS;
+*/
 
 
-        if(this.socketCh=="0-0"){
-          this.fighting = false;
-        }
-
-        if(this.fighting){
-          this.props.socket.emit('private',"전투중입니다. 이동 할 수 없습니다.");
-          return false;
-        }
 
         var map = this.mapLocal;
         var mapArr = this.state.map;
@@ -232,68 +234,93 @@ class Controller extends React.Component {
           dirText= "북";
           map[0] = map[0]-1;
 
-          if(mapArr[map[0]][map[1]]==-1){
-            map[0] = map[0]+1;
-            this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
-            return false;
-          }
+
           if(map[0]<0){
             map[0] = 0;
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             return false;
-          }else{
+          }
+          else if(mapArr[map[0]][map[1]]==-1){
+            map[0] = map[0]+1;
+            this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+            return false;
+          }
+          else{
             this.props.socket.emit('move', "북쪽으로 이동 합니다." );
           }
         }
         else if(dir=="left"){
           dirText= "서";
           map[1] = map[1]-1;
-          if(mapArr[map[0]][map[1]]==-1){
-            map[1] = map[1]+1;
-            this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
-            return false;
-          }
+
           if(map[1]<0){
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             map[1] = 0;
             return false;
-          }else{
+          }
+          else if(mapArr[map[0]][map[1]]==-1){
+            map[1] = map[1]+1;
+            this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
+            return false;
+          }
+          else{
             this.props.socket.emit('move', "서쪽으로 이동 합니다." );
           }
+
         }
         else if(dir=="right"){
           dirText= "동";
           map[1] = map[1]+1;
-          if(mapArr[map[0]][map[1]]==-1){
+
+          if(map[1]>=mapXLimit){
+            this.props.socket.emit('move', "막혀서 못감"); // 요청
+            map[1] = mapXLimit-1;
+            return false;
+          }
+          else if(mapArr[map[0]][map[1]]==-1){
             map[1] = map[1]-1;
             this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
             return false;
           }
-          if(map[1]>mapXLimit){
-            this.props.socket.emit('move', "막혀서 못감"); // 요청
-            map[1] = mapXLimit;
-            return false;
-          }else{
+          else{
             this.props.socket.emit('move', "동쪽으로 이동 합니다." );
           }
+
+
         }
         else if(dir=="down"){
           dirText= "남";
           map[0] = map[0]+1;
-
-          if(mapArr[map[0]][map[1]]==-1){
+          console.log(map);
+          if(map[0]>=mapYLimit){
+            console.log("막혀따아");
+            this.props.socket.emit('move', "막혀서 못감"); // 요청
+            map[0] = mapYLimit-1;
+            return false;
+            console.log("막혀따아2");
+          }
+          else if(mapArr[map[0]][map[1]]==-1){
+            console.log("막혀따아3");
             map[0] = map[0]-1;
             this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
             return false;
           }
-
-          if(map[0]>mapYLimit){
-            this.props.socket.emit('move', "막혀서 못감"); // 요청
-            map[0] = mapYLimit;
-            return false;
-          }else{
+          else{
             this.props.socket.emit('move', "남쪽으로 이동 합니다." );
           }
+
+
+        }
+
+
+        if(!this.state.next&&!this.state.prev){
+              mapArr[mapY][mapX] = 0;
+        }
+        else if(this.state.next){
+          mapArr[mapY][mapX] =3;
+        }
+        else if(this.state.prev){
+          mapArr[mapY][mapX] = 4;
         }
 
         // 다음맵으로 이동
@@ -307,24 +334,22 @@ class Controller extends React.Component {
             prev:true,
           });
         }
-        else{
-          if(this.state.next||this.state.prev){
+        else if(this.state.next||this.state.prev){
             this.setState({
               next:false,
               prev:false
             });
-
-          }
         }
 
-          mapArr[mapY][mapX] = "□";
+
+
 
 
          mapY =map[0];
          mapX =map[1];
 
-        mapArr[mapY][mapX] = 2;
-
+        mapArr[mapY][mapX] = 2; // 이동 타겟 지점
+        console.log(mapArr);
         var socketChan = mapY+"-"+mapX;
         this.setState({
           map:mapArr
@@ -358,14 +383,16 @@ class Controller extends React.Component {
           return false;
         }
 
+
+
+        this.toggleFight();
+
         let attackInfo = new Object();
         attackInfo.userName = this.props.username;
         attackInfo.ch = this.mapName+"-"+this.socketCh;
         attackInfo.target = this.state.monster.name;
-        attackInfo.fighting = this.fighting;
-
-        this.props.socket.emit('attack',attackInfo);
-        this.fighting = true;
+        attackInfo.fighting = false;
+        this.attackInfo = attackInfo;
       }
 
 
@@ -392,13 +419,19 @@ class Controller extends React.Component {
                 </ul>
 
                 <ul>
-                    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li>
+                { /*    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li> */}
                     <li><a onClick={this.attack}  className="waves-effect waves-light btn red controller-btn attack-btn">Attack</a></li>
                     {this.state.next ? nextMap : undefined }
                     {this.state.prev ? prevMap : undefined }
                 </ul>
 
-
+                <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                     { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
+                     {this.state.fighting ? <Fight onClose={this.toggleFight}
+                                                  attackInfo={this.attackInfo}
+                                                  socket={this.props.socket}
+                                                  /> : undefined }
+                </ReactCSSTransitionGroup>
 
 
 

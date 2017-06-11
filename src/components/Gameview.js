@@ -76,6 +76,11 @@ class Gameview extends React.Component {
         chat: this.state.chat.concat(data)
       });
 
+      if(this.state.chat.length>80){
+        let reData = this.state.chat;
+        reData.splice(0,this.state.chat.length-80);
+      }
+
       var objDiv = document.getElementById("gameChatView"); objDiv.scrollTop = objDiv.scrollHeight;
     }
 

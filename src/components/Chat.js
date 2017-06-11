@@ -126,7 +126,6 @@ class Chat extends React.Component {
 
 
     render(){
-
         return (
           <div className="input-field chat-input-wrapper">
                   <input

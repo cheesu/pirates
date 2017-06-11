@@ -186,14 +186,17 @@ io.on('connection', function (socket) {
   //귓말
   socket.on('whisper', function (wObj) {
     console.log(wObj);
-
     var sedMsg = "[귓속말] " + wObj.sendUser + ": " + wObj.msg;
-
     io.emit(wObj.target, sedMsg);
   });
 
   socket.on('attack', function (info) {
     var result = (0, _Fight.fight)(io, info);
+  });
+
+  socket.on('run', function (info) {
+    console.log(info);
+    var result = (0, _Fight.run)(io, info);
   });
 
   socket.on('disconnect', function () {

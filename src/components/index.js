@@ -7,6 +7,10 @@ import RightMenu from './RightMenu';
 import CurrentUser from './CurrentUser';
 import Controller from './Controller';
 import Mapview from './Mapview';
+import Fight from './Fight';
+import HPview from './HPview';
+import Fightview from './Fightview';
+import FightController from './FightController';
 
 
-export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview};
+export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview,Fight, HPview, Fightview, FightController};

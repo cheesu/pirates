@@ -84,10 +84,14 @@ a {
 .game-view
 {
   color:#fff;
-  height: 30em;
+  height: 20em;
   overflow: scroll;
   word-break: break-all;
   overflow-x: hidden;
+}
+.game-view > p{
+  margin: 0.5em;
+  font-size: 0.5em;
 }
 
 .current-user-list-btn
@@ -362,8 +366,8 @@ nav .brand-logo.center
 .controller-container
 {
   position: absolute;
-  margin-top: 2em;
-  height: 30%;
+  margin-top: 1em;
+  height: 20%;
   width: 100%;
 }
 
@@ -423,7 +427,165 @@ nav .brand-logo.center
 .map-view
 {
   color: #FFF;
+  font-size: 0.4em;
+  text-align: center;
 }
 .map-view > p{
   margin: 0px;
+  line-height: 1em;
+}
+
+
+
+
+/* fight-container */
+
+.fight-container-screen {
+    position: fixed;
+    overflow-y: none;
+    left: 0px;
+    top: 0px;
+    height:100%;
+    width:100%;
+    background-color: rgba(0, 0, 0, 1);
+    z-index: 99;
+}
+
+.fight-container-screen input {
+    text-align: center;
+    font-size: 50px;
+    line-height: 80px;
+    margin-top: 10vw;
+    height: 80px;
+    font-weight: 200;
+}
+
+.fight-container-screen .btn {
+    margin-top: 14px;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+
+@-webkit-keyframes fight-container-enter {
+    0% {
+        opacity: 0;
+        height: 0%;
+    }
+    100% {
+        opacity: 1;
+        height: 100%;
+    }
+}
+
+@keyframes fight-container-enter {
+    0% {
+        opacity: 0;
+        height: 0%;
+    }
+    100% {
+        opacity: 1;
+        height: 100%;
+    }
+}
+
+.fight-container-enter {
+    -webkit-animation-duration: 0.3s;
+    animation-duration: 0.3s;
+    -webkit-animation-name: fight-container-enter;
+    animation-name: fight-container-enter;
+}
+
+@-webkit-keyframes fight-container-leave {
+    0% {
+        opacity: 1;
+        height: 100%;
+    }
+    100% {
+        opacity: 0;
+        height: 0%;
+    }
+}
+
+@keyframes fight-container-leave {
+    0% {
+        opacity: 1;
+        height: 100%;
+    }
+    100% {
+        opacity: 0;
+        height: 0%;
+    }
+}
+
+.fight-container-leave {
+    -webkit-animation-duration: 0.3s;
+    animation-duration: 0.3s;
+    -webkit-animation-name: fight-container-leave;
+    animation-name: fight-container-leave;
+}
+
+.fight-comp-wrapper
+{
+  height: 100%;
+}
+
+/*HP-veiw*/
+
+.HP-view
+{
+  background: #000;
+  height: 10%;
+  color: #FFF;
+  font-size: 0.4em;
+  text-align: center;
+  z-index: 9;
+}
+.HP-view > p{
+  margin: 0px;
+  line-height: 1em;
+}
+
+/*fight-view*/
+
+.fight-view
+{
+  color:#fff;
+  height: calc(90% - 7em);
+  overflow: scroll;
+  word-break: break-all;
+  overflow-x: hidden;
+}
+.fight-view > p{
+  margin: 0.5em;
+  font-size: 0.5em;
+}
+
+
+/*fight-controller*/
+
+
+.fight-controller-container
+{
+  position: absolute;
+  margin-top: 1em;
+  height: 7em;
+  width: 100%;
+  text-align: center;
+}
+
+
+.fight-btn-ul
+{
+  display: inline-block;
+  *display: inline;
+  zoom:1;
+}
+.fight-btn-li
+{
+  float: left;
+  margin-left: -1px;
+  z-index: 1;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { browserHistory, Link } from 'react-router';
 
+
 class Search extends React.Component {
     constructor(props, context) {
         super(props, context);
