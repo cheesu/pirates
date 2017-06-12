@@ -91,7 +91,7 @@ a {
 }
 .game-view > p{
   margin: 0.5em;
-  font-size: 0.5em;
+  font-size: 1em;
 }
 
 .current-user-list-btn
@@ -539,7 +539,7 @@ nav .brand-logo.center
   background: #000;
   height: 10%;
   color: #FFF;
-  font-size: 0.4em;
+  font-size: 0.8em;
   text-align: center;
   z-index: 9;
 }
@@ -565,7 +565,7 @@ nav .brand-logo.center
 }
 .fight-view > p{
   margin: 0.5em;
-  font-size: 0.5em;
+  font-size: 1em;
 }
 
 
