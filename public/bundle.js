@@ -20014,6 +20014,8 @@ var Controller = function (_React$Component) {
 
         fightingHP(data);
       });
+
+      console.log(this.props.userInfo);
     }
   }, {
     key: 'getMapAxio',
@@ -22437,6 +22439,7 @@ var Game = function (_React$Component) {
             this.props.getStatusRequest().then(function () {
                 // if session is not valid
                 if (!_this2.props.status.valid) {
+
                     // logout the session
                     loginData = {
                         isLoggedIn: false,
@@ -22471,7 +22474,8 @@ var Game = function (_React$Component) {
                 }),
                 _react2.default.createElement(_Components.Controller, {
                     socket: this.socket,
-                    username: this.props.status.currentUser
+                    username: this.props.status.currentUser,
+                    userInfo: this.props.status
                 })
             );
 
@@ -22960,7 +22964,8 @@ function authentication(state, action) {
                 },
                 status: {
                     isLoggedIn: { $set: true },
-                    currentUser: { $set: action.username }
+                    currentUser: { $set: action.username },
+                    job: { $set: action.job }
                 }
             });
         case types.AUTH_LOGIN_FAILURE:

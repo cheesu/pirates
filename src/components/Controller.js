@@ -59,7 +59,7 @@ class Controller extends React.Component {
         location.href="/login";
         });
 
-      
+
         // 몬스터 셋팅
         let setLocalMonster = this.setLocalMonster.bind(this);
         this.props.socket.on("setMonster", function(data){ //몹 채팅
@@ -72,6 +72,8 @@ class Controller extends React.Component {
             fightingHP(data);
 
         });
+
+        console.log(this.props.userInfo);
 
       }
 

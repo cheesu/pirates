@@ -45,6 +45,7 @@ class Game extends React.Component {
                () => {
                    // if session is not valid
                    if(!this.props.status.valid) {
+
                        // logout the session
                        loginData = {
                            isLoggedIn: false,
@@ -81,6 +82,7 @@ class Game extends React.Component {
               <Controller
                 socket={this.socket}
                 username = {this.props.status.currentUser}
+                userInfo = {this.props.status}
                 />
             </div>
       );

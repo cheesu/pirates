@@ -262,4 +262,6 @@ var fight = function (io,info){
 }
 
 
+
+
 export { fight,run ,localMonsterList, checkMonster};
