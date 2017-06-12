@@ -19852,13 +19852,14 @@ var Controller = function (_React$Component) {
       monster: null,
       next: false,
       prev: false,
-      fighting: false
+      fighting: false,
+      userHP: 100,
+      userMaxHP: 100
     };
 
     _this.endTime = 99;
     _this.socketCh = '0-0';
     _this.mapLocal = [0, 0];
-    _this.userHP = 1;
     _this.attackInfo = null;
     _this.moveUp = _this.moveUp.bind(_this);
     _this.moveLeft = _this.moveLeft.bind(_this);
@@ -19907,17 +19908,11 @@ var Controller = function (_React$Component) {
         setLocalMonster(data);
       });
 
-      // 전투 상황
-      var fighting = this.setFighting.bind(this);
       var fightingHP = this.setFightingHP.bind(this);
-      this.props.socket.on(this.props.username + "전투", function (data) {
+      this.props.socket.on(this.props.username + "currentUserHP", function (data) {
         //몹 채팅
-        if (data == "endFight") {
-          fighting();
-        } else if (data.indexOf('[HP]') == 0) {
-          var dataArr = data.split("[HP]");
-          fightingHP(dataArr[1]);
-        }
+
+        fightingHP(data);
       });
     }
   }, {
@@ -20002,8 +19997,22 @@ var Controller = function (_React$Component) {
   }, {
     key: 'setFightingHP',
     value: function setFightingHP(data) {
-      this.userHP = data;
-      if (this.userHP < 0) {
+      var userHPArr = data.split("-");
+      var userHP = "";
+      var currentHP = Number(userHPArr[0]);
+      var maxHP = Number(userHPArr[1]);
+
+      this.setState({
+        userHP: currentHP
+      });
+
+      if (this.state.userMaxHP != maxHP) {
+        this.setState({
+          userMaxHP: maxHP
+        });
+      }
+
+      if (this.state.userHP <= 0) {
         this.props.socket.emit('private', "전투중 의식을 잃고 쓰러집니다.");
         this.mapLocal = [0, 0];
         this.props.socket.emit('setLocalCh', "0-0");
@@ -20226,6 +20235,8 @@ var Controller = function (_React$Component) {
       attackInfo.userName = this.props.username;
       attackInfo.ch = this.mapName + "-" + this.socketCh;
       attackInfo.target = this.state.monster.name;
+      attackInfo.userMaxHP = this.state.userMaxHP;
+      attackInfo.userHP = this.state.userHP;
       attackInfo.fighting = false;
       this.attackInfo = attackInfo;
     }
@@ -20632,14 +20643,13 @@ var FightController = function (_React$Component) {
 
         _this.state = {
             msg: "",
-            map: [],
-            monster: null,
-            next: false,
-            prev: false,
-            fighting: false
+            fighting: true
         };
 
         _this.handleClose = _this.handleClose.bind(_this);
+        _this.handleCloseExit = _this.handleCloseExit.bind(_this);
+        _this.toggleFight = _this.toggleFight.bind(_this);
+
         return _this;
     }
 
@@ -20659,17 +20669,67 @@ var FightController = function (_React$Component) {
             });
 
             this.props.socket.emit('attack', this.props.attackInfo);
+
+            var toggleFight = this.toggleFight.bind(this);
+            this.props.socket.on(this.props.attackInfo.userName + "endFight", function (data) {
+                //귓말
+                console.log("전투 끝");
+                toggleFight();
+            });
+
+            this.props.socket.on(this.props.attackInfo.userName + "DEAD", function (data) {
+                //귓말
+                console.log("님 으앙쥬금");
+                toggleFight();
+            });
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this.props.socket.off(this.props.attackInfo.userName + "endFight");
+            this.props.socket.off(this.props.attackInfo.userName + "DEAD");
         }
     }, {
         key: 'handleClose',
         value: function handleClose() {
-            console.log(this.props.attackInfo);
             this.props.socket.emit('run', this.props.attackInfo);
             this.props.onClose();
         }
     }, {
+        key: 'handleCloseExit',
+        value: function handleCloseExit() {
+            this.props.onClose();
+        }
+    }, {
+        key: 'toggleFight',
+        value: function toggleFight() {
+            console.log("체인지 텍스트");
+            this.setState({
+                fighting: !this.state.fighting
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
+            var run = _react2.default.createElement(
+                'li',
+                { className: 'fight-btn-li' },
+                _react2.default.createElement(
+                    'a',
+                    { onClick: this.handleClose, className: 'waves-effect waves-light btn red ' },
+                    'Run'
+                )
+            );
+
+            var exit = _react2.default.createElement(
+                'li',
+                { className: 'fight-btn-li' },
+                _react2.default.createElement(
+                    'a',
+                    { onClick: this.handleCloseExit, className: 'waves-effect waves-light btn red ' },
+                    'Exit'
+                )
+            );
 
             return _react2.default.createElement(
                 'div',
@@ -20677,15 +20737,7 @@ var FightController = function (_React$Component) {
                 _react2.default.createElement(
                     'ul',
                     { className: 'fight-btn-ul' },
-                    _react2.default.createElement(
-                        'li',
-                        { className: 'fight-btn-li' },
-                        _react2.default.createElement(
-                            'a',
-                            { onClick: this.handleClose, className: 'waves-effect waves-light btn red ' },
-                            'Run'
-                        )
-                    ),
+                    this.state.fighting ? run : exit,
                     _react2.default.createElement(
                         'li',
                         { className: 'fight-btn-li' },
@@ -20703,7 +20755,7 @@ var FightController = function (_React$Component) {
                                 _react2.default.createElement(
                                     'a',
                                     { href: '#!' },
-                                    'one'
+                                    '\uBBF8\uAD6C\uD604'
                                 )
                             ),
                             _react2.default.createElement(
@@ -20712,7 +20764,7 @@ var FightController = function (_React$Component) {
                                 _react2.default.createElement(
                                     'a',
                                     { href: '#!' },
-                                    'two'
+                                    '\uBBF8\uAD6C\uD604'
                                 )
                             ),
                             _react2.default.createElement('li', { className: 'divider' }),
@@ -20722,7 +20774,7 @@ var FightController = function (_React$Component) {
                                 _react2.default.createElement(
                                     'a',
                                     { href: '#!' },
-                                    'three'
+                                    '\uBBF8\uAD6C\uD604'
                                 )
                             )
                         )
@@ -20732,8 +20784,40 @@ var FightController = function (_React$Component) {
                         { className: 'fight-btn-li' },
                         _react2.default.createElement(
                             'a',
-                            { className: 'waves-effect waves-light btn red ' },
+                            { className: 'dropdown-button btn', href: '#', 'data-activates': 'dropdown2' },
                             'Use Item'
+                        ),
+                        _react2.default.createElement(
+                            'ul',
+                            { id: 'dropdown2', className: 'dropdown-content' },
+                            _react2.default.createElement(
+                                'li',
+                                null,
+                                _react2.default.createElement(
+                                    'a',
+                                    { href: '#!' },
+                                    '\uBBF8\uAD6C\uD604'
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'li',
+                                null,
+                                _react2.default.createElement(
+                                    'a',
+                                    { href: '#!' },
+                                    '\uBBF8\uAD6C\uD604'
+                                )
+                            ),
+                            _react2.default.createElement('li', { className: 'divider' }),
+                            _react2.default.createElement(
+                                'li',
+                                null,
+                                _react2.default.createElement(
+                                    'a',
+                                    { href: '#!' },
+                                    '\uBBF8\uAD6C\uD604'
+                                )
+                            )
                         )
                     )
                 )
@@ -20796,7 +20880,7 @@ var Fightview = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Fightview.__proto__ || Object.getPrototypeOf(Fightview)).call(this, props, context));
 
     _this.state = {
-      chat: ['test'],
+      chat: [''],
       socketCh: _this.props.attackInfo.ch
     };
     _this.addChatData = _this.addChatData.bind(_this);
@@ -20808,27 +20892,21 @@ var Fightview = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var addChat = this.addChatData.bind(this);
-      this.props.socket.on(this.state.socketCh, function (data) {
-        //현재공간 채팅
+      this.props.socket.on(this.state.socketCh + "fight", function (data) {
+        //전투 정보
         addChat(data);
       });
 
-      this.props.socket.on(this.props.username, function (data) {
-        //귓말
-        //  addChat(data);
-        addChat(data);
-      });
-
-      this.props.socket.on('fight-msg', function (data) {
-        //개인
-        //  addChat(data);
+      this.props.socket.on(this.props.username + "fight", function (data) {
+        //
         addChat(data);
       });
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      this.socket.off('fight-msg');
+      this.props.socket.off(this.state.socketCh + "fight");
+      this.props.socket.off(this.props.username + "fight");
     }
   }, {
     key: 'addChatData',
@@ -21095,7 +21173,7 @@ exports.default = Gameview;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21119,99 +21197,169 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var HPview = function (_React$Component) {
-    _inherits(HPview, _React$Component);
+  _inherits(HPview, _React$Component);
 
-    function HPview(props, context) {
-        _classCallCheck(this, HPview);
+  function HPview(props, context) {
+    _classCallCheck(this, HPview);
 
-        var _this = _possibleConstructorReturn(this, (HPview.__proto__ || Object.getPrototypeOf(HPview)).call(this, props, context));
+    var _this = _possibleConstructorReturn(this, (HPview.__proto__ || Object.getPrototypeOf(HPview)).call(this, props, context));
 
-        _this.state = {
-            userHP: 0,
-            targetHP: 0,
-            socketCh: '0-0'
-        };
-        _this.viewUserHP = _this.viewUserHP.bind(_this);
-        _this.socket = _this.props.socket;
-
-        return _this;
+    var currentHP = Number(_this.props.attackInfo.userHP);
+    var maxHP = Number(_this.props.attackInfo.userMaxHP);
+    var hpPer = currentHP / maxHP * 100;
+    var userHPGauge = "";
+    for (var count = 0; count < 20; count++) {
+      if (hpPer > count * 5) {
+        userHPGauge = userHPGauge + "■";
+      } else {
+        userHPGauge = userHPGauge + "□";
+      }
     }
 
-    _createClass(HPview, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
+    _this.state = {
+      userHPbar: userHPGauge,
+      userHP: currentHP + " / " + maxHP,
+      targetHPbar: "■■■■■■■■■■■■■■■■■■■■",
+      targetHP: "max/max",
+      socketCh: '0-0'
+    };
+    _this.viewTargetHP = _this.viewTargetHP.bind(_this);
+    _this.viewUserHP = _this.viewUserHP.bind(_this);
+    _this.socket = _this.props.socket;
 
-            var viewUserHP = this.viewUserHP.bind(this);
-            this.socket.on('userHP', function (data) {
-                //개인
-                //  addChat(data);
-                viewUserHP(data);
-            });
+    return _this;
+  }
 
-            this.socket.on('targetHP', function (data) {
-                //개인
-                //  addChat(data);
-                viewUserHP(data);
-            });
-        }
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            this.socket.off('targetHP');
-        }
-    }, {
-        key: 'viewUserHP',
-        value: function viewUserHP(data) {
-            this.setState({
-                userHP: data
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { id: 'mapViewContainer', className: 'HP-view' },
-                _react2.default.createElement(
-                    'div',
-                    null,
-                    _react2.default.createElement(
-                        'span',
-                        null,
-                        this.props.attackInfo.userName,
-                        ' :'
-                    ),
-                    _react2.default.createElement(
-                        'span',
-                        null,
-                        '\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0'
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    null,
-                    _react2.default.createElement(
-                        'span',
-                        null,
-                        this.props.attackInfo.target,
-                        ' :'
-                    ),
-                    _react2.default.createElement(
-                        'span',
-                        null,
-                        '\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0\u25A0'
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    null,
-                    'test'
-                )
-            );
-        }
-    }]);
+  _createClass(HPview, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
 
-    return HPview;
+      /*  this.setState({
+            userHP: userHPGauge
+          });*/
+
+      var viewTargetHP = this.viewTargetHP.bind(this);
+      var viewUserHP = this.viewUserHP.bind(this);
+
+      this.socket.on(this.props.attackInfo.userName + 'userHP', function (data) {
+        //몬스터 체력
+        viewUserHP(data);
+      });
+      this.socket.on(this.props.attackInfo.ch + 'monsterHP', function (data) {
+        //몬스터 체력
+        console.log(data);
+        viewTargetHP(data);
+      });
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.socket.off(this.props.attackInfo.userName + 'userHP');
+      this.socket.off(this.props.attackInfo.ch + 'monsterHP');
+    }
+  }, {
+    key: 'viewUserHP',
+    value: function viewUserHP(data) {
+      var userHPArr = data.split("-");
+      var userHP = "";
+      var currentHP = Number(userHPArr[0]);
+      var maxHP = Number(userHPArr[1]);
+
+      var hpPer = currentHP / maxHP * 100;
+      for (var count = 0; count < 20; count++) {
+        if (hpPer > count * 5) {
+          userHP = userHP + "■";
+        } else {
+          userHP = userHP + "□";
+        }
+      }
+
+      this.setState({
+        userHPbar: userHP,
+        userHP: currentHP + " / " + maxHP
+      });
+    }
+  }, {
+    key: 'viewTargetHP',
+    value: function viewTargetHP(data) {
+      console.log("타겟 체력");
+      var targetHPArr = data.split("-");
+
+      var targetHP = "";
+      var currentHP = Number(targetHPArr[0]);
+      var maxHP = Number(targetHPArr[1]);
+
+      var hpPer = currentHP / maxHP * 100;
+      for (var count = 0; count < 20; count++) {
+        if (hpPer > count * 5) {
+          targetHP = targetHP + "■";
+        } else {
+          targetHP = targetHP + "□";
+        }
+      }
+      this.setState({
+        targetHPbar: targetHP,
+        targetHP: currentHP + " / " + maxHP
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { id: 'mapViewContainer', className: 'HP-view' },
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'span',
+            null,
+            this.props.attackInfo.userName,
+            ' :'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: 'hp-bar' },
+            this.state.userHPbar
+          ),
+          _react2.default.createElement(
+            'span',
+            null,
+            '  ',
+            this.state.userHP
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'span',
+            null,
+            this.props.attackInfo.target,
+            ' :'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: 'hp-bar' },
+            this.state.targetHPbar
+          ),
+          _react2.default.createElement(
+            'span',
+            null,
+            '  ',
+            this.state.targetHP
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'test'
+        )
+      );
+    }
+  }]);
+
+  return HPview;
 }(_react2.default.Component);
 
 exports.default = HPview;
@@ -27119,7 +27267,7 @@ exports = module.exports = __webpack_require__(467)(undefined);
 
 
 // module
-exports.push([module.i, "html ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 20em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.game-view > p{\r\n  margin: 0.5em;\r\n  font-size: 0.5em;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 17px;\r\n}\r\n\r\n.whisper-chat{\r\n  color:#B0FFFF;\r\n}\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 0px;\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 20%;\r\n  width: 100%;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n\r\n\r\n\r\n/*mapview*/\r\n.map-view\r\n{\r\n  color: #FFF;\r\n  font-size: 0.4em;\r\n  text-align: center;\r\n}\r\n.map-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n\r\n\r\n\r\n/* fight-container */\r\n\r\n.fight-container-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 1);\r\n    z-index: 99;\r\n}\r\n\r\n.fight-container-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.fight-container-screen .btn {\r\n    margin-top: 14px;\r\n    margin-left: 1em;\r\n    margin-right: 1em;\r\n    padding-left: 0.5em;\r\n    padding-right: 0.5em;\r\n}\r\n\r\n\r\n@-webkit-keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.fight-container-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-enter;\r\n    animation-name: fight-container-enter;\r\n}\r\n\r\n@-webkit-keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.fight-container-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-leave;\r\n    animation-name: fight-container-leave;\r\n}\r\n\r\n.fight-comp-wrapper\r\n{\r\n  height: 100%;\r\n}\r\n\r\n/*HP-veiw*/\r\n\r\n.HP-view\r\n{\r\n  background: #000;\r\n  height: 10%;\r\n  color: #FFF;\r\n  font-size: 0.4em;\r\n  text-align: center;\r\n  z-index: 9;\r\n}\r\n.HP-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n/*fight-view*/\r\n\r\n.fight-view\r\n{\r\n  color:#fff;\r\n  height: calc(90% - 7em);\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.fight-view > p{\r\n  margin: 0.5em;\r\n  font-size: 0.5em;\r\n}\r\n\r\n\r\n/*fight-controller*/\r\n\r\n\r\n.fight-controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 7em;\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.fight-btn-ul\r\n{\r\n  display: inline-block;\r\n  *display: inline;\r\n  zoom:1;\r\n}\r\n.fight-btn-li\r\n{\r\n  float: left;\r\n  margin-left: -1px;\r\n  z-index: 1;\r\n}\r\n", ""]);
+exports.push([module.i, "html ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 20em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.game-view > p{\r\n  margin: 0.5em;\r\n  font-size: 0.5em;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 17px;\r\n}\r\n\r\n.whisper-chat{\r\n  color:#B0FFFF;\r\n}\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 0px;\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 20%;\r\n  width: 100%;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n\r\n\r\n\r\n/*mapview*/\r\n.map-view\r\n{\r\n  color: #FFF;\r\n  font-size: 0.4em;\r\n  text-align: center;\r\n}\r\n.map-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n\r\n\r\n\r\n/* fight-container */\r\n\r\n.fight-container-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 1);\r\n    z-index: 99;\r\n}\r\n\r\n.fight-container-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.fight-container-screen .btn {\r\n    margin-top: 14px;\r\n    margin-left: 1em;\r\n    margin-right: 1em;\r\n    padding-left: 0.5em;\r\n    padding-right: 0.5em;\r\n}\r\n\r\n\r\n@-webkit-keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.fight-container-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-enter;\r\n    animation-name: fight-container-enter;\r\n}\r\n\r\n@-webkit-keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.fight-container-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-leave;\r\n    animation-name: fight-container-leave;\r\n}\r\n\r\n.fight-comp-wrapper\r\n{\r\n  height: 100%;\r\n}\r\n\r\n/*HP-veiw*/\r\n\r\n.HP-view\r\n{\r\n  background: #000;\r\n  height: 10%;\r\n  color: #FFF;\r\n  font-size: 0.4em;\r\n  text-align: center;\r\n  z-index: 9;\r\n}\r\n.HP-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n.hp-bar\r\n{\r\n      letter-spacing: -3px;\r\n}\r\n\r\n/*fight-view*/\r\n\r\n.fight-view\r\n{\r\n  color:#fff;\r\n  height: calc(90% - 7em);\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.fight-view > p{\r\n  margin: 0.5em;\r\n  font-size: 0.5em;\r\n}\r\n\r\n\r\n/*fight-controller*/\r\n\r\n\r\n.fight-controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 7em;\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.fight-btn-ul\r\n{\r\n  display: inline-block;\r\n  *display: inline;\r\n  zoom:1;\r\n}\r\n.fight-btn-li\r\n{\r\n  float: left;\r\n  margin-left: -1px;\r\n  z-index: 1;\r\n}\r\n", ""]);
 
 // exports
 

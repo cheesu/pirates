@@ -8,14 +8,13 @@ class FightController extends React.Component {
 
           this.state = {
               msg: "",
-              map:[],
-              monster:null,
-              next:false,
-              prev:false,
-              fighting:false,
+              fighting:true,
           };
 
           this.handleClose = this.handleClose.bind(this);
+          this.handleCloseExit = this.handleCloseExit.bind(this);
+          this.toggleFight = this.toggleFight.bind(this);
+
       }
 
 
@@ -35,39 +34,79 @@ class FightController extends React.Component {
 
           this.props.socket.emit('attack',this.props.attackInfo);
 
+          let toggleFight = this.toggleFight.bind(this);
+          this.props.socket.on(this.props.attackInfo.userName+"endFight", function(data){ //귓말
+          console.log("전투 끝");
+          toggleFight();
+          });
+
+          this.props.socket.on(this.props.attackInfo.userName+"DEAD", function(data){ //귓말
+          console.log("님 으앙쥬금");
+          toggleFight();
+          });
+
+      }
+
+      componentWillUnmount () {
+        this.props.socket.off(this.props.attackInfo.userName+"endFight");
+        this.props.socket.off(this.props.attackInfo.userName+"DEAD");
+
       }
 
       handleClose() {
-          console.log(this.props.attackInfo);
           this.props.socket.emit('run',this.props.attackInfo);
           this.props.onClose();
-
       }
 
+      handleCloseExit() {
+          this.props.onClose();
+      }
 
+      toggleFight(){
+        console.log("체인지 텍스트");
+        this.setState({
+          fighting:!this.state.fighting,
+        });
+      }
 
 
 
     render(){
+      const run = (
+          <li className="fight-btn-li"><a onClick={this.handleClose}  className="waves-effect waves-light btn red ">Run</a></li>
+      );
 
+      const exit = (
+          <li className="fight-btn-li"><a onClick={this.handleCloseExit}  className="waves-effect waves-light btn red ">Exit</a></li>
+      );
 
         return (
           <div className="fight-controller-container">
                 <ul className="fight-btn-ul">
                 { /*    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li> */}
-                    <li className="fight-btn-li"><a onClick={this.handleClose}  className="waves-effect waves-light btn red ">Run</a></li>
 
+                    { this.state.fighting  ? run : exit }
 
                     <li className="fight-btn-li">
                       <a className='dropdown-button btn' href='#' data-activates='dropdown1'>Use Skill</a>
                        <ul id='dropdown1' className='dropdown-content'>
-                         <li><a href="#!">one</a></li>
-                         <li><a href="#!">two</a></li>
+                         <li><a href="#!">미구현</a></li>
+                         <li><a href="#!">미구현</a></li>
                          <li className="divider"></li>
-                         <li><a href="#!">three</a></li>
+                         <li><a href="#!">미구현</a></li>
                        </ul>
                     </li>
-                    <li className="fight-btn-li"><a  className="waves-effect waves-light btn red ">Use Item</a></li>
+
+                    <li className="fight-btn-li">
+                      <a className='dropdown-button btn' href='#' data-activates='dropdown2'>Use Item</a>
+                       <ul id='dropdown2' className='dropdown-content'>
+                         <li><a href="#!">미구현</a></li>
+                         <li><a href="#!">미구현</a></li>
+                         <li className="divider"></li>
+                         <li><a href="#!">미구현</a></li>
+                       </ul>
+                    </li>
+
 
                 </ul>
             </div>

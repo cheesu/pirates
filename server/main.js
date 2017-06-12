@@ -218,7 +218,7 @@ io.sockets.on("connection", function(socket){
             msg[countY][countX] = '■';
           }
           else if(val == 2){
-            msg[countY][countX] = '☆';
+            msg[countY][countX] = '★';
           }
           else if(val == 3){
             msg[countY][countX] = '※';

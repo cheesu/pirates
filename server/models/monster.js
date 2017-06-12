@@ -6,6 +6,7 @@ const Monster = new Schema({
     name: String,
     lv: Number(),
     hp:Number(),
+    maxHP:Number(),
     mp:Number(),
     ap:Number(),
     dp:Number(),

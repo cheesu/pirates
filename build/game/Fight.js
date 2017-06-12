@@ -45,6 +45,7 @@ function loadMonsterList() {
         monObj.name = monsters[monCount].name;
         monObj.lv = monsters[monCount].lv;
         monObj.hp = monsters[monCount].hp;
+        monObj.maxHP = monsters[monCount].maxHP;
         monObj.mp = monsters[monCount].mp;
         monObj.ap = monsters[monCount].ap;
         monObj.dp = monsters[monCount].dp;
@@ -96,7 +97,7 @@ var run = function run(io, info) {
   fightInterval[info.userName + "fighting"] = false;
   clearInterval(fightInterval[info.userName + "monsterAttack"]);
   clearInterval(fightInterval[info.userName + "userAttack"]);
-  io.emit(info.ch, info.userName + "님이 꽁지 빠지게 도망갑니다.");
+  io.emit(info.ch, info.userName + "님이 도망갑니다.");
 };
 
 var fight = function fight(io, info) {
@@ -124,23 +125,30 @@ var fight = function fight(io, info) {
 
         // 몬스터 처치후 발동되는 인터벌 막기위한 판단
         if (!fightInterval[userInfo.username + "fighting"]) {
-          console.log(userInfo.username + "퐈이팅 중단");
+          console.log(userInfo.username + "전투 중단");
           return false;
+        }
+
+        if (userHP < 0) {
+          userHP = 0;
         }
 
         _account2.default.update({ username: userInfo.username }, { $set: { hp: userHP } }, function (err, output) {
           if (err) console.log(err);
-          io.emit(info.ch, localMonsterList[monNum].attackMsg + " " + userInfo.username + "님이" + reDmg + "의 피해를 입었습니다 현재 체력 :" + userHP);
-          io.emit(userInfo.username + "전투", "[HP]" + userHP);
+          io.emit(info.ch + "fight", localMonsterList[monNum].attackMsg + " " + userInfo.username + "님이" + reDmg + "의 피해를 입었습니다 현재 체력 :" + userHP);
+          io.emit(userInfo.username + "userHP", userHP + "-" + userInfo.max_hp);
+          io.emit(userInfo.username + "currentUserHP", userHP + "-" + userInfo.max_hp);
         });
 
-        if (userHP < 0) {
+        if (userHP <= 0) {
           fightInterval[userInfo.username + "fighting"] = false;
           clearInterval(fightInterval[userInfo.username + "monsterAttack"]);
           clearInterval(fightInterval[userInfo.username + "userAttack"]);
           _account2.default.update({ username: userInfo.username }, { $set: { hp: userInfo.max_hp } }, function (err, output) {
             if (err) console.log(err);
+            io.emit(info.ch + "fight", localMonsterList[monNum].name + "의 일격을 맞고 " + userInfo.username + "님이 정신을 잃고 쓰러집니다.");
             io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
+            io.emit(userInfo.username + "DEAD", "");
           });
         }
       }, localMonsterList[monNum].speed * 10);
@@ -153,7 +161,7 @@ var fight = function fight(io, info) {
 
         // 몬스터 처치후 발동되는 인터벌 막기위한 판단
         if (!fightInterval[userInfo.username + "fighting"]) {
-          console.log(userInfo.username + "퐈이팅 중단");
+          console.log(userInfo.username + "전투 중단");
           return false;
         }
 
@@ -162,9 +170,17 @@ var fight = function fight(io, info) {
 
         var result = userInfo.username + "님께서 " + info.target + "에게 " + dmg + "의 공격을 하였습니다.";
         localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
-        var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + localMonsterList[monNum].hp;
-        io.emit(info.ch, result);
-        io.emit(info.ch, monHPMsg);
+
+        var targetCurrentHP = localMonsterList[monNum].hp;
+        if (localMonsterList[monNum].hp < 0) {
+          targetCurrentHP = 0;
+        }
+
+        var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + targetCurrentHP;
+        io.emit(info.ch + "fight", result);
+        io.emit(info.ch + "fight", monHPMsg);
+
+        io.emit(info.ch + "monsterHP", targetCurrentHP + "-" + localMonsterList[monNum].maxHP);
 
         // 몬스터 처치
         if (localMonsterList[monNum].hp <= 0) {
@@ -173,6 +189,7 @@ var fight = function fight(io, info) {
           clearInterval(fightInterval[userInfo.username + "userAttack"]);
           localMonsterList[monNum].exist = false;
           io.emit(info.ch, localMonsterList[monNum].dieMsg);
+          io.emit(info.ch + "fight", localMonsterList[monNum].dieMsg);
           expLevelup(userInfo, io, monNum, info); // 렙업인지 경치만 획득인지 계산한다
         }
       }, attackSpeed);
@@ -189,7 +206,9 @@ function expLevelup(userInfo, io, monNum, info) {
   _account2.default.update({ username: info.userName }, { $set: { exp: totalExp } }, function (err, output) {
     if (err) console.log(err);
     io.emit(userInfo.username, "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + localMonsterList[monNum].exp + "를 획득 하였습니다.");
+    io.emit(userInfo.username + "fight", "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + localMonsterList[monNum].exp + "를 획득 하였습니다.");
     io.emit(userInfo.username + "전투", "endFight");
+    io.emit(userInfo.username + "endFight", "");
   });
 
   // 레벨업 판단

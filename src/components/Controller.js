@@ -14,12 +14,13 @@ class Controller extends React.Component {
               next:false,
               prev:false,
               fighting:false,
+              userHP:100,
+              userMaxHP:100,
           };
 
           this.endTime = 99;
           this.socketCh = '0-0';
           this.mapLocal = [0,0];
-          this.userHP = 1;
           this.attackInfo = null;
           this.moveUp = this.moveUp.bind(this);
           this.moveLeft = this.moveLeft.bind(this);
@@ -62,17 +63,10 @@ class Controller extends React.Component {
           setLocalMonster(data);
         });
 
-        // 전투 상황
-        let fighting = this.setFighting.bind(this);
         let fightingHP = this.setFightingHP.bind(this);
-        this.props.socket.on(this.props.username+"전투", function(data){ //몹 채팅
-            if(data=="endFight"){
-              fighting();
-            }
-            else if(data.indexOf('[HP]')==0){
-              let dataArr = data.split("[HP]");
-              fightingHP(dataArr[1]);
-            }
+        this.props.socket.on(this.props.username+"currentUserHP", function(data){ //몹 채팅
+
+            fightingHP(data);
 
         });
 
@@ -154,8 +148,22 @@ class Controller extends React.Component {
 
       // 체력
       setFightingHP(data){
-        this.userHP = data;
-        if(this.userHP < 0){
+        let userHPArr = data.split("-");
+        let userHP= "";
+        let currentHP = Number(userHPArr[0]);
+        let maxHP = Number(userHPArr[1]);
+
+        this.setState({
+          userHP:currentHP,
+        });
+
+        if(this.state.userMaxHP!=maxHP){
+          this.setState({
+            userMaxHP:maxHP,
+          });
+        }
+
+        if(this.state.userHP <= 0){
           this.props.socket.emit('private',"전투중 의식을 잃고 쓰러집니다.");
           this.mapLocal = [0,0];
           this.props.socket.emit('setLocalCh', "0-0");
@@ -391,6 +399,8 @@ class Controller extends React.Component {
         attackInfo.userName = this.props.username;
         attackInfo.ch = this.mapName+"-"+this.socketCh;
         attackInfo.target = this.state.monster.name;
+        attackInfo.userMaxHP = this.state.userMaxHP;
+        attackInfo.userHP = this.state.userHP;
         attackInfo.fighting = false;
         this.attackInfo = attackInfo;
       }

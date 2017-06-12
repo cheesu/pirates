@@ -6,7 +6,7 @@ class Fightview extends React.Component {
   constructor(props, context) {
           super(props, context);
           this.state = {
-              chat: ['test'],
+              chat: [''],
               socketCh:this.props.attackInfo.ch,
           };
           this.addChatData = this.addChatData.bind(this);
@@ -17,31 +17,22 @@ class Fightview extends React.Component {
 
     componentDidMount(){
       let addChat = this.addChatData.bind(this);
-      this.props.socket.on(this.state.socketCh, function(data){ //현재공간 채팅
+      this.props.socket.on(this.state.socketCh+"fight", function(data){ //전투 정보
         addChat(data);
       });
 
-      this.props.socket.on(this.props.username, function(data){ //귓말
-      //  addChat(data);
+      this.props.socket.on(this.props.username+"fight", function(data){ //
       addChat(data);
       });
-
-
-      this.props.socket.on('fight-msg', function(data){ //개인
-      //  addChat(data);
-      addChat(data);
-      });
-
-
-
-
-
     }
 
 
 
     componentWillUnmount () {
-      this.socket.off('fight-msg');
+      this.props.socket.off(this.state.socketCh+"fight");
+      this.props.socket.off(this.props.username+"fight");
+
+
     }
 
     addChatData(data){

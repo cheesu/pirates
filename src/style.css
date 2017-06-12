@@ -548,6 +548,11 @@ nav .brand-logo.center
   line-height: 1em;
 }
 
+.hp-bar
+{
+      letter-spacing: -3px;
+}
+
 /*fight-view*/
 
 .fight-view
