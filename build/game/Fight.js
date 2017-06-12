@@ -112,7 +112,7 @@ var fight = function fight(io, info) {
       return false;
     }
 
-    if (!info.fighting) {
+    if (!info.fighting && (fightInterval[userInfo.username + "fighting"] == undefined || !fightInterval[userInfo.username + "fighting"])) {
       // 몬스터가 유저를 공격하는 인터벌
       fightInterval[userInfo.username + "fighting"] = true; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
       fightInterval[userInfo.username + "HP"] = userInfo.hp;

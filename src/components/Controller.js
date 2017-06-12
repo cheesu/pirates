@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import {debounce} from 'throttle-debounce';
 import { Fight } from 'Components';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 class Controller extends React.Component {
@@ -29,6 +30,7 @@ class Controller extends React.Component {
           this.actionMove = this.actionMove.bind(this);
           this.viewLocalMap = this.viewLocalMap.bind(this);
           this.attack = this.attack.bind(this);
+          this.attack = debounce(this.attack,500);
           this.setLocalMonster = this.setLocalMonster.bind(this);
           this.setFighting = this.setFighting.bind(this);
           this.setFightingHP = this.setFightingHP.bind(this);
@@ -169,6 +171,9 @@ class Controller extends React.Component {
           this.props.socket.emit('setLocalCh', "0-0");
           this.props.socket.emit('chat', "0-0:ch:"+this.props.username+"님께서 죽었다 깨어났습니다.");
           this.props.socket.emit('private',"정신을 차려보니 시작점에서 깨어납니다.");
+
+
+
         }
       }
       // 전투중 설정
@@ -392,17 +397,15 @@ class Controller extends React.Component {
         }
 
 
-
-        this.toggleFight();
-
-        let attackInfo = new Object();
-        attackInfo.userName = this.props.username;
-        attackInfo.ch = this.mapName+"-"+this.socketCh;
-        attackInfo.target = this.state.monster.name;
-        attackInfo.userMaxHP = this.state.userMaxHP;
-        attackInfo.userHP = this.state.userHP;
-        attackInfo.fighting = false;
-        this.attackInfo = attackInfo;
+          this.toggleFight();
+          let attackInfo = new Object();
+          attackInfo.userName = this.props.username;
+          attackInfo.ch = this.mapName+"-"+this.socketCh;
+          attackInfo.target = this.state.monster.name;
+          attackInfo.userMaxHP = this.state.userMaxHP;
+          attackInfo.userHP = this.state.userHP;
+          attackInfo.fighting = false;
+          this.attackInfo = attackInfo;
       }
 
 
@@ -430,7 +433,7 @@ class Controller extends React.Component {
 
                 <ul>
                 { /*    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li> */}
-                    <li><a onClick={this.attack}  className="waves-effect waves-light btn red controller-btn attack-btn">Attack</a></li>
+                    <li><a onClick={this.attack.bind(this)}  className="waves-effect waves-light btn red controller-btn attack-btn">Attack</a></li>
                     {this.state.next ? nextMap : undefined }
                     {this.state.prev ? prevMap : undefined }
                 </ul>
