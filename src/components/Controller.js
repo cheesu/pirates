@@ -30,7 +30,7 @@ class Controller extends React.Component {
           this.actionMove = this.actionMove.bind(this);
           this.viewLocalMap = this.viewLocalMap.bind(this);
           this.attack = this.attack.bind(this);
-          this.attack = debounce(this.attack,500);
+          this.attack = debounce(500,this.attack);
           this.setLocalMonster = this.setLocalMonster.bind(this);
           this.setFighting = this.setFighting.bind(this);
           this.setFightingHP = this.setFightingHP.bind(this);
@@ -397,7 +397,7 @@ class Controller extends React.Component {
         }
 
 
-          this.toggleFight();
+
           let attackInfo = new Object();
           attackInfo.userName = this.props.username;
           attackInfo.ch = this.mapName+"-"+this.socketCh;
@@ -405,7 +405,9 @@ class Controller extends React.Component {
           attackInfo.userMaxHP = this.state.userMaxHP;
           attackInfo.userHP = this.state.userHP;
           attackInfo.fighting = false;
+            console.log(attackInfo);
           this.attackInfo = attackInfo;
+          this.toggleFight();
       }
 
 

@@ -29,13 +29,12 @@ class HPview extends React.Component {
           this.viewTargetHP = this.viewTargetHP.bind(this);
           this.viewUserHP = this.viewUserHP.bind(this);
           this.socket = this.props.socket;
-
+          this.vibrationComp = this.vibrationComp.bind(this);
 
       }
 
 
     componentDidMount(){
-
 
       /*  this.setState({
             userHP: userHPGauge
@@ -61,6 +60,7 @@ class HPview extends React.Component {
     }
 
     viewUserHP(data){
+      this.vibrationComp();
       let userHPArr = data.split("-");
       let userHP= "";
       let currentHP = Number(userHPArr[0]);
@@ -84,6 +84,7 @@ class HPview extends React.Component {
     }
 
     viewTargetHP(data){
+      this.vibrationComp();
       console.log("타겟 체력");
       let targetHPArr = data.split("-");
 
@@ -106,6 +107,13 @@ class HPview extends React.Component {
           targetHP:currentHP+" / "+maxHP,
         });
     }
+
+  vibrationComp(){
+    console.log("실해ㅑㅇ");
+    $("#mapViewContainer").attr("class","HP-view hp-vibration");
+  }
+
+
 
     render(){
         return (

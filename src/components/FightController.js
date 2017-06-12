@@ -14,7 +14,6 @@ class FightController extends React.Component {
           this.handleClose = this.handleClose.bind(this);
           this.handleCloseExit = this.handleCloseExit.bind(this);
           this.toggleFight = this.toggleFight.bind(this);
-
       }
 
 
