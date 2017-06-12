@@ -101,7 +101,7 @@ var fight = function (io,info){
           if(monNum==null){
             return false;
           }
-          
+
           if(!info.fighting && (fightInterval[userInfo.username+"fighting"]==undefined || !fightInterval[userInfo.username+"fighting"])){
             // 몬스터가 유저를 공격하는 인터벌
             fightInterval[userInfo.username+"fighting"] = true; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
@@ -128,19 +128,23 @@ var fight = function (io,info){
                 io.emit(info.ch+"fight", localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이"+reDmg+"의 피해를 입었습니다 현재 체력 :"+ userHP);
                 io.emit(userInfo.username+"userHP", userHP+"-"+userInfo.max_hp);
                 io.emit(userInfo.username+"currentUserHP", userHP+"-"+userInfo.max_hp);
+
+                // 맞고 디졌을떄
+                if(userHP<=0){
+                  fightInterval[userInfo.username+"fighting"] = false;
+                  clearInterval(fightInterval[userInfo.username+"monsterAttack"]);
+                  clearInterval(fightInterval[userInfo.username+"userAttack"]);
+                  Account.update({username: userInfo.username},{$set:{hp:userInfo.max_hp}}, function(err, output){
+                    if(err) console.log(err);
+                    io.emit(info.ch+"fight", localMonsterList[monNum].name+"의 일격을 맞고 "+userInfo.username+"님이 정신을 잃고 쓰러집니다.");
+                    io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
+                    io.emit(userInfo.username+"DEAD", "");
+                    io.emit(userInfo.username+"currentUserHP", userInfo.max_hp+"-"+userInfo.max_hp);
+                  });
+                }
               });
 
-              if(userHP<=0){
-                fightInterval[userInfo.username+"fighting"] = false;
-                clearInterval(fightInterval[userInfo.username+"monsterAttack"]);
-                clearInterval(fightInterval[userInfo.username+"userAttack"]);
-                Account.update({username: userInfo.username},{$set:{hp:userInfo.max_hp}}, function(err, output){
-                  if(err) console.log(err);
-                  io.emit(info.ch+"fight", localMonsterList[monNum].name+"의 일격을 맞고 "+userInfo.username+"님이 정신을 잃고 쓰러집니다.");
-                  io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
-                  io.emit(userInfo.username+"DEAD", "");
-                });
-              }
+
 
             },localMonsterList[monNum].speed*10);
 

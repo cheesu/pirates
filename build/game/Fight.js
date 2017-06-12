@@ -138,19 +138,21 @@ var fight = function fight(io, info) {
           io.emit(info.ch + "fight", localMonsterList[monNum].attackMsg + " " + userInfo.username + "님이" + reDmg + "의 피해를 입었습니다 현재 체력 :" + userHP);
           io.emit(userInfo.username + "userHP", userHP + "-" + userInfo.max_hp);
           io.emit(userInfo.username + "currentUserHP", userHP + "-" + userInfo.max_hp);
-        });
 
-        if (userHP <= 0) {
-          fightInterval[userInfo.username + "fighting"] = false;
-          clearInterval(fightInterval[userInfo.username + "monsterAttack"]);
-          clearInterval(fightInterval[userInfo.username + "userAttack"]);
-          _account2.default.update({ username: userInfo.username }, { $set: { hp: userInfo.max_hp } }, function (err, output) {
-            if (err) console.log(err);
-            io.emit(info.ch + "fight", localMonsterList[monNum].name + "의 일격을 맞고 " + userInfo.username + "님이 정신을 잃고 쓰러집니다.");
-            io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
-            io.emit(userInfo.username + "DEAD", "");
-          });
-        }
+          // 맞고 디졌을떄
+          if (userHP <= 0) {
+            fightInterval[userInfo.username + "fighting"] = false;
+            clearInterval(fightInterval[userInfo.username + "monsterAttack"]);
+            clearInterval(fightInterval[userInfo.username + "userAttack"]);
+            _account2.default.update({ username: userInfo.username }, { $set: { hp: userInfo.max_hp } }, function (err, output) {
+              if (err) console.log(err);
+              io.emit(info.ch + "fight", localMonsterList[monNum].name + "의 일격을 맞고 " + userInfo.username + "님이 정신을 잃고 쓰러집니다.");
+              io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
+              io.emit(userInfo.username + "DEAD", "");
+              io.emit(userInfo.username + "currentUserHP", userInfo.max_hp + "-" + userInfo.max_hp);
+            });
+          }
+        });
       }, localMonsterList[monNum].speed * 10);
 
       // 유저 공격 속도
