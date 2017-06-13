@@ -254,6 +254,13 @@ io.sockets.on("connection", function (socket) {
     socket.emit('private', msg);
   });
 
+  socket.on('rest', function (name) {
+    var result = (0, _Fight.rest)(socket, name);
+  });
+  socket.on('restEnd', function (name) {
+    var result = (0, _Fight.restEnd)(socket, name);
+  });
+
   socket.on('setLocalCh', function (msg) {
     console.log("소켓 셋 로컬 채널 " + msg);
     socket.emit('setLocalCh', msg);

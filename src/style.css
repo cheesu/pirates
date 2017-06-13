@@ -122,7 +122,22 @@ a {
 {
   border-top: solid;
 }
-
+.chat-green{
+  color:#0F0;
+}
+.chat-skill{
+  color:#ff1d7c;
+  font-weight: bold;
+}
+.chat-Shoot
+{
+  color:#ff1d1d;
+}
+.system-chat
+{
+  color:#1da0ff;
+  font-weight: bold;
+}
 /*chat*/
 .chat-input-wrapper
 {
@@ -427,7 +442,10 @@ nav .brand-logo.center
   right: 2rem;
   top: 0rem;
 }
-
+.controller-btn.rest-btn{
+  right: 11rem;
+  top: 0rem;
+}
 
 
 /*mapview*/

@@ -12,6 +12,7 @@ var bossGen = 0;
 var monsters;
 var localMonsterList=[];
 var fightInterval = new Object();
+var restInterval = new Object();
 
 loadMonsterList();
 
@@ -104,6 +105,7 @@ var useSkill = function(io,info){
          return false;
        }
 
+
        Skill.find({name: info.skillname})
           .exec((err, skill) => {
             if(err) throw err;
@@ -116,16 +118,25 @@ var useSkill = function(io,info){
 
 
               if(fightInterval[userInfo.username+"skill"]){
-                io.emit(userInfo.username+"fight", "이미 스킬을 시전 중 입니다.");
+                io.emit(userInfo.username+"fight", "[skill]이미 스킬을 시전 중 입니다.");
                 return false;
               }
               if(skillInfo.lv > userInfo.lv){
-                io.emit(userInfo.username+"fight", "레벨이 부족해서 해당 기술을 사용 할 수 없습니다.");
+                io.emit(userInfo.username+"fight", "[skill]레벨이 부족해서 해당 기술을 사용 할 수 없습니다.");
                 return false;
               }
 
               if(skillInfo.mp > userInfo.mp){
-                io.emit(userInfo.username+"fight", "MP가 부족해 기술을 사용 할 수 없습니다.");
+                io.emit(userInfo.username+"fight", "[skill]MP가 부족해 기술을 사용 할 수 없습니다.");
+                return false;
+              }
+
+              if(userInfo.hp<=0){
+                io.emit(userInfo.username+"fight", "[skill]죽은자는 행동 할 수 없습니다.");
+                clearInterval(fightInterval[userInfo.username+"skillInterval"]);
+                fightInterval[userInfo.username+"CastingCount"] = null;
+                fightInterval[userInfo.username+"skillInterval"] = null;
+                fightInterval[userInfo.username+"skill"] = false;
                 return false;
               }
 
@@ -142,7 +153,7 @@ var useSkill = function(io,info){
 
                 let castingCount = fightInterval[userInfo.username+"CastingCount"];
                 // 캐스팅
-                io.emit(info.ch+"fight", skillCasting[castingCount]);
+                io.emit(info.ch+"fight", "[skill]"+skillCasting[castingCount]);
                 fightInterval[userInfo.username+"CastingCount"] = fightInterval[userInfo.username+"CastingCount"]+1;
                 if(skillCasting.length <= fightInterval[userInfo.username+"CastingCount"] ){
 
@@ -158,7 +169,7 @@ var useSkill = function(io,info){
                     }
 
                     let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
-                    io.emit(info.ch+"fight", skillInfo.attackMsg+"["+dmg+"의 데미지를 입혔습니다.]");
+                    io.emit(info.ch+"fight", "[skill]"+skillInfo.attackMsg+"["+dmg+"의 데미지를 입혔습니다.]");
                     io.emit(info.ch+"fight", monHPMsg);
 
                   }
@@ -226,7 +237,7 @@ var fight = function (io,info){
 
               Account.update({username: userInfo.username},{$set:{hp:userHP}}, function(err, output){
                 if(err) console.log(err);
-                io.emit(info.ch+"fight", localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이"+reDmg+"의 피해를 입었습니다 현재 체력 :"+ userHP);
+                io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이"+reDmg+"의 피해를 입었습니다 현재 체력 :"+ userHP);
                 io.emit(userInfo.username+"userHP", userHP+"-"+userInfo.max_hp);
                 io.emit(userInfo.username+"currentUserHP", userHP+"-"+userInfo.max_hp);
 
@@ -359,8 +370,63 @@ var fight = function (io,info){
   function logB(x, base) {
   return Math.log(x) / Math.log(base);
 }
+var restEnd = function(socket,name){
+  clearInterval(restInterval[name]);
+  restInterval[name+"rest"] = false;
+}
+
+var rest = function (socket,name){
+
+  if(restInterval[name]==undefined || !restInterval[name+"rest"]){
+    socket.emit(name, "[휴식]안전한 곳에 앉아 휴식을 취합니다.");
+    //휴식 시작
+    restInterval[name] = setInterval(function(){
+      Account.find({username: name})
+         .exec((err, account) => {
+             if(err) console.log(err);
+          restInterval[name+"rest"] = true;
+
+           let userInfo = account;
+           userInfo =   eval(userInfo[0]);
+
+           let currentHP = userInfo.hp;
+           let currentMP = userInfo.mp;
+           let maxHP = userInfo.max_hp;
+           let maxMP = userInfo.max_mp;
+           let healHP = userInfo.str*4;
+           let healMP = userInfo.int*4;
+
+           let upHP = currentHP+healHP;
+           let upMP = currentMP+healMP;
+
+           if(upHP >= maxHP){
+             healHP =(upHP-maxHP)-healHP;
+             upHP = maxHP
+           }
+
+           if(upMP >= maxMP){
+             healMP =(upMP-maxMP)-healMP;
+             upMP = maxMP
+           }
+
+           Account.update({username: name},{$set:{mp:upMP, hp:upHP}}, function(err, output){
+             if(err) console.log(err);
+             socket.emit(name, "[휴식]휴식을 취하며 HP:"+healHP+" MP:"+healMP+" 회복 되었습니다.");
+             if(upHP == maxHP && upMP == maxMP){
+               socket.emit(name, "[휴식]모두 회복되어 최상의 컨디션 입니다. 휴식을 끝내고 자리에서 일어납니다.");
+               clearInterval(restInterval[userInfo.username]);
+               restInterval[userInfo.username+"rest"] = false;
+             }
+           });
+         });
+    },15000);
+  }// 이프 조건
+  else{
+     socket.emit(name, "이미 휴식중 입니다.");
+  }
+
+}
 
 
 
-
-export { fight,run ,localMonsterList, checkMonster, useSkill};
+export { fight,run ,localMonsterList, checkMonster, useSkill, rest,restEnd};

@@ -35,16 +35,18 @@ class FightController extends React.Component {
 
 
           this.props.socket.emit('attack',this.props.attackInfo);
-
+          let handleCloseExit = this.handleCloseExit.bind(this);
           let toggleFight = this.toggleFight.bind(this);
           this.props.socket.on(this.props.attackInfo.userName+"endFight", function(data){ //귓말
           console.log("전투 끝");
           toggleFight();
+          handleCloseExit();
           });
 
           this.props.socket.on(this.props.attackInfo.userName+"DEAD", function(data){ //귓말
           console.log("님 으앙쥬금");
           toggleFight();
+          handleCloseExit();
           });
 
       }

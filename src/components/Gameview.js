@@ -97,12 +97,17 @@ class Gameview extends React.Component {
               </ul>
             </div>
             {this.state.chat.map(function(chat,i){
-
-              if(chat.indexOf('[line098098098]')==0){
+              if(chat.indexOf('[휴식]')==0){
+                return <p className="bla-bla-class chat-green" key={i}>{chat}</p>
+              }
+              else if(chat.indexOf('[line098098098]')==0){
                 return <p className="bla-bla-class chat-line" key={i}></p>
               }
               else if(chat.indexOf('[귓속말]')==0){
                 return <p className="bla-bla-class whisper-chat" key={i}>{chat}</p>
+              }
+              else if(chat.indexOf('[시스템]')==0){
+                return <p className="bla-bla-class system-chat" key={i}>{chat}</p>
               }
               else if(chat.indexOf('[공지사항]')==0){
                 return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>

@@ -14,7 +14,7 @@ var RedisStore = require("connect-redis")(session);
 
 import api from './routes';
 
-import { fight, run,localMonsterList, checkMonster ,useSkill} from './game/Fight';
+import { fight, run,localMonsterList, checkMonster ,useSkill, rest, restEnd} from './game/Fight';
 
 const app = express();
 const port = 3000;
@@ -246,6 +246,14 @@ io.sockets.on("connection", function(socket){
   socket.on('private', function(msg){
     socket.emit('private', msg);
   });
+
+  socket.on('rest', function(name){
+    let result = rest(socket,name);
+  });
+  socket.on('restEnd', function(name){
+    let result = restEnd(socket,name);
+  });
+
 
   socket.on('setLocalCh', function(msg){
     console.log("소켓 셋 로컬 채널 "+msg);

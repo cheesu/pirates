@@ -6,8 +6,6 @@ import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 class Controller extends React.Component {
   constructor(props, context) {
           super(props, context);
-
-
           this.state = {
               msg: "",
               map:[],
@@ -17,6 +15,7 @@ class Controller extends React.Component {
               fighting:false,
               userHP:100,
               userMaxHP:100,
+              rest:false,
           };
 
           this.endTime = 99;
@@ -31,6 +30,7 @@ class Controller extends React.Component {
           this.viewLocalMap = this.viewLocalMap.bind(this);
           this.attack = this.attack.bind(this);
           this.attack = debounce(500,this.attack);
+          this.rest = debounce(500,this.rest);
           this.setLocalMonster = this.setLocalMonster.bind(this);
           this.setFighting = this.setFighting.bind(this);
           this.setFightingHP = this.setFightingHP.bind(this);
@@ -38,6 +38,7 @@ class Controller extends React.Component {
           this.moveNextMap = this.moveNextMap.bind(this);
           this.movePrevMap = this.movePrevMap.bind(this);
           this.toggleFight = this.toggleFight.bind(this);
+          this.toggleRest = this.toggleRest.bind(this);
 
           this.mapName = "푸른해변";
 
@@ -71,10 +72,19 @@ class Controller extends React.Component {
             fightingHP(data);
         });
 
-
+        let toggleRest = this.toggleRest.bind(this);
+        this.props.socket.on("restEnd", function(data){ //몹 채팅
+          toggleRest(false);
+        });
 
         console.log(this.props.userInfo);
 
+      }
+
+      toggleRest(data){
+        this.setState({
+            rest: data
+        });
       }
 
 
@@ -224,17 +234,14 @@ class Controller extends React.Component {
       }
 
       actionMove(dir){
+        this.props.socket.emit('restEnd', this.props.username);
+        this.setState({
+          rest:false
+        });
+
+
         var d = new Date();
         var moveTimerS = d.getSeconds();
-/*
-        if(this.endTime==moveTimerS){
-          console.log("연속 클릭 하지 마라");
-          return false;
-        }
-        this.endTime = moveTimerS;
-*/
-
-
 
         var map = this.mapLocal;
         var mapArr = this.state.map;
@@ -384,6 +391,12 @@ class Controller extends React.Component {
 
 
       attack(){
+        if(this.state.rest){
+
+          this.props.socket.emit('private',"휴식중에 공격 할 수 없습니다.");
+          return false
+        }
+
         var d = new Date();
         var moveTimerS = d.getSeconds();
 
@@ -415,7 +428,12 @@ class Controller extends React.Component {
       }
 
 
-
+      rest(){
+        this.setState({
+            rest: true
+        });
+        this.props.socket.emit('rest', this.props.username);
+      }
 
     render(){
 
@@ -440,6 +458,7 @@ class Controller extends React.Component {
                 <ul>
                 { /*    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li> */}
                     <li><a onClick={this.attack.bind(this)}  className="waves-effect waves-light btn red controller-btn attack-btn">Attack</a></li>
+                    <li><a onClick={this.rest.bind(this)}  className="waves-effect waves-light btn green controller-btn rest-btn">휴식</a></li>
                     {this.state.next ? nextMap : undefined }
                     {this.state.prev ? prevMap : undefined }
                 </ul>
