@@ -6,7 +6,6 @@ import {
 import axios from 'axios';
 
 export function searchRequest(keyword) {
-    console.log("서치 리퀘스트");
     return (dispatch) => {
 
         dispatch(search());
@@ -27,8 +26,6 @@ export function search() {
 }
 
 export function searchSuccess(usernames) {
-    console.log("콘솔 석세스");
-    console.log(usernames);
     return {
         type: SEARCH_SUCCESS,
         usernames

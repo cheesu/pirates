@@ -78,10 +78,9 @@ class Search extends React.Component {
 
         const mapDataToLinks = (data) => {
             return data.map((user, i) => {
-              console.log("사용자 찾기 돌기");
                 return (
                     <Link onClick={this.handleClose} to={`/wall/${user.username}`} key={i}>
-                        {user.username}
+                        {user.username} - Lv:{user.lv} [{user.job}]
                     </Link>
                  );
             });

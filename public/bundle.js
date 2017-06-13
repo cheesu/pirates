@@ -19419,7 +19419,6 @@ var _axios2 = _interopRequireDefault(_axios);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function searchRequest(keyword) {
-    console.log("서치 리퀘스트");
     return function (dispatch) {
 
         dispatch(search());
@@ -19439,8 +19438,6 @@ function search() {
 }
 
 function searchSuccess(usernames) {
-    console.log("콘솔 석세스");
-    console.log(usernames);
     return {
         type: _ActionTypes.SEARCH_SUCCESS,
         usernames: usernames
@@ -22143,11 +22140,15 @@ var Search = function (_React$Component) {
 
             var mapDataToLinks = function mapDataToLinks(data) {
                 return data.map(function (user, i) {
-                    console.log("사용자 찾기 돌기");
                     return _react2.default.createElement(
                         _reactRouterDom.Link,
                         { onClick: _this2.handleClose, to: '/wall/' + user.username, key: i },
-                        user.username
+                        user.username,
+                        ' - Lv:',
+                        user.lv,
+                        ' [',
+                        user.job,
+                        ']'
                     );
                 });
             };

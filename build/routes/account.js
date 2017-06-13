@@ -155,7 +155,7 @@ router.post('/logout', function (req, res) {
 router.get('/search/:username', function (req, res) {
     // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
     var re = new RegExp('^' + req.params.username);
-    _account2.default.find({ username: { $regex: re } }, { _id: false, username: true }).limit(5).sort({ username: 1 }).exec(function (err, accounts) {
+    _account2.default.find({ username: { $regex: re } }, { _id: false, username: true, lv: true, job: true }).limit(10).sort({ username: 1 }).exec(function (err, accounts) {
         if (err) throw err;
         res.json(accounts);
     });
