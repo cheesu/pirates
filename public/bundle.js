@@ -19987,7 +19987,7 @@ var Controller = function (_React$Component) {
       this.setState({
         fighting: !this.state.fighting
       });
-      console.log(this.state.fighting);
+      setLocalMonster(null);
     }
   }, {
     key: 'componentDidMount',
@@ -20011,7 +20011,6 @@ var Controller = function (_React$Component) {
       var fightingHP = this.setFightingHP.bind(this);
       this.props.socket.on(this.props.username + "currentUserHP", function (data) {
         //몹 채팅
-
         fightingHP(data);
       });
 

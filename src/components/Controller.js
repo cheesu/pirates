@@ -47,7 +47,7 @@ class Controller extends React.Component {
           this.setState({
               fighting: !this.state.fighting
           });
-          console.log(this.state.fighting);
+          setLocalMonster(null);
       }
 
       componentDidMount(){
@@ -66,12 +66,13 @@ class Controller extends React.Component {
           setLocalMonster(data);
         });
 
+
         let fightingHP = this.setFightingHP.bind(this);
         this.props.socket.on(this.props.username+"currentUserHP", function(data){ //몹 채팅
-
             fightingHP(data);
-
         });
+
+
 
         console.log(this.props.userInfo);
 
