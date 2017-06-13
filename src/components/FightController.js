@@ -1,11 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-
+import {debounce} from 'throttle-debounce';
+import { connect } from 'react-redux';
+import { getStatusRequest  } from 'Actions/authentication';
+import { skillRequest  } from 'Actions/skill';
 class FightController extends React.Component {
   constructor(props, context) {
           super(props, context);
-
-
           this.state = {
               msg: "",
               fighting:true,
@@ -14,14 +15,16 @@ class FightController extends React.Component {
           this.handleClose = this.handleClose.bind(this);
           this.handleCloseExit = this.handleCloseExit.bind(this);
           this.toggleFight = this.toggleFight.bind(this);
+          this.useSkill = this.useSkill.bind(this);
       }
 
 
       componentDidMount(){
-
+        this.props.getStatusRequest();
+        this.props.skillRequest(this.props.status);
         $('.dropdown-button').dropdown({
-             inDuration: 300,
-             outDuration: 225,
+              inDuration: 10,
+             outDuration: 10,
              constrainWidth: false, // Does not change width of dropdown to that of the activator
              hover: true, // Activate on hover
              gutter: 0, // Spacing from edge
@@ -68,6 +71,14 @@ class FightController extends React.Component {
         });
       }
 
+      useSkill(skill){
+
+        let skillObj = {};
+        skillObj.skillname=skill;
+        skillObj.username = this.props.attackInfo.userName;
+        skillObj.ch = this.props.attackInfo.ch;
+        this.props.socket.emit('useSkill',skillObj);
+      }
 
 
     render(){
@@ -79,6 +90,21 @@ class FightController extends React.Component {
           <li className="fight-btn-li"><a onClick={this.handleCloseExit}  className="waves-effect waves-light btn red ">Exit</a></li>
       );
 
+      const mapDataToLinks = (data) => {
+          return data.map((skill, i) => {
+            if(skill.lv > this.props.status.lv){
+              return (
+                  <li key={i} className="disabled"><a href="#!" className="disabled" >{skill.name} - {skill.mp}mp</a></li>
+               );
+            }
+            else{
+              return (
+                  <li key={i}  ><a href="#!" onClick={this.useSkill.bind(this,skill.name)} data-name={skill.name} >{skill.name} - {skill.mp}mp</a></li>
+               );
+              }
+          });
+      };
+
         return (
           <div className="fight-controller-container">
                 <ul className="fight-btn-ul">
@@ -87,17 +113,14 @@ class FightController extends React.Component {
                     { this.state.fighting  ? run : exit }
 
                     <li className="fight-btn-li">
-                      <a className='dropdown-button btn' href='#' data-activates='dropdown1'>Use Skill</a>
+                      <a id="skillDrop" className='dropdown-button btn' href='#!' data-activates='dropdown1' >Use Skill</a>
                        <ul id='dropdown1' className='dropdown-content'>
-                         <li><a href="#!">미구현</a></li>
-                         <li><a href="#!">미구현</a></li>
-                         <li className="divider"></li>
-                         <li><a href="#!">미구현</a></li>
+                          { mapDataToLinks(this.props.skills) }
                        </ul>
                     </li>
 
                     <li className="fight-btn-li">
-                      <a className='dropdown-button btn' href='#' data-activates='dropdown2'>Use Item</a>
+                      <a id="itemDrop" ref="itemDrop" className='dropdown-button btn' href='#!' data-activates='dropdown2' >Use Item</a>
                        <ul id='dropdown2' className='dropdown-content'>
                          <li><a href="#!">미구현</a></li>
                          <li><a href="#!">미구현</a></li>
@@ -124,4 +147,23 @@ FightController.defaultProps = {
     }
 };
 
-export default FightController;
+const mapStateToProps = (state) => {
+    return {
+      status: state.authentication.status,
+        skills: state.skill.skills,
+    };
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+      getStatusRequest: () => {
+          return dispatch(getStatusRequest());
+      },
+        skillRequest: (userInfo) => {
+            return dispatch(skillRequest(userInfo));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FightController);

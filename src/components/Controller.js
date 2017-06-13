@@ -47,7 +47,6 @@ class Controller extends React.Component {
           this.setState({
               fighting: !this.state.fighting
           });
-          setLocalMonster(null);
       }
 
       componentDidMount(){
@@ -412,6 +411,7 @@ class Controller extends React.Component {
             console.log(attackInfo);
           this.attackInfo = attackInfo;
           this.toggleFight();
+          this.setLocalMonster(null);
       }
 
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { browserHistory, Link } from 'react-router';
 import { connect } from 'react-redux';
 import { getStatusRequest  } from 'Actions/authentication';
+import { skillRequest  } from 'Actions/skill';
 class RightMenu extends React.Component {
     constructor(props) {
         super(props);
@@ -27,14 +28,34 @@ class RightMenu extends React.Component {
 
   componentDidMount(){
       this.props.getStatusRequest();
+      this.props.skillRequest(this.props.status);
+       $('.collapsible').collapsible();
   }
 
     render() {
 
-        const mapDataToLinks = (data) => {
-            // IMPLEMENT: map data array to array of Link components
-            // create Links to '/wall/:username'
-        };
+      const mapDataToLinks = (data) => {
+          return data.map((skill, i) => {
+            if(skill.lv > this.props.status.lv){
+              return (
+                <li>
+                  <div className="collapsible-header"><span className="badge red">[lv:{skill.lv} - 사용불가]</span>{skill.name} - {skill.mp}mp</div>
+                  <div className="collapsible-body"><span>{skill.txt}</span></div>
+                </li>
+               );
+            }
+            else{
+              return (
+                    <li>
+                      <div className="collapsible-header"><span className="badge">[lv:{skill.lv}]</span>{skill.name} - {skill.mp}mp</div>
+                      <div className="collapsible-body"><span>{skill.txt}</span></div>
+                    </li>
+                  );
+                }
+
+
+          });
+      };
 
         return (
             <div className="right-menu-screen white-text">
@@ -60,16 +81,8 @@ class RightMenu extends React.Component {
                         <li> STATUS </li>
                     </ul>
 
-                    <div className="collection skill-set">
-                      <a href="#!" className="collection-item"><span className="badge">10mp</span>스킬1</a>
-                      <a href="#!" className="new collection-item"><span className="badge">20mp</span>스킬2</a>
-                      <a href="#!" className="collection-item"><span className="badge">40mp</span>스킬4</a>
-                      <a href="#!" className="collection-item"><span className="badge">14</span>스킬3</a>
-                    </div>
-
-                    <ul className="right-menu-skill">
-                        { mapDataToLinks(this.props.usernames) }
-
+                    <ul className="collapsible skill-set" data-collapsible="accordion">
+                      { mapDataToLinks(this.props.skills) }
                     </ul>
 
                 </div>
@@ -81,7 +94,8 @@ class RightMenu extends React.Component {
 
 RightMenu.propTypes = {
     onClose: React.PropTypes.func,
-    onRightMenu: React.PropTypes.func
+    onRightMenu: React.PropTypes.func,
+    onSearch: React.PropTypes.func,
 };
 
 RightMenu.defaultProps = {
@@ -95,7 +109,8 @@ RightMenu.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        status: state.authentication.status
+        status: state.authentication.status,
+        skills: state.skill.skills,
     };
 };
 
@@ -104,6 +119,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getStatusRequest: () => {
             return dispatch(getStatusRequest());
+        },
+        skillRequest: (userInfo) => {
+            return dispatch(skillRequest(userInfo));
         }
     };
 };

@@ -27,7 +27,7 @@ export function loginRequest(username, password) {
         return axios.post('/api/account/signin', { username, password })
         .then((response) => {
             // SUCCEED
-            dispatch(loginSuccess(username));
+            dispatch(loginSuccess(response.data.userInfo));
         }).catch((error) => {
             // FAILED
             dispatch(loginFailure());
@@ -41,10 +41,20 @@ export function login() {
     };
 }
 
-export function loginSuccess(username) {
+export function loginSuccess(info) {
     return {
         type: AUTH_LOGIN_SUCCESS,
-        username
+        username:info.username,
+        job :info.job,
+        lv:info.lv,
+        exp:info.exp,
+        hp:info.hp,
+        mp:info.mp,
+        str:info.str,
+        int:info.int,
+        dex:info.dex,
+        max_mp:info.max_mp,
+        max_hp:info.max_hp,
     };
 }
 

@@ -21,7 +21,7 @@ class Fightview extends React.Component {
         addChat(data);
       });
 
-      this.props.socket.on(this.props.username+"fight", function(data){ //
+      this.props.socket.on(this.props.attackInfo.userName+"fight", function(data){ //
       addChat(data);
       });
     }
@@ -30,7 +30,7 @@ class Fightview extends React.Component {
 
     componentWillUnmount () {
       this.props.socket.off(this.state.socketCh+"fight");
-      this.props.socket.off(this.props.username+"fight");
+      this.props.socket.off(this.props.attackInfo.userName+"fight");
 
 
     }
@@ -57,19 +57,28 @@ class Fightview extends React.Component {
           <div id="fightView" className="fight-view">
 
             {this.state.chat.map(function(chat,i){
+              try {
+                if(chat.indexOf('[line098098098]')==0){
+                  return <p className="bla-bla-class chat-line" key={i}></p>
+                }
+                else if(chat.indexOf('[귓속말]')==0){
+                  return <p className="bla-bla-class whisper-chat" key={i}>{chat}</p>
+                }
+                else if(chat.indexOf('[공지사항]')==0){
+                  return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
+                }
+                else{
+                  return <p className="bla-bla-class" key={i}>{chat}</p>
+                }
+              } catch (e) {
+                return <p className="bla-bla-class" key={i}>채팅창 오류... 복구중....</p>
+              } finally {
 
-              if(chat.indexOf('[line098098098]')==0){
-                return <p className="bla-bla-class chat-line" key={i}></p>
               }
-              else if(chat.indexOf('[귓속말]')==0){
-                return <p className="bla-bla-class whisper-chat" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('[공지사항]')==0){
-                return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
-              }
-              else{
-                return <p className="bla-bla-class" key={i}>{chat}</p>
-              }
+
+
+
+
             })}
 
 

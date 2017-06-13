@@ -20,3 +20,7 @@ export const AUTH_LOGOUT = "AUTH_LOGOUT";
 export const SEARCH = "SEARCH";
 export const SEARCH_SUCCESS = "SEARCH_SUCCESS";
 export const SEARCH_FAILURE = "SEARCH_FAILURE";
+
+export const SKILL = "SKILL";
+export const SKILL_GET_SUCCESS = "SKILL_GET_SUCCESS";
+export const SKILL_GET_FAILURE = "SKILL_GET_FAILURE";

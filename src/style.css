@@ -361,6 +361,13 @@ nav .brand-logo.center
   left: 35%;
 }
 
+
+.collapsible-header
+{
+  color: #000;
+  font-weight: bold;
+}
+
 /*controller*/
 
 .controller-container

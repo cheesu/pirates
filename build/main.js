@@ -194,6 +194,10 @@ io.on('connection', function (socket) {
     var result = (0, _Fight.fight)(io, info);
   });
 
+  socket.on('useSkill', function (info) {
+    var result = (0, _Fight.useSkill)(io, info);
+  });
+
   socket.on('run', function (info) {
     console.log(info);
     var result = (0, _Fight.run)(io, info);

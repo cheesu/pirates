@@ -29,7 +29,6 @@ const initialState = {
 export default function authentication(state, action) {
     if(typeof state === "undefined")
         state = initialState;
-
     switch(action.type) {
         /* LOGIN */
         case types.AUTH_LOGIN:
@@ -46,7 +45,16 @@ export default function authentication(state, action) {
                 status: {
                     isLoggedIn: { $set: true },
                     currentUser: { $set: action.username },
-                    job: { $set: action.job }
+                    job: { $set: action.job },
+                    lv: { $set: action.lv },
+                    exp:{ $set: action.exp },
+                    hp:{ $set: action.hp },
+                    mp:{ $set: action.mp },
+                    str:{ $set: action.str },
+                    int:{ $set: action.int },
+                    dex:{ $set: action.dex },
+                    max_hp:{ $set: action.max_hp },
+                    max_mp:{ $set: action.max_mp },
                 }
             });
         case types.AUTH_LOGIN_FAILURE:

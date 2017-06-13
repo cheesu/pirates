@@ -2,6 +2,7 @@
 import express from 'express';
 import Account from '../models/account';
 import Monster from '../models/monster';
+import Skill from '../models/skill';
 const router = express.Router();
 
 // 몬스터 리젠
@@ -87,6 +88,106 @@ var run = function (io,info){
   clearInterval(fightInterval[info.userName+"userAttack"]);
   io.emit(info.ch, info.userName+"님이 도망갑니다.");
 
+}
+
+// 스킬 사용
+var useSkill = function(io,info){
+  Account.find({username: info.username})
+     .exec((err, account) => {
+       if(err) throw err;
+
+       let userInfo = account;
+       userInfo =   eval(userInfo[0])
+       let monNum = checkFightMonster(info.ch);
+
+       if(monNum==null){
+         return false;
+       }
+
+       Skill.find({name: info.skillname})
+          .exec((err, skill) => {
+            if(err) throw err;
+            let skillInfo = eval(skill[0]);
+
+            let userMP = userInfo.mp - skillInfo.mp;
+            // 엠피 소모 업데이트
+            Account.update({username: userInfo.username},{$set:{mp:userMP}}, function(err, output){
+              if(err) console.log(err);
+
+
+              if(fightInterval[userInfo.username+"skill"]){
+                io.emit(userInfo.username+"fight", "이미 스킬을 시전 중 입니다.");
+                return false;
+              }
+              if(skillInfo.lv > userInfo.lv){
+                io.emit(userInfo.username+"fight", "레벨이 부족해서 해당 기술을 사용 할 수 없습니다.");
+                return false;
+              }
+
+              if(skillInfo.mp > userInfo.mp){
+                io.emit(userInfo.username+"fight", "MP가 부족해 기술을 사용 할 수 없습니다.");
+                return false;
+              }
+
+
+              let skillCasting = skillInfo.casting.split(",");
+              fightInterval[userInfo.username+"CastingCount"] = 0;
+              fightInterval[userInfo.username+"skill"] = true;
+              fightInterval[userInfo.username+"skillInterval"] = setInterval(function(){
+                if(fightInterval[userInfo.username+"CastingCount"]==null){
+                  clearInterval(fightInterval[userInfo.username+"skillInterval"]);
+                  return false;
+                }
+
+
+                let castingCount = fightInterval[userInfo.username+"CastingCount"];
+                // 캐스팅
+                io.emit(info.ch+"fight", skillCasting[castingCount]);
+                fightInterval[userInfo.username+"CastingCount"] = fightInterval[userInfo.username+"CastingCount"]+1;
+                if(skillCasting.length <= fightInterval[userInfo.username+"CastingCount"] ){
+
+                  // 공격 시작
+                  let dmg =  ((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)*skillInfo.dmg) - localMonsterList[monNum].dp;
+                  dmg = Math.round(dmg);
+                  let targetCurrentHP=9999;
+                  for(var count=0; count < skillInfo.hit; count++){
+                    localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+                     targetCurrentHP = localMonsterList[monNum].hp;
+                    if(localMonsterList[monNum].hp < 0){
+                      targetCurrentHP = 0;
+                    }
+
+                    let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
+                    io.emit(info.ch+"fight", skillInfo.attackMsg+"["+dmg+"의 데미지를 입혔습니다.]");
+                    io.emit(info.ch+"fight", monHPMsg);
+
+                  }
+
+                  // 몬스터 처치
+                  if(localMonsterList[monNum].hp<=0){
+                    fightInterval[userInfo.username+"fighting"] = false;// 몬스터 처치후 발동되는 인터벌 막기위한 변수
+                    clearInterval(fightInterval[userInfo.username+"monsterAttack"]);
+                    clearInterval(fightInterval[userInfo.username+"userAttack"]);
+                    localMonsterList[monNum].exist = false;
+                    io.emit(info.ch, localMonsterList[monNum].dieMsg);
+                    io.emit(info.ch+"fight", localMonsterList[monNum].dieMsg);
+                    io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
+                    expLevelup(userInfo,io,monNum,info); // 렙업인지 경치만 획득인지 계산한다
+                  }
+
+                  clearInterval(fightInterval[userInfo.username+"skillInterval"]);
+                  fightInterval[userInfo.username+"CastingCount"] = null;
+                  fightInterval[userInfo.username+"skillInterval"] = null;
+                  fightInterval[userInfo.username+"skill"] = false;
+                }
+              },1000); // 인터벌 종료
+
+            }); // 엠피 소모 업데이트 종료
+
+          }); // 스킬 정보 가져오기 정료
+
+
+     }); // 유저정보 가져오기 종료
 }
 
 var fight = function (io,info){
@@ -175,8 +276,6 @@ var fight = function (io,info){
               let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
               io.emit(info.ch+"fight", result);
               io.emit(info.ch+"fight", monHPMsg);
-
-
               io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
 
 
@@ -264,4 +363,4 @@ var fight = function (io,info){
 
 
 
-export { fight,run ,localMonsterList, checkMonster};
+export { fight,run ,localMonsterList, checkMonster, useSkill};

@@ -16,6 +16,10 @@ var _map = require('./map');
 
 var _map2 = _interopRequireDefault(_map);
 
+var _skill = require('./skill');
+
+var _skill2 = _interopRequireDefault(_skill);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -33,4 +37,5 @@ router.use('/*', function (req, res, next) {
 
 router.use('/account', _account2.default);
 router.use('/map', _map2.default);
+router.use('/skill', _skill2.default);
 exports.default = router;
