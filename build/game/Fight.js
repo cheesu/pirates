@@ -261,7 +261,7 @@ var fight = function fight(io, info) {
       }, localMonsterList[monNum].speed * 10);
 
       // 유저 공격 속도
-      var attackSpeed = 1000 - userInfo.dex * 3;
+      var attackSpeed = 1800 - userInfo.dex * 3;
 
       // 유저가 공격
       fightInterval[userInfo.username + "userAttack"] = setInterval(function () {
@@ -306,7 +306,15 @@ var fight = function fight(io, info) {
 //경험치 획득 &
 function expLevelup(userInfo, io, monNum, info) {
   // 경험치 계산
-  var totalExp = userInfo.exp + localMonsterList[monNum].exp;
+  var upExp = localMonsterList[monNum].exp;
+  var gap = userInfo.lv - localMonsterList[monNum].lv;
+  if (gap > 7) {
+    upExp = Math.round(upExp / 2);
+  }
+  if (gap < -2) {
+    upExp = Math.round(upExp * 1.5);
+  }
+  var totalExp = userInfo.exp + upExp;
 
   // 경험치 업데이트
   _account2.default.update({ username: info.userName }, { $set: { exp: totalExp } }, function (err, output) {
