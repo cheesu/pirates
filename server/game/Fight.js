@@ -162,6 +162,21 @@ var useSkill = function(io,info){
                   dmg = Math.round(dmg);
                   let targetCurrentHP=9999;
                   for(var count=0; count < skillInfo.hit; count++){
+                    let skillAttackMsg = "";
+                    var critical = checkCritical(userInfo.dex);
+                    let result="";
+                    if(critical){
+                      dmg = dmg*1.7;
+                      dmg = Math.round(dmg);
+                      skillAttackMsg =  "[skill]"+skillInfo.attackMsg+"["+dmg+"]-[Critical!!!!]"
+                      localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+                      io.emit(userInfo.username+"[Cri]", "");
+                    }else{
+                      skillAttackMsg =  "[skill]"+skillInfo.attackMsg+"["+dmg+"]"
+                      localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+                    }
+
+
                     localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
                      targetCurrentHP = localMonsterList[monNum].hp;
                     if(localMonsterList[monNum].hp < 0){
@@ -169,7 +184,7 @@ var useSkill = function(io,info){
                     }
 
                     let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
-                    io.emit(info.ch+"fight", "[skill]"+skillInfo.attackMsg+"["+dmg+"의 데미지를 입혔습니다.]");
+                    io.emit(info.ch+"fight", skillAttackMsg);
                     io.emit(info.ch+"fight", monHPMsg);
 
                   }
@@ -237,7 +252,7 @@ var fight = function (io,info){
 
               Account.update({username: userInfo.username},{$set:{hp:userHP}}, function(err, output){
                 if(err) console.log(err);
-                io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이"+reDmg+"의 피해를 입었습니다 현재 체력 :"+ userHP);
+                io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이["+reDmg+"]의 피해를 입었습니다.");
                 io.emit(userInfo.username+"userHP", userHP+"-"+userInfo.max_hp);
                 io.emit(userInfo.username+"currentUserHP", userHP+"-"+userInfo.max_hp);
 
@@ -276,8 +291,19 @@ var fight = function (io,info){
               let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3) - localMonsterList[monNum].dp ;
               dmg = Math.round(dmg);
 
-              let result =  userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";
-              localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+              var critical = checkCritical(userInfo.dex);
+              let result="";
+              if(critical){
+                dmg = dmg*1.7;
+                dmg = Math.round(dmg);
+                result =  "Critical!!!! "+userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";
+                localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+                io.emit(userInfo.username+"[Cri]", "");
+              }else{
+                result =  userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";
+                localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+              }
+
 
               let targetCurrentHP = localMonsterList[monNum].hp;
               if(localMonsterList[monNum].hp < 0){
@@ -311,6 +337,16 @@ var fight = function (io,info){
       });
   };
 
+//크리티컬 계산
+function checkCritical(dex){
+  let result = false;
+  dex = dex/5;
+  let random = Math.floor(Math.random() * 100) + 1;
+  if(random <= dex ){
+    result = true;
+  }
+  return result;
+}
 
 //경험치 획득 &
   function expLevelup(userInfo,io,monNum,info){

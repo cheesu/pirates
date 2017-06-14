@@ -581,7 +581,7 @@ nav .brand-logo.center
 
 .hp-vibration
 {
-  animation-duration: 2s;
+  animation-duration: 0.5s;
   animation-name: vibration;
 }
 @keyframes vibration {

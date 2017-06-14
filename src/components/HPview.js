@@ -24,7 +24,8 @@ class HPview extends React.Component {
               userHP:currentHP+" / "+maxHP,
               targetHPbar:"■■■■■■■■■■■■■■■■■■■■",
               targetHP:"max/max",
-              socketCh:'0-0'
+              socketCh:'0-0',
+              containerClass:"HP-view",
           };
           this.viewTargetHP = this.viewTargetHP.bind(this);
           this.viewUserHP = this.viewUserHP.bind(this);
@@ -51,16 +52,20 @@ class HPview extends React.Component {
       console.log(data);
       viewTargetHP(data);
       });
+      this.socket.on(this.props.attackInfo.userName+'[Cri]', function(data){ //몬스터 체력
+      console.log("크리티컬!!!");
+      this.vibrationComp();
+    }.bind(this));
 
     }
 
     componentWillUnmount () {
+      this.socket.off(this.props.attackInfo.userName+'[Cri]');
       this.socket.off(this.props.attackInfo.userName+'userHP');
       this.socket.off(this.props.attackInfo.ch+'monsterHP');
     }
 
-    viewUserHP(data){
-      this.vibrationComp();
+  viewUserHP(data){
       let userHPArr = data.split("-");
       let userHP= "";
       let currentHP = Number(userHPArr[0]);
@@ -83,9 +88,7 @@ class HPview extends React.Component {
         });
     }
 
-    viewTargetHP(data){
-      this.vibrationComp();
-      console.log("타겟 체력");
+viewTargetHP(data){
       let targetHPArr = data.split("-");
 
       let targetHP= "";
@@ -109,15 +112,28 @@ class HPview extends React.Component {
     }
 
   vibrationComp(){
-    console.log("실해ㅑㅇ");
-    $("#mapViewContainer").attr("class","HP-view hp-vibration");
+    if(this.state.containerClass=="HP-view"){
+      console.log(this.state.containerClass);
+      this.setState({
+          containerClass:"HP-view hp-vibration",
+        });
+
+        setTimeout( function(){
+            if(this.state.containerClass=="HP-view hp-vibration"){
+              console.log(this.state.containerClass);
+              this.setState({
+                  containerClass:"HP-view",
+                });
+            }
+          }.bind(this), 500);
+    }
   }
 
 
 
     render(){
         return (
-          <div id="mapViewContainer" className="HP-view">
+          <div id="mapViewContainer" className={this.state.containerClass}>
             <div>
               <span>{this.props.attackInfo.userName} :</span><span className="hp-bar">{this.state.userHPbar}</span><span>  {this.state.userHP}</span>
             </div>
