@@ -38,7 +38,7 @@ class RightMenu extends React.Component {
           return data.map((skill, i) => {
             if(skill.lv > this.props.status.lv){
               return (
-                <li>
+                <li key={i}>
                   <div className="collapsible-header"><span className="badge red">[lv:{skill.lv} - 사용불가]</span>{skill.name} - {skill.mp}mp</div>
                   <div className="collapsible-body"><span>{skill.txt}</span></div>
                 </li>
@@ -46,7 +46,7 @@ class RightMenu extends React.Component {
             }
             else{
               return (
-                    <li>
+                    <li key={i}>
                       <div className="collapsible-header"><span className="badge">[lv:{skill.lv}]</span>{skill.name} - {skill.mp}mp</div>
                       <div className="collapsible-body"><span>{skill.txt}</span></div>
                     </li>
@@ -65,12 +65,19 @@ class RightMenu extends React.Component {
                 </div>
                 <div className="container">
                     <br></br>
-                    <br></br><br></br><br></br>
+                    <br></br><br></br>
                     <div className="user-info">
                       <ul className="right-menu-results">
                           <li> ID: <span>{this.props.status.currentUser}</span></li>
                           <li> LV: <span>{this.props.status.lv}</span></li>
+                          <li> HP: <span>{this.props.status.hp} / {this.props.status.max_hp}</span></li>
+                          <li> MP: <span>{this.props.status.mp} / {this.props.status.max_mp}</span></li>
                           <li> JOB: <span>{this.props.status.job}</span></li>
+                          <li className="stat-li"> STR: <span>{this.props.status.str}</span></li>
+                          <li className="stat-li"> DEX: <span>{this.props.status.dex}</span></li>
+                          <li className="stat-li"> INT: <span>{this.props.status.int}</span></li>
+
+
                           <li> EXP: <span>{this.props.status.exp}</span></li>
                           <li>  </li>
                       </ul>

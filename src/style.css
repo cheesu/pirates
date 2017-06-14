@@ -294,8 +294,14 @@ ul.search-results {
 
 ul.right-menu-results {
     text-align: center;
-    font-size: 30px;
+    font-size: 22px;
     margin-top: 0px;
+}
+
+.stat-li{
+  width: 30%;
+  display: inline-block;
+
 }
 
 .right-menu-results a {

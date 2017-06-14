@@ -14,6 +14,7 @@ class Gameview extends React.Component {
           this.toggleSearch = this.toggleSearch.bind(this);
           this.setSocketCh = this.setSocketCh.bind(this);
           this.socket = this.props.socket;
+
       }
 
       toggleSearch(){

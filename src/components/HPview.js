@@ -19,16 +19,37 @@ class HPview extends React.Component {
             }
           }
 
+          // 몬스터 체력바
+
+          let targetHPbar= "";
+          let targetCurrentHP = Number(this.props.monster.hp);
+          let targetMaxHP = Number(this.props.monster.maxHP);
+
+          let targetHpPer =  (targetCurrentHP / targetMaxHP) * 100;
+          for(let count = 0; count<20; count++){
+            if(targetHpPer>count*5){
+              targetHPbar = targetHPbar+"■";
+            }
+            else{
+              targetHPbar = targetHPbar+"□";
+            }
+
+          }
+
+
           this.state = {
               userHPbar:userHPGauge,
               userHP:currentHP+" / "+maxHP,
-              targetHPbar:"■■■■■■■■■■■■■■■■■■■■",
-              targetHP:"max/max",
+              userMPbar:"□□□□□□□□□□□□□□□□□□□□",
+              userMP:"??/??",
+              targetHPbar:targetHPbar,
+              targetHP:targetCurrentHP +"/"+targetMaxHP,
               socketCh:'0-0',
               containerClass:"HP-view",
           };
           this.viewTargetHP = this.viewTargetHP.bind(this);
           this.viewUserHP = this.viewUserHP.bind(this);
+          this.viewUserMP= this.viewUserMP.bind(this);
           this.socket = this.props.socket;
           this.vibrationComp = this.vibrationComp.bind(this);
 
@@ -48,6 +69,9 @@ class HPview extends React.Component {
       this.socket.on(this.props.attackInfo.userName+'userHP', function(data){ //몬스터 체력
       viewUserHP(data);
       });
+      this.socket.on(this.props.attackInfo.userName+'userMP', function(data){ //몬스터 체력
+      this.viewUserMP(data);
+      }.bind(this));
       this.socket.on(this.props.attackInfo.ch+'monsterHP', function(data){ //몬스터 체력
       console.log(data);
       viewTargetHP(data);
@@ -87,6 +111,29 @@ class HPview extends React.Component {
           userHP:currentHP+" / "+maxHP,
         });
     }
+
+    viewUserMP(data){
+        let userMPArr = data.split("-");
+        let userMP= "";
+        let currentMP = Number(userMPArr[0]);
+        let maxMP = Number(userMPArr[1]);
+
+        let mpPer =  (currentMP / maxMP) * 100;
+        for(let count = 0; count<20; count++){
+          if(mpPer>count*5){
+            userMP = userMP+"■";
+          }
+          else{
+            userMP = userMP+"□";
+          }
+
+        }
+
+        this.setState({
+            userMPbar: userMP,
+            userMP:currentMP+" / "+maxMP,
+          });
+      }
 
 viewTargetHP(data){
       let targetHPArr = data.split("-");
@@ -135,10 +182,13 @@ viewTargetHP(data){
         return (
           <div id="mapViewContainer" className={this.state.containerClass}>
             <div>
-              <span>{this.props.attackInfo.userName} :</span><span className="hp-bar">{this.state.userHPbar}</span><span>  {this.state.userHP}</span>
+              <span>{this.props.attackInfo.userName} HP:</span><span className="hp-bar">{this.state.userHPbar}</span><span>  {this.state.userHP}</span>
             </div>
             <div>
-              <span>{this.props.attackInfo.target} :</span><span className="hp-bar">{this.state.targetHPbar}</span><span>  {this.state.targetHP}</span>
+              <span>{this.props.attackInfo.userName} MP:</span><span className="hp-bar">{this.state.userMPbar}</span><span>  {this.state.userMP}</span>
+            </div>
+            <div>
+              <span>{this.props.attackInfo.target} HP:</span><span className="hp-bar">{this.state.targetHPbar}</span><span>  {this.state.targetHP}</span>
             </div>
             <div>test</div>
           </div>

@@ -112,11 +112,14 @@ var useSkill = function(io,info){
             let skillInfo = eval(skill[0]);
 
             let userMP = userInfo.mp - skillInfo.mp;
+            if(userMP<0){
+              userMP = 0;
+            }
             // 엠피 소모 업데이트
             Account.update({username: userInfo.username},{$set:{mp:userMP}}, function(err, output){
               if(err) console.log(err);
 
-
+              io.emit(userInfo.username+"userMP", userMP+"-"+userInfo.max_mp);
               if(fightInterval[userInfo.username+"skill"]){
                 io.emit(userInfo.username+"fight", "[skill]이미 스킬을 시전 중 입니다.");
                 return false;

@@ -468,6 +468,7 @@ class Controller extends React.Component {
                      {this.state.fighting ? <Fight onClose={this.toggleFight}
                                                   attackInfo={this.attackInfo}
                                                   socket={this.props.socket}
+                                                  monster={this.state.monster}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 
