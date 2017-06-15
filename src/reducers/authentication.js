@@ -23,6 +23,9 @@ const initialState = {
         dex:0,
         max_hp:0,
         max_mp:0,
+        mount:{w:"",d:""},
+        item:[],
+        gold:0
     }
 };
 
@@ -55,6 +58,9 @@ export default function authentication(state, action) {
                     dex:{ $set: action.dex },
                     max_hp:{ $set: action.max_hp },
                     max_mp:{ $set: action.max_mp },
+                    mount:{ $set: action.mount },
+                    item:{ $set: action.item },
+                    gold:{ $set: action.gold },
                 }
             });
         case types.AUTH_LOGIN_FAILURE:
@@ -108,6 +114,9 @@ export default function authentication(state, action) {
                     dex:{ $set: action.dex },
                     max_hp:{ $set: action.max_hp },
                     max_mp:{ $set: action.max_mp },
+                    mount:{ $set: action.mount },
+                    item:{ $set: action.item },
+                    gold:{ $set: action.gold },
                 }
             });
         case types.AUTH_GET_STATUS_FAILURE:
@@ -132,6 +141,9 @@ export default function authentication(state, action) {
                       str:{ $set: 0 },
                       int:{ $set: 0 },
                       dex:{ $set: 0 },
+                      mount:{ $set: {} },
+                      item:{ $set: [] },
+                      gold:{ $set: 0 },
                   }
               });
 

@@ -2,6 +2,7 @@ import express from 'express';
 import account from './account';
 import map from './map';
 import skill from './skill';
+import item from './item';
 
 const router = express.Router();
 
@@ -20,4 +21,5 @@ router.use('/*', (req, res, next) => {
 router.use('/account', account);
 router.use('/map', map);
 router.use('/skill', skill);
+router.use('/item', item);
 export default router;

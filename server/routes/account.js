@@ -1,5 +1,6 @@
 import express from 'express';
 import Account from '../models/account';
+import Item from '../models/item';
 
 const router = express.Router();
 
@@ -56,6 +57,9 @@ router.post('/signup', (req, res) => {
             exp:0,
             max_hp:100,
             max_mp:100,
+            mount:{w:"",d:""},
+            item:[],
+            gold:100,
         });
 
         account.password = account.generateHash(account.password);
@@ -134,9 +138,50 @@ router.get('/getinfo', (req, res) => {
     //res.json({ info: req.session.loginInfo });
 });
 
+
+
 router.post('/logout', (req, res) => {
   req.session.destroy(err => { if(err) throw err; });
   return res.json({ sucess: true });
+});
+
+
+
+
+/*아이템 장착*/
+router.get('/mountItem/:itemID', (req, res) => {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var itemid =  req.params.itemID;
+    Account.find({username: req.session.loginInfo.username})
+        .exec((err, accounts) => {
+            if(err) throw err;
+            let userInfo = eval(accounts[0]);
+            if (userInfo.item.indexOf(itemid) != -1) {
+
+              Item.find({id: itemid})
+                  .exec((err, item) => {
+                    let itemInfo = eval(item[0]);
+                    if(itemInfo.kind=="w"){
+                      userInfo.mount.w = itemInfo;
+                    }
+                    else if(itemInfo.kind=="d"){
+                      userInfo.mount.d = itemInfo;
+                    }
+                    Account.update({username: userInfo.username},{$set:{mount:userInfo.mount}}, function(err, output){
+                      res.json(item);
+                    });
+                  });
+
+
+            }
+            else {
+              res.json({result:false});
+            }
+
+
+
+
+        });
 });
 
 

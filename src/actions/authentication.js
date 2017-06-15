@@ -55,6 +55,9 @@ export function loginSuccess(info) {
         dex:info.dex,
         max_mp:info.max_mp,
         max_hp:info.max_hp,
+        item:info.item,
+        mount:info.mount,
+        gold:info.gold,
     };
 }
 
@@ -136,6 +139,9 @@ export function getStatusSuccess(info) {
         dex:info.dex,
         max_mp:info.max_mp,
         max_hp:info.max_hp,
+        item:info.item,
+        mount:info.mount,
+        gold:info.gold,
     };
 }
 

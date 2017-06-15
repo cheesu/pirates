@@ -3,16 +3,20 @@ import { browserHistory, Link } from 'react-router';
 import { connect } from 'react-redux';
 import { getStatusRequest  } from 'Actions/authentication';
 import { skillRequest  } from 'Actions/skill';
+import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import {UserItem } from 'Components';
 class RightMenu extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            keyword: ''
+            keyword: '',
+            userItem:false,
         };
 
         this.handleClose = this.handleClose.bind(this);
         this.handleRightMenu = this.handleRightMenu.bind(this);
+        this.toggleUserItem = this.toggleUserItem.bind(this);
       var userName = this.props.status.currentUser;
     }
 
@@ -24,6 +28,12 @@ class RightMenu extends React.Component {
 
     handleRightMenu(keyword) {
         // TO BE IMPLEMENTED
+    }
+
+    toggleUserItem(){
+      this.setState({
+          userItem: !this.state.userItem
+      });
     }
 
   componentDidMount(){
@@ -76,16 +86,13 @@ class RightMenu extends React.Component {
                           <li className="stat-li"> STR: <span>{this.props.status.str}</span></li>
                           <li className="stat-li"> DEX: <span>{this.props.status.dex}</span></li>
                           <li className="stat-li"> INT: <span>{this.props.status.int}</span></li>
-
-
                           <li> EXP: <span>{this.props.status.exp}</span></li>
                           <li>  </li>
                       </ul>
                     </div>
 
                     <ul className="right-menu-results">
-                        <li> INVEN </li>
-                        <li> STATUS </li>
+                        <li><a onClick={this.toggleUserItem}  className="waves-effect waves-light btn inven-btn">INVEN</a></li>
                     </ul>
 
                     <ul className="collapsible skill-set" data-collapsible="accordion">
@@ -93,6 +100,13 @@ class RightMenu extends React.Component {
                     </ul>
 
                 </div>
+
+                <ReactCSSTransitionGroup transitionName="user-item" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                     { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
+                     {this.state.userItem ? <UserItem onClose={this.toggleUserItem}
+                                                      mountItem = {this.props.status.mount}
+                                                  /> : undefined }
+                </ReactCSSTransitionGroup>
             </div>
         );
     }

@@ -29,6 +29,9 @@ var Account = new Schema({
     str: Number(),
     int: Number(),
     dex: Number(),
+    gold: Number(),
+    item: Array(),
+    mount: Object(),
     created: { type: Date, default: Date.now }
 });
 

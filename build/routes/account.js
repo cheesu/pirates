@@ -12,6 +12,10 @@ var _account = require('../models/account');
 
 var _account2 = _interopRequireDefault(_account);
 
+var _item = require('../models/item');
+
+var _item2 = _interopRequireDefault(_item);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -67,7 +71,10 @@ router.post('/signup', function (req, res) {
             dex: 10,
             exp: 0,
             max_hp: 100,
-            max_mp: 100
+            max_mp: 100,
+            mount: { w: "", d: "" },
+            item: [],
+            gold: 100
         });
 
         account.password = account.generateHash(account.password);
@@ -148,6 +155,32 @@ router.post('/logout', function (req, res) {
         if (err) throw err;
     });
     return res.json({ sucess: true });
+});
+
+/*아이템 장착*/
+router.get('/mountItem/:itemID', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var itemid = req.params.itemID;
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+        if (err) throw err;
+        var userInfo = eval(accounts[0]);
+        if (userInfo.item.indexOf(itemid) != -1) {
+
+            _item2.default.find({ id: itemid }).exec(function (err, item) {
+                var itemInfo = eval(item[0]);
+                if (itemInfo.kind == "w") {
+                    userInfo.mount.w = itemInfo;
+                } else if (itemInfo.kind == "d") {
+                    userInfo.mount.d = itemInfo;
+                }
+                _account2.default.update({ username: userInfo.username }, { $set: { mount: userInfo.mount } }, function (err, output) {
+                    res.json(item);
+                });
+            });
+        } else {
+            res.json({ result: false });
+        }
+    });
 });
 
 /*

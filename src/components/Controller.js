@@ -16,6 +16,7 @@ class Controller extends React.Component {
               userHP:100,
               userMaxHP:100,
               rest:false,
+              store:false,
           };
 
           this.endTime = 99;
@@ -364,6 +365,18 @@ class Controller extends React.Component {
             });
         }
 
+        // 상점
+        if(mapArr[map[0]][map[1]]==9){
+          this.setState({
+            store:true,
+          });
+        }else if(this.state.store){
+          this.setState({
+            store:false,
+          });
+        }
+
+
 
 
 
@@ -438,16 +451,17 @@ class Controller extends React.Component {
     render(){
 
       const nextMap = (
-              <li><a onClick={this.moveNextMap}  className="waves-effect waves-light btn red controller-btn attack-btn">다음맵으로</a></li>
+              <li><a onClick={this.moveNextMap}  className="waves-effect waves-light btn red controller-btn attack-btn">NEXT MAP</a></li>
       );
       const prevMap = (
-              <li><a onClick={this.movePrevMap}  className="waves-effect waves-light btn red controller-btn attack-btn">이전맵으로</a></li>
+              <li><a onClick={this.movePrevMap}  className="waves-effect waves-light btn red controller-btn attack-btn">PREV MAP</a></li>
+      );
+      const store = (
+              <li><a onClick={this.movePrevMap}  className="waves-effect waves-light btn red controller-btn attack-btn">Store</a></li>
       );
 
         return (
           <div className="controller-container">
-
-
                 <ul>
                     <li><a onClick={this.moveUp}  ><i className="medium  material-icons controller-btn up waves-effect waves-light">navigation</i></a></li>
                     <li><a onClick={this.moveLeft}><i className="medium material-icons controller-btn left waves-effect waves-light">navigation</i></a></li>
@@ -461,6 +475,7 @@ class Controller extends React.Component {
                     <li><a onClick={this.rest.bind(this)}  className="waves-effect waves-light btn green controller-btn rest-btn">휴식</a></li>
                     {this.state.next ? nextMap : undefined }
                     {this.state.prev ? prevMap : undefined }
+                    {this.state.store ? store : undefined }
                 </ul>
 
                 <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>

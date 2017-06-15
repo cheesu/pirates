@@ -11,6 +11,7 @@ import Fight from './Fight';
 import HPview from './HPview';
 import Fightview from './Fightview';
 import FightController from './FightController';
+import UserItem from './UserItem';
 
 
-export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview,Fight, HPview, Fightview, FightController};
+export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview,Fight, HPview, Fightview, FightController,UserItem};
