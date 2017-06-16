@@ -53,7 +53,7 @@ class Header extends React.Component {
             <div>
               <nav>
                  <div className="nav-wrapper blue darken-1">
-                     <Link to="/game" className="brand-logo center"><span className="shine">The Pirates</span></Link>
+                     <Link to="/game" className="brand-logo center">The Pirates</Link>
 
                      <ul>
                          <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>

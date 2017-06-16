@@ -127,7 +127,9 @@ class Store extends React.Component {
                     <a className="waves-effect waves-light btn red lighten-1"
                         onClick={this.handleClose}>CLOSE</a>
                 </div>
+
                 <div className="container item-container">
+                  <span>밀수꾼들이 거래를 하는 암시장이다. 가끔씩 흔히 볼 수 없는 물품들도 들어 온다고 한다.</span>
                   <p>소지금 : <span></span>{this.props.userInfo.gold} Gold</p>
                     <ul id="tabs-swipe-demo" className="tabs">
                       <li className="tab col s3"><a className="active" href="#test-swipe-1">Weapon</a></li>

@@ -82,6 +82,12 @@ class Fightview extends React.Component {
                 else if(chat.indexOf('Critical!!!!')==0){
                   return <p className="bla-bla-class cri-chat" key={i}>{chat}</p>
                 }
+                else if(chat.indexOf('[monsterDieMsg]')==0){
+                  let _text = chat;
+                  _text = _text.substr(15,_text.length);
+                  return <p className="bla-bla-class mon-die-chat" key={i}>{_text}</p>
+                }
+
                 else{
                   return <p className="bla-bla-class" key={i}>{chat}</p>
                 }

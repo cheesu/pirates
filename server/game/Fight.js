@@ -222,15 +222,17 @@ var useSkill = function(io,info){
 
                   }
 
+                  io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
+
                   // 몬스터 처치
                   if(localMonsterList[monNum].hp<=0){
                     fightInterval[userInfo.username+"fighting"] = false;// 몬스터 처치후 발동되는 인터벌 막기위한 변수
                     clearInterval(fightInterval[userInfo.username+"monsterAttack"]);
                     clearInterval(fightInterval[userInfo.username+"userAttack"]);
                     localMonsterList[monNum].exist = false;
-                    io.emit(info.ch, localMonsterList[monNum].dieMsg);
-                    io.emit(info.ch+"fight", localMonsterList[monNum].dieMsg);
-                    //io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
+                    io.emit(info.ch, "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
+                    io.emit(info.ch+"fight", "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
+
                     expLevelup(userInfo,io,monNum,info); // 렙업인지 경치만 획득인지 계산한다
                   }
 
@@ -397,8 +399,8 @@ var fight = function (io,info){
                 clearInterval(fightInterval[userInfo.username+"monsterAttack"]);
                 clearInterval(fightInterval[userInfo.username+"userAttack"]);
                 localMonsterList[monNum].exist = false;
-                io.emit(info.ch, localMonsterList[monNum].dieMsg);
-                io.emit(info.ch+"fight", localMonsterList[monNum].dieMsg);
+                io.emit(info.ch, "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
+                io.emit(info.ch+"fight", "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
                 expLevelup(userInfo,io,monNum,info); // 렙업인지 경치만 획득인지 계산한다
               }
 

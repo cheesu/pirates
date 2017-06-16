@@ -153,11 +153,18 @@ a {
 {
   color:#fff;
 }
-
+.blocking-chat
+{
+  color: #BBB;
+}
+.mon-die-chat
+{
+  color: #A00909;
+}
 .notice-chat
 {
   color:#F012FF;
-  font-size: 17px;
+  font-size: 1.5em;
 }
 
 .whisper-chat{
@@ -204,35 +211,23 @@ a {
 }
 
 
-.chat-setmonster-span
-{
-  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/gradient-shine.png);
-      background-size: inherit;
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
 
 .chat-setmonster{
-  font: bold 600%/100% "Lucida Grande", Arial, sans-serif;
-    position: relative;
-    margin: 0;
     color: #fff;
-    text-transform: uppercase;
 }
 
 .chat-skill{
-  color:#ff1d7c;
+  color:#E0E0E0;
   font-weight: bold;
-
-  text-shadow: 0 0 20px #fefcc9,
-10px -10px 30px #feec85, -20px -20px 40px
-#ffae34, 20px -40px 50px #ec760c,
--20px -60px 60px #cd4606,
-0 -80px 70px #973716, 10px -90px 80px #451b0e;
-
+  text-shadow: 0 0 0.5em #fefcc9,
+0.1em -0.1em 0.3em #feec85,
+  0.5em -0.4em 0.5em #ec760c,
+-0.4em -0.9em 0.9em #cd4606,
+0.2em -1.1em 1.3em #451b0e;
 }
+
+
+
 .chat-item
 {
   color:#A0F0F0;
@@ -295,8 +290,6 @@ a {
   {
     text-shadow: 0.1em 0.1em 0.15em #079A00;
   }
-
-
 }
 
 

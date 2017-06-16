@@ -124,6 +124,14 @@ class Gameview extends React.Component {
               else if(chat.indexOf('[LEVEL UP!!]')==0){
                 return <p className="bla-bla-class levelup-chat" key={i}>{chat}</p>
               }
+              else if(chat.indexOf('막혀서')==0||chat.indexOf('벽에')==0){
+                return <p className="bla-bla-class blocking-chat" key={i}>{chat}</p>
+              }
+              else if(chat.indexOf('[monsterDieMsg]')==0){
+                let _text = chat;
+                _text = _text.substr(15,_text.length);
+                return <p className="bla-bla-class mon-die-chat" key={i}>{_text}</p>
+              }
               else{
                 return <p className="bla-bla-class" key={i}>{chat}</p>
               }
@@ -138,34 +146,6 @@ class Gameview extends React.Component {
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 
-
-
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-                <defs>
-                  <filter id="squiggly-0">
-                    <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="0"/>
-                    <feDisplacementMap id="displacement" in="SourceGraphic" in2="noise" scale="6" />
-                  </filter>
-                  <filter id="squiggly-1">
-                    <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="1"/>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" />
-                  </filter>
-
-                  <filter id="squiggly-2">
-                    <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="2"/>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
-                  </filter>
-                  <filter id="squiggly-3">
-                    <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="3"/>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" />
-                  </filter>
-
-                  <filter id="squiggly-4">
-                    <feTurbulence id="turbulence" baseFrequency="0.02" numOctaves="3" result="noise" seed="4"/>
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
-                  </filter>
-                </defs>
-              </svg>
           </div>
         );
     }
