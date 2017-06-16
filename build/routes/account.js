@@ -74,8 +74,8 @@ router.post('/signup', function (req, res) {
             max_mp: 100,
             mount: { w: "", d: "" },
             item: [],
-            itemCount: {},
-            gold: 100
+            itemCount: { r: 0 },
+            gold: 1000
         });
 
         account.password = account.generateHash(account.password);
