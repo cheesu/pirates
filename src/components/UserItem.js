@@ -85,6 +85,7 @@ class UserItem extends React.Component {
                   <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
                   <div className="collapsible-body item-msg">
                     <p>등급 : {item.type}</p>
+                    <p>회복력 : {item.min} ~ {item.max}</p>
                     <span>{item.msg}</span>
                     <p><a onClick={this.useItem.bind(this,item.id)}  className="waves-effect waves-light btn">사용</a></p>
                   </div>
@@ -97,6 +98,7 @@ class UserItem extends React.Component {
                       <div className="collapsible-header"><span className="badge">{this.props.userInfo.mount.w.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
                       <div className="collapsible-body item-msg">
                         <p>등급 : {item.type}</p>
+                        <p>데미지 : {item.min} ~ {item.max}</p>
                         <span>{item.msg}</span>
                         <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
                       </div>
@@ -109,6 +111,7 @@ class UserItem extends React.Component {
                       <div className="collapsible-header"><span className="badge">  {this.props.userInfo.mount.d.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
                       <div className="collapsible-body item-msg">
                         <p>등급 : {item.type}</p>
+                        <p>방어력 : {item.min} ~ {item.max}</p>
                         <span>{item.msg}</span>
                         <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
                       </div>

@@ -23322,6 +23322,14 @@ var UserItem = function (_React$Component) {
                                     item.type
                                 ),
                                 _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    '\uD68C\uBCF5\uB825 : ',
+                                    item.min,
+                                    ' ~ ',
+                                    item.max
+                                ),
+                                _react2.default.createElement(
                                     'span',
                                     null,
                                     item.msg
@@ -23363,6 +23371,14 @@ var UserItem = function (_React$Component) {
                                     null,
                                     '\uB4F1\uAE09 : ',
                                     item.type
+                                ),
+                                _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    '\uB370\uBBF8\uC9C0 : ',
+                                    item.min,
+                                    ' ~ ',
+                                    item.max
                                 ),
                                 _react2.default.createElement(
                                     'span',
@@ -23407,6 +23423,14 @@ var UserItem = function (_React$Component) {
                                     null,
                                     '\uB4F1\uAE09 : ',
                                     item.type
+                                ),
+                                _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    '\uBC29\uC5B4\uB825 : ',
+                                    item.min,
+                                    ' ~ ',
+                                    item.max
                                 ),
                                 _react2.default.createElement(
                                     'span',
