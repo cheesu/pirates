@@ -40,6 +40,10 @@ var _routes = require('./routes');
 
 var _routes2 = _interopRequireDefault(_routes);
 
+var _systemnotice = require('./models/systemnotice');
+
+var _systemnotice2 = _interopRequireDefault(_systemnotice);
+
 var _Fight = require('./game/Fight');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -139,9 +143,21 @@ var server = app.use(function (req, res) {
 var socketIO = require('socket.io');
 var io = socketIO(server);
 
+// 시스템 알림
+var notice = setInterval(function () {
+  _systemnotice2.default.find().exec(function (err, notice) {
+    if (err) throw err;
+
+    var randomNo = Math.floor(Math.random() * notice.length);
+    var noticeInfo = eval(notice[randomNo]);
+    io.emit('NoticeChat', "[시스템] " + " " + noticeInfo.text);
+  });
+}, 1000 * 60 * 2);
+
 var chatUserList = []; // 채팅 소켓 접속자 목록
 
 io.on('connection', function (socket) {
+
   socket.on('Gchat', function (msg) {
     io.emit('Gchat', msg);
   });

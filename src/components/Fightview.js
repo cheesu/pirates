@@ -58,7 +58,6 @@ class Fightview extends React.Component {
 
             {this.state.chat.map(function(chat,i){
               try {
-
                 if(chat.indexOf('[피격]')==0){
                   return <p className="bla-bla-class chat-Shoot" key={i}>{chat}</p>
                 }
@@ -76,6 +75,12 @@ class Fightview extends React.Component {
                 }
                 else if(chat.indexOf('[공지사항]')==0){
                   return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
+                }
+                else if(chat.indexOf('[시스템]')==0){
+                  return <p className="bla-bla-class system-chat" key={i}>{chat}</p>
+                }
+                else if(chat.indexOf('Critical!!!!')==0){
+                  return <p className="bla-bla-class cri-chat" key={i}>{chat}</p>
                 }
                 else{
                   return <p className="bla-bla-class" key={i}>{chat}</p>

@@ -43,7 +43,7 @@ class Mapview extends React.Component {
         return (
           <div id="mapViewContainer" className="map-view">
             {this.state.map.map(function(map,i){
-                return <p className="map-view-p" key={i}>{map}</p>
+                return <p className="map-view-p chrome" key={i}>{map}</p>
             })}
             <div>☆: 나의위치, □:갈 수 있는길, ■:못감, ♨:상점 ,※:다음맵</div>
           </div>

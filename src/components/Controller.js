@@ -191,9 +191,10 @@ class Controller extends React.Component {
         });
 
         if(data!=null){
-          this.props.socket.emit('private', data.appearMsg+" : "+ data.name+"의 남은 체력"+data.hp);
+          console.log("몹이쩡");
+          this.props.socket.emit('private', "[몬스터]"+data.appearMsg+" :[LV:"+ data.lv+"]");
         }else{
-          this.props.socket.emit('private', "스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
+          this.props.socket.emit('private', "...스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
         }
       }
 

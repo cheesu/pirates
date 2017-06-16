@@ -60,6 +60,7 @@ class HPview extends React.Component {
               targetHP:targetCurrentHP +"/"+targetMaxHP,
               socketCh:'0-0',
               containerClass:"HP-view",
+              criticalClass:"cri-no"
           };
           this.viewTargetHP = this.viewTargetHP.bind(this);
           this.viewUserHP = this.viewUserHP.bind(this);
@@ -100,6 +101,7 @@ class HPview extends React.Component {
     componentWillUnmount () {
       this.socket.off(this.props.attackInfo.userName+'[Cri]');
       this.socket.off(this.props.attackInfo.userName+'userHP');
+      this.socket.off(this.props.attackInfo.userName+'userMP');
       this.socket.off(this.props.attackInfo.ch+'monsterHP');
     }
 
@@ -177,13 +179,14 @@ viewTargetHP(data){
       console.log(this.state.containerClass);
       this.setState({
           containerClass:"HP-view hp-vibration",
+          criticalClass:"cri-yes"
         });
 
         setTimeout( function(){
             if(this.state.containerClass=="HP-view hp-vibration"){
-              console.log(this.state.containerClass);
               this.setState({
                   containerClass:"HP-view",
+                  criticalClass:"cri-no"
                 });
             }
           }.bind(this), 500);
@@ -204,7 +207,7 @@ viewTargetHP(data){
             <div>
               <span>{this.props.attackInfo.target} HP:</span><span className="hp-bar">{this.state.targetHPbar}</span><span>  {this.state.targetHP}</span>
             </div>
-            <div>test</div>
+            <div className={this.state.criticalClass}><span className="cri-span"></span> Critical!!!</div>
           </div>
         );
     }

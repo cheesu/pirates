@@ -223,9 +223,9 @@ var useSkill = function useSkill(io, info) {
                 targetCurrentHP = 0;
               }
 
-              var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + targetCurrentHP;
+              //  let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
               io.emit(info.ch + "fight", skillAttackMsg);
-              io.emit(info.ch + "fight", monHPMsg);
+              //  io.emit(info.ch+"fight", monHPMsg);
             }
 
             // 몬스터 처치
@@ -236,7 +236,7 @@ var useSkill = function useSkill(io, info) {
               localMonsterList[monNum].exist = false;
               io.emit(info.ch, localMonsterList[monNum].dieMsg);
               io.emit(info.ch + "fight", localMonsterList[monNum].dieMsg);
-              io.emit(info.ch + "monsterHP", targetCurrentHP + "-" + localMonsterList[monNum].maxHP);
+              //io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
               expLevelup(userInfo, io, monNum, info); // 렙업인지 경치만 획득인지 계산한다
             }
 
@@ -379,9 +379,9 @@ var fight = function fight(io, info) {
           targetCurrentHP = 0;
         }
 
-        var monHPMsg = localMonsterList[monNum].name + "의 남은 체력 : " + targetCurrentHP;
+        //  let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
         io.emit(info.ch + "fight", result);
-        io.emit(info.ch + "fight", monHPMsg);
+        //  io.emit(info.ch+"fight", monHPMsg);
         io.emit(info.ch + "monsterHP", targetCurrentHP + "-" + localMonsterList[monNum].maxHP);
 
         // 몬스터 처치
@@ -463,7 +463,7 @@ function expLevelup(userInfo, io, monNum, info) {
 
     _account2.default.update({ username: userInfo.username }, { $set: { lv: lvUp, str: strUP, int: intUP, dex: dexUP, max_hp: max_hpUP, max_mp: max_mpUP, mp: max_mpUP, hp: max_hpUP } }, function (err, output) {
       if (err) console.log(err);
-      io.emit(info.ch, userInfo.username + "님께서 레벨업 하셨습니다");
+      io.emit("Gchat", "[LEVEL UP!!] [" + userInfo.username + "] 님께서 레벨업 하셨습니다");
     });
   }
 }

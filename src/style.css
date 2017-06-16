@@ -1,11 +1,57 @@
+
 html ,body{
   height: 100%;
 }
 
 body {
     background-color: #000;
+
 }
 
+
+.shine, .chrome {
+  font-size: 1em;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+
+.shine {
+  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;
+  -webkit-background-size: 100px;
+  color: rgba(255, 255, 255, 0.3);
+  -webkit-background-clip: text;
+  -webkit-animation-name: shine;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: infinite;
+  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);
+}
+
+.chrome {
+  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;
+  background-image: -webkit-linear-gradient(-40deg, transparent 0%, transparent 40%, #fff 50%, transparent 60%, transparent 100%);
+  -webkit-background-size: 100px;
+  color: rgba(255, 255, 255, 0.3);
+  -webkit-background-clip: text;
+  -webkit-animation-name: shine;
+  -webkit-animation-duration: 5s;
+  -webkit-animation-iteration-count: infinite;
+  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);
+}
+
+@-webkit-keyframes shine {
+  0%, 10% {
+    background-position: -100px;
+  }
+  20% {
+    background-position: top left;
+  }
+  90% {
+    background-position: top right;
+  }
+  100% {
+    background-position: 100px;
+  }
+}
 
 
 /* Authentication */
@@ -118,6 +164,19 @@ a {
   color:#B0FFFF;
 }
 
+.cri-chat
+{
+  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;
+  -webkit-background-size: 20px;
+  color: rgba(255, 50, 52, 0.4);
+  -webkit-background-clip: text;
+  -webkit-animation-name: shine;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: infinite;
+  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);
+}
+
+
 .chat-line
 {
   border-top: solid;
@@ -125,9 +184,54 @@ a {
 .chat-green{
   color:#0F0;
 }
+
+.chat-map-effect-span
+{
+  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);
+      background-size: contain;
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 16px;
+}
+
+.chat-map-effect{
+  font: bold 600%/100% "Lucida Grande", Arial, sans-serif;
+    position: relative;
+    margin: 0;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+
+.chat-setmonster-span
+{
+  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/gradient-shine.png);
+      background-size: inherit;
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chat-setmonster{
+  font: bold 600%/100% "Lucida Grande", Arial, sans-serif;
+    position: relative;
+    margin: 0;
+    color: #fff;
+    text-transform: uppercase;
+}
+
 .chat-skill{
   color:#ff1d7c;
   font-weight: bold;
+
+  text-shadow: 0 0 20px #fefcc9,
+10px -10px 30px #feec85, -20px -20px 40px
+#ffae34, 20px -40px 50px #ec760c,
+-20px -60px 60px #cd4606,
+0 -80px 70px #973716, 10px -90px 80px #451b0e;
+
 }
 .chat-item
 {
@@ -142,6 +246,60 @@ a {
   color:#1da0ff;
   font-weight: bold;
 }
+
+.levelup-chat
+{
+  animation-duration: 1s;
+  animation-name: levelup;
+  animation-iteration-count: infinite;
+}
+
+@keyframes levelup {
+  10%
+  {
+    text-shadow: 0.3em 0.1em 0.3em #F0FF00;
+  }
+  20%
+  {
+    text-shadow: 0.2em 0.2em 0.3em #00FFA0;
+  }
+  30%
+  {
+    text-shadow: 0.1em 0.3em 0.3em #D0D6FF;
+  }
+  40%
+  {
+    text-shadow: 0em 0.2em 0.3em #00FFA0;
+  }
+  50%
+  {
+    text-shadow: -0.1em 0.1em 0.3em #FFA0A0;
+  }
+  60%
+  {
+    text-shadow: -0.2em 0em 0.3em #F0A000;
+  }
+  70%
+  {
+    text-shadow: -0.3em -0.1em 0.3em #00FFFF;
+  }
+  80%
+  {
+    text-shadow: -0.2em -0.2em 0.3em #FF00FF;
+  }
+  90%
+  {
+    text-shadow: -0.1em -0.3em 0.3em #F0A0D0;
+  }
+  100%
+  {
+    text-shadow: 0.1em 0.1em 0.15em #079A00;
+  }
+
+
+}
+
+
 /*chat*/
 .chat-input-wrapper
 {
@@ -614,7 +772,81 @@ nav .brand-logo.center
   100%    {margin-left: 0px; margin-top: 0px;}
 }
 
+.cri-no{
+  display: none;
+}
 
+
+.cri-span{
+  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);
+      background-size: contain;
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cri-yes
+{
+  display: inline-block;
+  position: absolute;
+  font: bold 600%/100% "Lucida Grande", Arial, sans-serif;
+  position: relative;
+  margin: 0;
+  color: #fff;
+  text-transform: uppercase;
+  animation-duration: 0.1s;
+  margin-top:50%;
+  animation-name: criEffect;
+}
+
+@keyframes criEffect {
+  0%    {
+    font-size: 1em;
+    transform: rotate(-90deg);
+  }
+  10%    {
+    font-size: 3em;
+    transform: rotate(-70deg);
+  }
+  20%    {
+    font-size: 4em;
+    transform: rotate(-50deg);
+  }
+  30%    {
+    font-size: 5em;
+    transform: rotate(-20deg);
+  }
+  40%    {
+    font-size: 6em;
+    transform: rotate(-10deg);
+  }
+  50%    {
+    font-size: 7em;
+    transform: rotate(10deg);
+  }
+  60%    {
+    font-size: 7em;
+    transform: rotate(10deg);
+  }
+  70%    {
+    font-size: 6em;
+    transform: rotate(-10deg);
+  }
+  80%    {
+    font-size: 5em;
+    transform: rotate(-50deg);
+  }
+  90%    {
+    font-size: 4em;
+    transform: rotate(-70deg);
+  }
+  100%    {
+    font-size: 3em;
+    transform: rotate(-90deg);
+  }
+
+}
 
 /*fight-view*/
 

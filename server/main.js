@@ -14,6 +14,8 @@ var RedisStore = require("connect-redis")(session);
 
 import api from './routes';
 
+import Systemnotice from './models/systemnotice';
+
 import { fight, run,localMonsterList, checkMonster ,useSkill, rest, restEnd, fightUseItem} from './game/Fight';
 
 const app = express();
@@ -111,10 +113,27 @@ var socketIO = require('socket.io');
 const io = socketIO(server);
 
 
+// 시스템 알림
+let notice= setInterval(function(){
+  Systemnotice.find()
+     .exec((err, notice) => {
+         if(err) throw err;
+
+         let randomNo = Math.floor(Math.random() * notice.length);
+         let noticeInfo = eval(notice[randomNo]);
+           io.emit('NoticeChat', "[시스템] "+" "+noticeInfo.text);
+       });
+},1000*60*2);
+
+
 
 var chatUserList = []; // 채팅 소켓 접속자 목록
 
 io.on('connection', (socket) => {
+
+
+
+
     socket.on('Gchat', function(msg){
       io.emit('Gchat', msg);
     });
