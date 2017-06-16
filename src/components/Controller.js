@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {debounce} from 'throttle-debounce';
-import { Fight } from 'Components';
+import { Fight, Store } from 'Components';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 class Controller extends React.Component {
   constructor(props, context) {
@@ -13,10 +13,9 @@ class Controller extends React.Component {
               next:false,
               prev:false,
               fighting:false,
-              userHP:100,
-              userMaxHP:100,
               rest:false,
               store:false,
+              openStore:false,
           };
 
           this.endTime = 99;
@@ -34,12 +33,13 @@ class Controller extends React.Component {
           this.rest = debounce(500,this.rest);
           this.setLocalMonster = this.setLocalMonster.bind(this);
           this.setFighting = this.setFighting.bind(this);
-          this.setFightingHP = this.setFightingHP.bind(this);
+          this.checkDead = this.checkDead.bind(this);
           this.getMapAxio = this.getMapAxio.bind(this);
           this.moveNextMap = this.moveNextMap.bind(this);
           this.movePrevMap = this.movePrevMap.bind(this);
           this.toggleFight = this.toggleFight.bind(this);
           this.toggleRest = this.toggleRest.bind(this);
+          this.toggleOpenStore = this.toggleOpenStore.bind(this);
 
           this.mapName = "푸른해변";
 
@@ -51,7 +51,15 @@ class Controller extends React.Component {
           });
       }
 
+      toggleOpenStore(){
+          this.setState({
+              openStore: !this.state.openStore
+          });
+      }
       componentDidMount(){
+        this.props.getStatusRequest();
+        this.props.userItemRequest();
+
 
         this.getMapAxio();
         this.props.socket.emit('addUser', this.props.username);
@@ -68,17 +76,15 @@ class Controller extends React.Component {
         });
 
 
-        let fightingHP = this.setFightingHP.bind(this);
-        this.props.socket.on(this.props.username+"currentUserHP", function(data){ //몹 채팅
-            fightingHP(data);
-        });
+        this.props.socket.on(this.props.username+"CONTROLLDEAD", function(data){ //귓말
+        this.checkDead();
+        }.bind(this));
+
 
         let toggleRest = this.toggleRest.bind(this);
         this.props.socket.on("restEnd", function(data){ //몹 채팅
           toggleRest(false);
         });
-
-        console.log(this.props.userInfo);
 
       }
 
@@ -163,32 +169,13 @@ class Controller extends React.Component {
       }
 
       // 체력
-      setFightingHP(data){
-        let userHPArr = data.split("-");
-        let userHP= "";
-        let currentHP = Number(userHPArr[0]);
-        let maxHP = Number(userHPArr[1]);
-
-        this.setState({
-          userHP:currentHP,
-        });
-
-        if(this.state.userMaxHP!=maxHP){
-          this.setState({
-            userMaxHP:maxHP,
-          });
-        }
-
-        if(this.state.userHP <= 0){
+      checkDead(){
           this.props.socket.emit('private',"전투중 의식을 잃고 쓰러집니다.");
           this.mapLocal = [0,0];
           this.props.socket.emit('setLocalCh', "0-0");
           this.props.socket.emit('chat', "0-0:ch:"+this.props.username+"님께서 죽었다 깨어났습니다.");
           this.props.socket.emit('private',"정신을 차려보니 시작점에서 깨어납니다.");
 
-
-
-        }
       }
       // 전투중 설정
       setFighting(){
@@ -315,16 +302,12 @@ class Controller extends React.Component {
         else if(dir=="down"){
           dirText= "남";
           map[0] = map[0]+1;
-          console.log(map);
           if(map[0]>=mapYLimit){
-            console.log("막혀따아");
             this.props.socket.emit('move', "막혀서 못감"); // 요청
             map[0] = mapYLimit-1;
             return false;
-            console.log("막혀따아2");
           }
           else if(mapArr[map[0]][map[1]]==-1){
-            console.log("막혀따아3");
             map[0] = map[0]-1;
             this.props.socket.emit('move', "벽에 막혀 그쪽 으로 이동 할 수 없습니다.");
             return false;
@@ -345,6 +328,8 @@ class Controller extends React.Component {
         }
         else if(this.state.prev){
           mapArr[mapY][mapX] = 4;
+        }else if(this.state.store){
+          mapArr[mapY][mapX] = 9;
         }
 
         // 다음맵으로 이동
@@ -385,7 +370,6 @@ class Controller extends React.Component {
          mapX =map[1];
 
         mapArr[mapY][mapX] = 2; // 이동 타겟 지점
-        console.log(mapArr);
         var socketChan = mapY+"-"+mapX;
         this.setState({
           map:mapArr
@@ -431,10 +415,9 @@ class Controller extends React.Component {
           attackInfo.userName = this.props.username;
           attackInfo.ch = this.mapName+"-"+this.socketCh;
           attackInfo.target = this.state.monster.name;
-          attackInfo.userMaxHP = this.state.userMaxHP;
-          attackInfo.userHP = this.state.userHP;
+          attackInfo.userMaxHP = this.props.userInfo.max_hp
+          attackInfo.userHP = this.props.userInfo.hp;
           attackInfo.fighting = false;
-            console.log(attackInfo);
           this.attackInfo = attackInfo;
           this.toggleFight();
           this.setLocalMonster(null);
@@ -457,7 +440,7 @@ class Controller extends React.Component {
               <li><a onClick={this.movePrevMap}  className="waves-effect waves-light btn red controller-btn attack-btn">PREV MAP</a></li>
       );
       const store = (
-              <li><a onClick={this.movePrevMap}  className="waves-effect waves-light btn red controller-btn attack-btn">Store</a></li>
+              <li><a onClick={this.toggleOpenStore}  className="waves-effect waves-light btn red controller-btn attack-btn">Store</a></li>
       );
 
         return (
@@ -482,8 +465,17 @@ class Controller extends React.Component {
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.fighting ? <Fight onClose={this.toggleFight}
                                                   attackInfo={this.attackInfo}
+                                                  userInfo = {this.props.userInfo}
                                                   socket={this.props.socket}
                                                   monster={this.state.monster}
+                                                  /> : undefined }
+                </ReactCSSTransitionGroup>
+
+                <ReactCSSTransitionGroup transitionName="store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                     { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
+                     {this.state.openStore ? <Store onClose={this.toggleOpenStore}
+                                                  socket={this.props.socket}
+                                                  userInfo = {this.props.userInfo}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 

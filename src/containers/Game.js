@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Chat, Gameview , Controller, Mapview} from 'Components';
 import { getStatusRequest  } from 'Actions/authentication';
+import { userItemRequest  } from 'Actions/item';
 const uri = 'http://127.0.0.1:3303/';
 const options = { transports: ['websocket'] };
 
@@ -83,6 +84,8 @@ class Game extends React.Component {
                 socket={this.socket}
                 username = {this.props.status.currentUser}
                 userInfo = {this.props.status}
+                getStatusRequest = {this.props.getStatusRequest}
+                userItemRequest = {this.props.userItemRequest}
                 />
             </div>
       );
@@ -100,7 +103,8 @@ class Game extends React.Component {
 const mapStateToProps = (state) => {
     return {
         isLoggedIn: state.authentication.status.isLoggedIn,
-        status: state.authentication.status
+        status: state.authentication.status,
+        items: state.item.items,
     };
 };
 
@@ -108,7 +112,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getStatusRequest: () => {
             return dispatch(getStatusRequest());
-        }
+        },
+        userItemRequest: () => {
+            return dispatch(userItemRequest());
+        },
     };
 };
 

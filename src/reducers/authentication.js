@@ -25,6 +25,7 @@ const initialState = {
         max_mp:0,
         mount:{w:"",d:""},
         item:[],
+        itemCount:{},
         gold:0
     }
 };
@@ -61,6 +62,7 @@ export default function authentication(state, action) {
                     mount:{ $set: action.mount },
                     item:{ $set: action.item },
                     gold:{ $set: action.gold },
+                    itemCount:{ $set: action.itemCount },
                 }
             });
         case types.AUTH_LOGIN_FAILURE:
@@ -117,6 +119,7 @@ export default function authentication(state, action) {
                     mount:{ $set: action.mount },
                     item:{ $set: action.item },
                     gold:{ $set: action.gold },
+                    itemCount:{ $set: action.itemCount },
                 }
             });
         case types.AUTH_GET_STATUS_FAILURE:
@@ -144,6 +147,7 @@ export default function authentication(state, action) {
                       mount:{ $set: {} },
                       item:{ $set: [] },
                       gold:{ $set: 0 },
+                      itemCount:{ $set: {} },
                   }
               });
 

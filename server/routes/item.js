@@ -24,8 +24,6 @@ router.get('/getUserItem', (req, res) => {
         });
     }
 
-    console.log("겟 아이템");
-    console.log(req.session.loginInfo.username);
     Account.find({username: req.session.loginInfo.username})
         .exec((err, account) => {
             if(err) throw err;
@@ -35,14 +33,13 @@ router.get('/getUserItem', (req, res) => {
             Item.find({id: { $in:userInfo.item }})
                 .exec((err, items) => {
                     if(err) throw err;
-                    console.log(items);
                     res.json({itemList:items,gold:userInfo.gold});
                 });
 
         });
-
-    //res.json({ info: req.session.loginInfo });
 });
+
+
 
 // EMPTY SEARCH REQUEST: GET /api/account/search
 router.get('/item', (req, res) => {

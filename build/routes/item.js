@@ -39,8 +39,6 @@ router.get('/getUserItem', function (req, res) {
         });
     }
 
-    console.log("겟 아이템");
-    console.log(req.session.loginInfo.username);
     _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, account) {
         if (err) throw err;
         var userInfo = eval(account[0]);
@@ -48,12 +46,9 @@ router.get('/getUserItem', function (req, res) {
         // 아이템 출력
         _item2.default.find({ id: { $in: userInfo.item } }).exec(function (err, items) {
             if (err) throw err;
-            console.log(items);
             res.json({ itemList: items, gold: userInfo.gold });
         });
     });
-
-    //res.json({ info: req.session.loginInfo });
 });
 
 // EMPTY SEARCH REQUEST: GET /api/account/search

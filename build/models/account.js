@@ -32,6 +32,7 @@ var Account = new Schema({
     gold: Number(),
     item: Array(),
     mount: Object(),
+    itemCount: Object(),
     created: { type: Date, default: Date.now }
 });
 

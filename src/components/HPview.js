@@ -20,11 +20,9 @@ class HPview extends React.Component {
           }
 
           // 몬스터 체력바
-
           let targetHPbar= "";
           let targetCurrentHP = Number(this.props.monster.hp);
           let targetMaxHP = Number(this.props.monster.maxHP);
-
           let targetHpPer =  (targetCurrentHP / targetMaxHP) * 100;
           for(let count = 0; count<20; count++){
             if(targetHpPer>count*5){
@@ -33,15 +31,31 @@ class HPview extends React.Component {
             else{
               targetHPbar = targetHPbar+"□";
             }
-
           }
+
+          //유저 MP바
+
+          let userMPbar= "";
+          let userCurrentMP = this.props.userInfo.mp;
+          let userMaxMP = this.props.userInfo.max_mp;
+          let userMpPer =  (userCurrentMP / userMaxMP) * 100;
+          for(let count = 0; count<20; count++){
+            if(userMpPer>count*5){
+              userMPbar = userMPbar+"■";
+            }
+            else{
+              userMPbar = userMPbar+"□";
+            }
+          }
+
+
 
 
           this.state = {
               userHPbar:userHPGauge,
               userHP:currentHP+" / "+maxHP,
-              userMPbar:"□□□□□□□□□□□□□□□□□□□□",
-              userMP:"??/??",
+              userMPbar:userMPbar,
+              userMP:userCurrentMP+"/"+userMaxMP,
               targetHPbar:targetHPbar,
               targetHP:targetCurrentHP +"/"+targetMaxHP,
               socketCh:'0-0',

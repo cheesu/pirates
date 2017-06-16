@@ -104,7 +104,7 @@ class RightMenu extends React.Component {
                 <ReactCSSTransitionGroup transitionName="user-item" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.userItem ? <UserItem onClose={this.toggleUserItem}
-                                                      mountItem = {this.props.status.mount}
+                                                      userInfo = {this.props.status}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
             </div>

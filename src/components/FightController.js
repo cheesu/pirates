@@ -3,6 +3,7 @@ import axios from 'axios';
 import {debounce} from 'throttle-debounce';
 import { connect } from 'react-redux';
 import { getStatusRequest  } from 'Actions/authentication';
+import { userItemRequest  } from 'Actions/item';
 import { skillRequest  } from 'Actions/skill';
 class FightController extends React.Component {
   constructor(props, context) {
@@ -16,6 +17,9 @@ class FightController extends React.Component {
           this.handleCloseExit = this.handleCloseExit.bind(this);
           this.toggleFight = this.toggleFight.bind(this);
           this.useSkill = this.useSkill.bind(this);
+          this.useItem = this.useItem.bind(this);
+
+          this.props.userItemRequest();
       }
 
 
@@ -38,9 +42,8 @@ class FightController extends React.Component {
           let handleCloseExit = this.handleCloseExit.bind(this);
           let toggleFight = this.toggleFight.bind(this);
           this.props.socket.on(this.props.attackInfo.userName+"endFight", function(data){ //귓말
-          console.log("전투 끝");
-          //toggleFight();
-        //  handleCloseExit();
+          toggleFight();
+          //handleCloseExit();
           });
 
           this.props.socket.on(this.props.attackInfo.userName+"DEAD", function(data){ //귓말
@@ -58,16 +61,17 @@ class FightController extends React.Component {
       }
 
       handleClose() {
+        this.props.getStatusRequest();
           this.props.socket.emit('run',this.props.attackInfo);
           this.props.onClose();
       }
 
       handleCloseExit() {
+        this.props.getStatusRequest();
           this.props.onClose();
       }
 
       toggleFight(){
-        console.log("체인지 텍스트");
         this.setState({
           fighting:!this.state.fighting,
         });
@@ -82,6 +86,26 @@ class FightController extends React.Component {
         this.props.socket.emit('useSkill',skillObj);
       }
 
+      useItem(itemId){
+           axios.get('/api/account/fightUseItem/' + itemId)
+              .then((response) => {
+                let result = response.data.result;
+                if(result){
+                  let healInfo = {};
+                  healInfo.heal =response.data.obj.heal;
+                  healInfo.upData =response.data.obj.upData;
+                  healInfo.ch = this.props.attackInfo.ch;
+                  healInfo.username = this.props.attackInfo.userName;
+                  healInfo.maxHP = this.props.userInfo.max_hp;
+                  healInfo.maxMP = this.props.userInfo.max_mp;
+                  this.props.socket.emit('useItem',healInfo);
+                }
+
+              }).catch((error) => {
+                  console.log(error);
+              });
+      }
+
 
     render(){
       const run = (
@@ -94,15 +118,20 @@ class FightController extends React.Component {
 
       const mapDataToLinks = (data) => {
           return data.map((skill, i) => {
-            if(skill.lv > this.props.status.lv){
-              return (
-                  <li key={i} className="disabled"><a href="#!" className="disabled" >{skill.name} - {skill.mp}mp</a></li>
-               );
-            }
-            else{
+            if(skill.lv <= this.props.status.lv){
               return (
                   <li key={i}  ><a href="#!" onClick={this.useSkill.bind(this,skill.name)} data-name={skill.name} >{skill.name} - {skill.mp}mp</a></li>
                );
+            }
+          });
+      };
+
+      const itemMapDataToLinks = (data) => {
+          return data.map((item, i) => {
+              if(item.kind == "p"){
+                return (
+                  <li key={i}  ><a href="#!" onClick={this.useItem.bind(this,item.id)} data-name={item.name} >{item.name}- {this.props.status.itemCount[item.id]}개</a></li>
+                )
               }
           });
       };
@@ -124,10 +153,7 @@ class FightController extends React.Component {
                     <li className="fight-btn-li">
                       <a id="itemDrop" ref="itemDrop" className='dropdown-button btn' href='#!' data-activates='dropdown2' >Use Item</a>
                        <ul id='dropdown2' className='dropdown-content'>
-                         <li><a href="#!">미구현</a></li>
-                         <li><a href="#!">미구현</a></li>
-                         <li className="divider"></li>
-                         <li><a href="#!">미구현</a></li>
+                         { itemMapDataToLinks(this.props.items.itemList) }
                        </ul>
                     </li>
 
@@ -153,6 +179,7 @@ const mapStateToProps = (state) => {
     return {
       status: state.authentication.status,
         skills: state.skill.skills,
+        items: state.item.items,
     };
 };
 
@@ -164,7 +191,10 @@ const mapDispatchToProps = (dispatch) => {
       },
         skillRequest: (userInfo) => {
             return dispatch(skillRequest(userInfo));
-        }
+        },
+        userItemRequest: () => {
+            return dispatch(userItemRequest());
+        },
     };
 };
 

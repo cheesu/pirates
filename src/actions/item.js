@@ -7,6 +7,38 @@ import {
 } from './ActionTypes';
 import axios from 'axios';
 
+// 상점 아이템
+
+export function getStoreItemRequest() {
+    return (dispatch) => {
+
+        dispatch(item());
+
+        return axios.get('/api/item/getStoreItems/')
+            .then((response) => {
+                dispatch(storeItemGetSuccess(response.data));
+            }).catch((error) => {
+                dispatch(storeItemGetFailure());
+            });
+    };
+}
+
+export function storeItemGetSuccess(items) {
+    return {
+        type: STORE_ITEM_GET_SUCCESS,
+        items
+    };
+}
+
+export function storeItemGetFailure() {
+    return {
+        type: STORE_ITEM_GET_FAILURE
+    };
+}
+
+
+
+//사용자 아이템
 export function userItemRequest() {
     return (dispatch) => {
 
@@ -36,6 +68,6 @@ export function userItemGetSuccess(items) {
 
 export function userItemGetFailure() {
     return {
-        type: item_GET_FAILURE
+        type: USER_ITEM_GET_FAILURE
     };
 }

@@ -42,6 +42,7 @@ function loadMonsterList(){
               monObj.attackMsg = monsters[monCount].attackMsg;
               monObj.dieMsg = monsters[monCount].dieMsg;
               monObj.exp = monsters[monCount].exp;
+              monObj.gold = monsters[monCount].gold;
               monObj.area= monsters[monCount].mapName+"-"+monLocalArr[localCount];
               if(!initServer){
                 localMonsterList.push(monObj);
@@ -120,6 +121,7 @@ var useSkill = function(io,info){
               if(err) console.log(err);
 
               io.emit(userInfo.username+"userMP", userMP+"-"+userInfo.max_mp);
+              fightInterval[userInfo.username+"MP"] = userMP;
               if(fightInterval[userInfo.username+"skill"]){
                 io.emit(userInfo.username+"fight", "[skill]이미 스킬을 시전 중 입니다.");
                 return false;
@@ -156,12 +158,40 @@ var useSkill = function(io,info){
 
                 let castingCount = fightInterval[userInfo.username+"CastingCount"];
                 // 캐스팅
+
+
                 io.emit(info.ch+"fight", "[skill]"+skillCasting[castingCount]);
                 fightInterval[userInfo.username+"CastingCount"] = fightInterval[userInfo.username+"CastingCount"]+1;
                 if(skillCasting.length <= fightInterval[userInfo.username+"CastingCount"] ){
 
                   // 공격 시작
-                  let dmg =  ((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)*skillInfo.dmg) - localMonsterList[monNum].dp;
+
+                  // 무기 이름
+                  var wName = "";
+
+                  wName = userInfo.mount.w.name;
+                  if(wName==NaN || wName==null|| wName==""||wName==undefined){
+                    wName = "맨손";
+                  }
+
+                  // 무기 최소 데미지
+                  var wMinAP = userInfo.mount.w.min;
+                  if(wMinAP==NaN || wMinAP==null|| wMinAP==""||wMinAP==undefined){
+                    wMinAP = 0;
+                  }
+
+                  // 무기 최대 데미지
+                  var wMaxAP = userInfo.mount.w.min;
+                  if(wMaxAP==NaN || wMaxAP==null|| wMaxAP==""||wMaxAP==undefined){
+                    wMaxAP = 0;
+                  }
+
+                  let randomAP = Math.floor(Math.random() * wMaxAP) + 1;
+
+                  var wAP = wMinAP+randomAP;
+
+
+                  let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)+wAP)*skillInfo.dmg) - localMonsterList[monNum].dp;
                   dmg = Math.round(dmg);
                   let targetCurrentHP=9999;
                   for(var count=0; count < skillInfo.hit; count++){
@@ -219,6 +249,21 @@ var useSkill = function(io,info){
      }); // 유저정보 가져오기 종료
 }
 
+// 전투중 아이템 사용
+var fightUseItem = function(io,info){
+  if(info.heal=="hp"){
+    fightInterval[info.username+"HP"] = fightInterval[info.username+"HP"]+info.upData;
+    io.emit(info.username+"userHP", fightInterval[info.username+"HP"]+"-"+info.maxHP);
+    io.emit(info.username+"fight", "[item] 급하게 체력 포션을 마십니다. 체력이"+info.upData+"회복 되었습니다.");
+  }
+  else if(info.heal=="mp"){
+    fightInterval[info.username+"MP"] = fightInterval[info.username+"MP"]+info.upData;
+    io.emit(info.username+"userMP", fightInterval[info.username+"MP"]+"-"+info.maxMP);
+    io.emit(info.username+"fight", "[item] 적의 공격을 피해 마력 포션을 마십니다.마력이"+info.upData+"회복 되었습니다.");
+  }
+
+}
+
 var fight = function (io,info){
   console.log("전투 시작");
    Account.find({username: info.userName})
@@ -239,6 +284,8 @@ var fight = function (io,info){
 
             // 몬스터가 공격
             fightInterval[userInfo.username+"monsterAttack"] = setInterval(function(){
+
+
               let reDmg = localMonsterList[monNum].ap
               let userHP = fightInterval[userInfo.username+"HP"] - reDmg;
               fightInterval[userInfo.username+"HP"] -= reDmg;
@@ -269,6 +316,7 @@ var fight = function (io,info){
                     io.emit(info.ch+"fight", localMonsterList[monNum].name+"의 일격을 맞고 "+userInfo.username+"님이 정신을 잃고 쓰러집니다.");
                     io.emit(userInfo.username, "[시스템] 운영자 cheesu님께서 당신의 죽음을 불쌍히 여겨 체력이 회복 되었습니다.");
                     io.emit(userInfo.username+"DEAD", "");
+                    io.emit(userInfo.username+"CONTROLLDEAD", "");
                     io.emit(userInfo.username+"currentUserHP", userInfo.max_hp+"-"+userInfo.max_hp);
                   });
                 }
@@ -291,7 +339,31 @@ var fight = function (io,info){
                   return false;
               }
 
-              let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3) - localMonsterList[monNum].dp ;
+              // 무기 이름
+              var wName = userInfo.mount.w.name;
+              if(wName==NaN || wName==null|| wName==""||wName==undefined){
+                wName = "맨손";
+              }
+
+              // 무기 최소 데미지
+              var wMinAP = userInfo.mount.w.min;
+              if(wMinAP==NaN || wMinAP==null|| wMinAP==""||wMinAP==undefined){
+                wMinAP = 0;
+              }
+
+              // 무기 최대 데미지
+              var wMaxAP = userInfo.mount.w.min;
+              if(wMaxAP==NaN || wMaxAP==null|| wMaxAP==""||wMaxAP==undefined){
+                wMaxAP = 0;
+              }
+
+              let randomAP = Math.floor(Math.random() * wMaxAP) + 1;
+
+              var wAP = wMinAP+randomAP;
+
+              console.log("무기 공격력"+wMinAP+"+"+randomAP+"="+wAP);
+
+              let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)+wAP - localMonsterList[monNum].dp ;
               dmg = Math.round(dmg);
 
               var critical = checkCritical(userInfo.dex);
@@ -299,11 +371,11 @@ var fight = function (io,info){
               if(critical){
                 dmg = dmg*1.7;
                 dmg = Math.round(dmg);
-                result =  "Critical!!!! "+userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";
+                result =  "Critical!!!! "+userInfo.username+"님께서 "+info.target+"에게 "+wName+"을(를) 휘둘러"+dmg+"의 공격을 하였습니다.";
                 localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
                 io.emit(userInfo.username+"[Cri]", "");
               }else{
-                result =  userInfo.username+"님께서 "+info.target+"에게 "+dmg+"의 공격을 하였습니다.";
+                result =  userInfo.username+"님께서 "+info.target+"에게 "+wName+"을(를) 휘둘러"+dmg+"의 공격을 하였습니다.";
                 localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
               }
 
@@ -363,11 +435,13 @@ function checkCritical(dex){
       upExp = Math.round(upExp*1.5);
     }
     let totalExp = userInfo.exp + upExp;
-
+    let random = Math.floor(Math.random() * 100) + 1;
+    let getGold = localMonsterList[monNum].gold+random;
+    let setGold = userInfo.gold + getGold;
     // 경험치 업데이트
-    Account.update({username: info.userName},{$set:{exp:totalExp}}, function(err, output){
+    Account.update({username: info.userName},{$set:{exp:totalExp, gold:setGold}}, function(err, output){
       if(err) console.log(err);
-      io.emit(userInfo.username, "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+localMonsterList[monNum].exp+"를 획득 하였습니다.");
+      io.emit(userInfo.username, "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+localMonsterList[monNum].exp+"과 "+getGold +"골드를 획득 하였습니다.");
       io.emit(userInfo.username+"fight", "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+localMonsterList[monNum].exp+"를 획득 하였습니다.");
       io.emit(userInfo.username+"전투", "endFight");
       io.emit(userInfo.username+"endFight", "");
@@ -423,7 +497,7 @@ var restEnd = function(socket,name){
 }
 
 var rest = function (socket,name){
-
+  restEnd(socket,name);
   if(restInterval[name]==undefined || !restInterval[name+"rest"]){
     socket.emit(name, "[휴식]안전한 곳에 앉아 휴식을 취합니다.");
     //휴식 시작
@@ -476,4 +550,4 @@ var rest = function (socket,name){
 
 
 
-export { fight,run ,localMonsterList, checkMonster, useSkill, rest,restEnd};
+export { fight,run ,localMonsterList, checkMonster, useSkill, rest,restEnd, fightUseItem};

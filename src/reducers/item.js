@@ -3,6 +3,7 @@ import update from 'react-addons-update';
 
 const initialState = {
     items: [],
+    storeItems:[],
     status: 'INIT'
 };
 
@@ -24,6 +25,21 @@ export default function item(state, action) {
                 status: { $set: 'FAILURE' },
                 items: []
             });
+        case types.STORE_ITEM_GET_SUCCESS:
+            return update(state, {
+                status: { $set: 'SUCCESS' },
+                storeItems: { $set: action.items }
+            });
+        case types.STORE_ITEM_GET_FAILURE:
+          return update(state, {
+                status: { $set: 'FAILURE' },
+                storeItems: []
+            });
+
+
+
+
+
         default:
             return state;
     }

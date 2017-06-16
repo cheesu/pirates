@@ -62,6 +62,9 @@ class Fightview extends React.Component {
                 if(chat.indexOf('[피격]')==0){
                   return <p className="bla-bla-class chat-Shoot" key={i}>{chat}</p>
                 }
+                else if(chat.indexOf('[item]')==0){
+                  return <p className="bla-bla-class chat-item" key={i}>{chat}</p>
+                }
                 else if(chat.indexOf('[skill]')==0){
                   return <p className="bla-bla-class chat-skill" key={i}>{chat}</p>
                 }

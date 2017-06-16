@@ -19,6 +19,7 @@ const Monster = new Schema({
     attackMsg:String,
     dieMsg:String,
     exp:Number(),
+    gold:Number(),
 
 });
 

@@ -12,6 +12,8 @@ const Item = new Schema({
    job: String,
    type: String,
    msg: String,
+   effectMSG:String,
+   heal:String,
 });
 
 

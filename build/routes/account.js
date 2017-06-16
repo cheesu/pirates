@@ -74,6 +74,7 @@ router.post('/signup', function (req, res) {
             max_mp: 100,
             mount: { w: "", d: "" },
             item: [],
+            itemCount: {},
             gold: 100
         });
 
@@ -94,6 +95,7 @@ router.post('/signup', function (req, res) {
         1: LOGIN FAILED
 */
 router.post('/signin', function (req, res) {
+
     if (typeof req.body.password !== "string") {
         return res.status(401).json({
             error: "LOGIN FAILED",
@@ -180,6 +182,159 @@ router.get('/mountItem/:itemID', function (req, res) {
         } else {
             res.json({ result: false });
         }
+    });
+});
+
+/*아이템 사용*/
+router.get('/useItem/:itemID', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var itemid = req.params.itemID;
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+        if (err) throw err;
+        var userInfo = eval(accounts[0]);
+        var useItemCount = 0;
+        try {
+            useItemCount = userInfo.itemCount[itemid];
+        } catch (e) {
+            useItemCount = null;
+        }
+
+        if (useItemCount != null && useItemCount > 0) {
+            userInfo.itemCount[itemid] = userInfo.itemCount[itemid] - 1;
+            _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount } }, function (err, output) {});
+
+            _item2.default.find({ id: itemid }).exec(function (err, item) {
+                var itemInfo = eval(item[0]);
+                if (itemInfo.kind == "p") {
+
+                    var randomHeal = Math.floor(Math.random() * itemInfo.max);
+                    var upData = itemInfo.min + randomHeal;
+
+                    if (itemInfo.heal == "hp") {
+                        var updateHP = userInfo.hp + upData;
+                        if (updateHP >= userInfo.max_hp) {
+                            upData = upData - (updateHP - userInfo.max_hp);
+                            updateHP = userInfo.max_hp;
+                            if (upData == 0) {
+                                upData = "전부";
+                            }
+                        }
+                        _account2.default.update({ username: userInfo.username }, { $set: { hp: updateHP } }, function (err, output) {
+                            res.json({ msg: itemInfo.effectMSG + "  체력이 " + upData + "회복 되었습니다." });
+                        });
+                    } else if (itemInfo.heal == "mp") {
+                        var updateMP = userInfo.mp + upData;
+                        if (updateMP >= userInfo.max_mp) {
+                            upData = upData - (updateMP - userInfo.max_mp);
+                            updateMP = userInfo.max_mp;
+                            if (upData == 0) {
+                                upData = "전부";
+                            }
+                        }
+                        _account2.default.update({ username: userInfo.username }, { $set: { mp: updateMP } }, function (err, output) {
+                            res.json({ msg: itemInfo.effectMSG + "  마력이 " + upData + "회복 되었습니다." });
+                        });
+                    }
+                }
+            });
+        } else {
+            res.json({ msg: "없는 아이템 입니다." });
+        }
+    });
+});
+
+/*전투중 아이템 사용*/
+router.get('/fightUseItem/:itemID', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var itemid = req.params.itemID;
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+        if (err) throw err;
+        var userInfo = eval(accounts[0]);
+        var useItemCount = 0;
+        try {
+            useItemCount = userInfo.itemCount[itemid];
+        } catch (e) {
+            useItemCount = null;
+        }
+
+        if (useItemCount != null && useItemCount > 0) {
+            userInfo.itemCount[itemid] = userInfo.itemCount[itemid] - 1;
+            _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount } }, function (err, output) {});
+
+            _item2.default.find({ id: itemid }).exec(function (err, item) {
+                var itemInfo = eval(item[0]);
+                if (itemInfo.kind == "p") {
+
+                    var randomHeal = Math.floor(Math.random() * itemInfo.max);
+                    var upData = itemInfo.min + randomHeal;
+
+                    if (itemInfo.heal == "hp") {
+                        var updateHP = userInfo.hp + upData;
+                        if (updateHP >= userInfo.max_hp) {
+                            upData = upData - (updateHP - userInfo.max_hp);
+                            updateHP = userInfo.max_hp;
+                        }
+                        _account2.default.update({ username: userInfo.username }, { $set: { hp: updateHP } }, function (err, output) {
+                            var obj = {};
+                            obj.heal = "hp";
+                            obj.upData = upData;
+                            res.json({ result: true, obj: obj });
+                        });
+                    } else if (itemInfo.heal == "mp") {
+                        var updateMP = userInfo.mp + upData;
+                        if (updateMP >= userInfo.max_mp) {
+                            upData = upData - (updateMP - userInfo.max_mp);
+                            updateMP = userInfo.max_mp;
+                        }
+                        _account2.default.update({ username: userInfo.username }, { $set: { mp: updateMP } }, function (err, output) {
+                            var obj = {};
+                            obj.heal = "mp";
+                            obj.upData = upData;
+                            res.json({ result: true, obj: obj });
+                        });
+                    }
+                }
+            });
+        } else {
+            res.json({ result: false, msg: "" });
+        }
+    });
+});
+
+/*아이템 구매*/
+router.get('/buyItem/:itemID', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var itemid = req.params.itemID;
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+        if (err) throw err;
+        var userInfo = eval(accounts[0]);
+
+        _item2.default.find({ id: itemid }).exec(function (err, item) {
+            if (err) throw err;
+
+            var itemInfo = eval(item[0]);
+
+            if (itemInfo.price > userInfo.gold) {
+                res.json({ msg: "소지금이 부족합니다 스크립트 조작해서 살 생각 하지 마라" });
+            } else {
+
+                var haveCheck = userInfo.itemCount[itemInfo.id];
+                if (haveCheck == undefined) {
+                    haveCheck = 0;
+                }
+
+                if (userInfo.item.indexOf(itemInfo.id) == -1) {
+                    userInfo.item.push(itemInfo.id);
+                }
+
+                userInfo.gold = userInfo.gold - itemInfo.price;
+
+                userInfo.itemCount[itemInfo.id] = haveCheck + 1;
+                _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, item: userInfo.item, gold: userInfo.gold } }, function (err, output) {
+                    res.json({ msg: "구매 완료 하였습니다." });
+                });
+            }
+        });
     });
 });
 

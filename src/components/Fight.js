@@ -40,6 +40,7 @@ class Fight extends React.Component {
               <HPview
                 socket={this.socket}
                 attackInfo = {this.props.attackInfo}
+                userInfo = {this.props.userInfo}
                 monster = {this.props.monster}
                 />
 
@@ -50,6 +51,7 @@ class Fight extends React.Component {
               <FightController
                 socket={this.socket}
                 attackInfo = {this.props.attackInfo}
+                userInfo = {this.props.userInfo}
                 onClose = {this.props.onClose}
                 />
             </div>

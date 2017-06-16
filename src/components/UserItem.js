@@ -14,6 +14,8 @@ class UserItem extends React.Component {
         };
 
         this.handleClose = this.handleClose.bind(this);
+        this.useItem = this.useItem.bind(this);
+        this.countItem = this.countItem.bind(this);
           this.props.userItemRequest();
 
     }
@@ -36,7 +38,32 @@ class UserItem extends React.Component {
           }).catch((error) => {
               console.log(error);
           });
+  }
 
+  useItem(itemId){
+       axios.get('/api/account/useItem/' + itemId)
+          .then((response) => {
+            console.log(response);
+            this.props.getStatusRequest();
+            let msg = response.data.msg;
+             Materialize.toast(msg, 1000);
+          }).catch((error) => {
+              console.log(error);
+          });
+  }
+
+  countItem(item){
+    let havItem = this.props.userInfo.itemCount
+    let itemCount = 0;
+    try {
+       itemCount = havItem[item.id];
+    } catch (e) {
+      itemCount = 0;
+    } finally {
+
+    }
+
+    return itemCount;
   }
 
     render() {
@@ -51,18 +78,23 @@ class UserItem extends React.Component {
           </li>);
         }
           return data.map((item, i) => {
+            var count = this.countItem(item);
             if(item.kind == "p"){
               return (
                 <li key={i}>
-                  <div className="collapsible-header"><span className="badge">{item.type}</span>{item.name}</div>
-                  <div className="collapsible-body item-msg"><span>{item.msg}</span></div>
+                  <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
+                  <div className="collapsible-body item-msg">
+                    <p>등급 : {item.type}</p>
+                    <span>{item.msg}</span>
+                    <p><a onClick={this.useItem.bind(this,item.id)}  className="waves-effect waves-light btn">사용</a></p>
+                  </div>
                 </li>
                );
             }
             else if(item.kind == "w"){
               return (
                     <li key={i}>
-                      <div className="collapsible-header"><span className="badge">{this.props.mountItem.w.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
+                      <div className="collapsible-header"><span className="badge">{this.props.userInfo.mount.w.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
                       <div className="collapsible-body item-msg">
                         <p>등급 : {item.type}</p>
                         <span>{item.msg}</span>
@@ -74,7 +106,7 @@ class UserItem extends React.Component {
             else if(item.kind == "d"){
               return (
                     <li key={i}>
-                      <div className="collapsible-header"><span className="badge">  {this.props.mountItem.d.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
+                      <div className="collapsible-header"><span className="badge">  {this.props.userInfo.mount.d.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
                       <div className="collapsible-body item-msg">
                         <p>등급 : {item.type}</p>
                         <span>{item.msg}</span>
@@ -91,7 +123,7 @@ class UserItem extends React.Component {
       };
 
         return (
-            <div className="user-item-screen white-text center-align">
+            <div className="user-item-screen center-align">
                 <div className="right">
                     <a className="waves-effect waves-light btn red lighten-1"
                         onClick={this.handleClose}>CLOSE</a>

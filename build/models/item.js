@@ -21,7 +21,9 @@ var Item = new Schema({
   price: Number(),
   job: String,
   type: String,
-  msg: String
+  msg: String,
+  effectMSG: String,
+  heal: String
 });
 
 exports.default = _mongoose2.default.model('item', Item);

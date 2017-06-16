@@ -14,7 +14,7 @@ var RedisStore = require("connect-redis")(session);
 
 import api from './routes';
 
-import { fight, run,localMonsterList, checkMonster ,useSkill, rest, restEnd} from './game/Fight';
+import { fight, run,localMonsterList, checkMonster ,useSkill, rest, restEnd, fightUseItem} from './game/Fight';
 
 const app = express();
 const port = 3000;
@@ -172,6 +172,10 @@ io.on('connection', (socket) => {
 
     socket.on('useSkill', function(info){
       let result = useSkill(io,info);
+    });
+
+    socket.on('useItem', function(info){
+      let result = fightUseItem(io,info);
     });
 
 

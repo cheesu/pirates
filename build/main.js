@@ -198,6 +198,10 @@ io.on('connection', function (socket) {
     var result = (0, _Fight.useSkill)(io, info);
   });
 
+  socket.on('useItem', function (info) {
+    var result = (0, _Fight.fightUseItem)(io, info);
+  });
+
   socket.on('run', function (info) {
     console.log(info);
     var result = (0, _Fight.run)(io, info);
