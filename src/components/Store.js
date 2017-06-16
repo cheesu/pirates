@@ -94,6 +94,7 @@ class Store extends React.Component {
                       <div className="collapsible-header"><span className="badge"> 보유개수 {count} </span>{item.name}[{item.job}]</div>
                       <div className="collapsible-body item-msg">
                         <p>등급 : {item.type} <span>가격 :{item.price} </span></p>
+                        <p>데미지 : {item.min} ~ {item.max}+{item.min}</p>
                         <span>{item.msg}</span>
                         <p><a onClick={this.buyItem.bind(this,item)}  className="waves-effect waves-light btn">구매</a></p>
                       </div>
@@ -106,6 +107,7 @@ class Store extends React.Component {
                       <div className="collapsible-header"><span className="badge">  보유개수 {count} </span>{item.name}[{item.job}]</div>
                       <div className="collapsible-body item-msg">
                         <p>등급 : {item.type} <span>가격 :{item.price} </span></p>
+                        <p>방어력 : {item.min} ~ {item.max}+{item.min}</p>
                         <span>{item.msg}</span>
                         <p><a onClick={this.buyItem.bind(this,item)}  className="waves-effect waves-light btn">구매</a></p>
                       </div>
@@ -120,7 +122,7 @@ class Store extends React.Component {
       };
 
         return (
-            <div className="user-item-screen center-align">
+            <div className="item-store-screen center-align">
                 <div className="right">
                     <a className="waves-effect waves-light btn red lighten-1"
                         onClick={this.handleClose}>CLOSE</a>

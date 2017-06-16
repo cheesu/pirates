@@ -244,6 +244,8 @@ io.sockets.on("connection", function (socket) {
           msg[countY][countX] = '※';
         } else if (val == 4) {
           msg[countY][countX] = '※';
+        } else if (val == 9) {
+          msg[countY][countX] = '♨';
         }
       }
     }

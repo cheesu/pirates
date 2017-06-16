@@ -320,7 +320,7 @@ class Controller extends React.Component {
         }
 
 
-        if(!this.state.next&&!this.state.prev){
+        if(!this.state.next&&!this.state.prev&&!this.state.store){
               mapArr[mapY][mapX] = 0;
         }
         else if(this.state.next){
@@ -471,7 +471,7 @@ class Controller extends React.Component {
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 
-                <ReactCSSTransitionGroup transitionName="store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                <ReactCSSTransitionGroup transitionName="item-store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.openStore ? <Store onClose={this.toggleOpenStore}
                                                   socket={this.props.socket}
