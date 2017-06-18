@@ -31,15 +31,11 @@ class Mapview extends React.Component {
       this.setState({
           map: data
         });
-    /*  this.setState({
-        map: ['map']
-      });
-      this.setState({
-        map: this.state.chat.concat(data)
-      });*/
+      data = null;
     }
 
     render(){
+
         return (
           <div id="mapViewContainer" className="map-view">
             {this.state.map.map(function(map,i){

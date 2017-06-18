@@ -50,7 +50,16 @@ class Fightview extends React.Component {
     }
 
 
-
+    shouldComponentUpdate(nextProps, nextState) {
+      let current = {
+          chat: this.state.chat,
+          };
+      let next = {
+          chat: nextState.chat,
+          };
+      let update = JSON.stringify(current) !== JSON.stringify(next);
+      return update;
+    }
 
     render(){
         return (

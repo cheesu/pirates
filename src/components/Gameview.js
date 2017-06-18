@@ -73,22 +73,41 @@ class Gameview extends React.Component {
     }
 
     addChatData(data){
+
       this.setState({
         chat: this.state.chat.concat(data)
       });
 
-      if(this.state.chat.length>80){
-        let reData = this.state.chat;
-        reData.splice(0,this.state.chat.length-80);
+      if(this.state.chat.length>350){
+        this.setState({
+          chat: []
+        });
       }
 
       var objDiv = document.getElementById("gameChatView"); objDiv.scrollTop = objDiv.scrollHeight;
+      var objDiv = null;
+      data = null;
     }
 
 
+    shouldComponentUpdate(nextProps, nextState) {
+            let current = {
+                chat: this.state.chat,
+                search: this.state.search
 
+            };
+          let next = {
+              chat: nextState.chat,
+              search: nextState.search
+          };
+          let update = JSON.stringify(current) !== JSON.stringify(next);
+          nextProps = null;
+          nextState = null;
+            return update;
+        }
 
     render(){
+
         return (
           <div id="gameChatView" className="game-view">
             <div className="current-user-list-btn">
@@ -116,7 +135,7 @@ class Gameview extends React.Component {
                 return <p className="bla-bla-class system-chat" key={i}>{chat}</p>
               }
               else if(chat.indexOf('...')==0){
-                return (<p className="bla-bla-class chat-map-effect" key={i} contenteditable><span className="chat-map-effect-span"></span>  {chat}</p>);
+                return (<p className="bla-bla-class chat-map-effect" key={i} ><span className="chat-map-effect-span"></span>  {chat}</p>);
               }
               else if(chat.indexOf('[공지사항]')==0){
                 return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>

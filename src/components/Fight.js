@@ -34,6 +34,7 @@ class Fight extends React.Component {
 
 
     render() {
+      console.log("파이트 제이에스 렌더링");
 
       const fightComp = (
             <div className="fight-comp-wrapper">

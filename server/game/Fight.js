@@ -181,7 +181,7 @@ var useSkill = function(io,info){
                   }
 
                   // 무기 최대 데미지
-                  var wMaxAP = userInfo.mount.w.min;
+                  var wMaxAP = userInfo.mount.w.max;
                   if(wMaxAP==NaN || wMaxAP==null|| wMaxAP==""||wMaxAP==undefined){
                     wMaxAP = 0;
                   }
@@ -354,7 +354,7 @@ var fight = function (io,info){
               }
 
               // 무기 최대 데미지
-              var wMaxAP = userInfo.mount.w.min;
+              var wMaxAP = userInfo.mount.w.max;
               if(wMaxAP==NaN || wMaxAP==null|| wMaxAP==""||wMaxAP==undefined){
                 wMaxAP = 0;
               }

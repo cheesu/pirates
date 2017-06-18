@@ -45,6 +45,12 @@ class Controller extends React.Component {
 
       }
 
+/*
+      shouldComponentUpdate(nextProps, nextState){
+        let update = JSON.stringify(this.props) !== JSON.stringify(nextProps);
+        return update;
+          }
+*/
       toggleFight(){
           this.setState({
               fighting: !this.state.fighting
@@ -92,6 +98,7 @@ class Controller extends React.Component {
         this.setState({
             rest: data
         });
+        data = null;
       }
 
 
@@ -101,7 +108,7 @@ class Controller extends React.Component {
               var map = response.data.mapInfo.map;
               var mapY = map.split("br");
               var mapArr = [];
-              for(var count = 0; count<mapY.length; count++){
+              for(let count = 0; count<mapY.length; count++){
                 mapArr.push(mapY[count].split(","));
               }
               this.setState({
@@ -109,6 +116,9 @@ class Controller extends React.Component {
               });
               this.viewLocalMap();
               this.mapName = response.data.mapInfo.mapName;
+
+              map,mapY,mapArr = null;
+
             }).catch((error) => {
                 console.log(error);
             });
@@ -135,7 +145,7 @@ class Controller extends React.Component {
              this.props.socket.emit('chat', this.mapName+"-"+this.socketCh+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
              this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
              this.viewLocalMap();
-
+             map,mapY,mapArr = null;
            }).catch((error) => {
                console.log(error);
            });
@@ -162,7 +172,7 @@ class Controller extends React.Component {
              this.props.socket.emit('chat', this.mapName+"-"+this.socketCh+":ch:"+this.props.username+"님께서 도착 하셨습니다.");
              this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
              this.viewLocalMap();
-
+             map,mapY,mapArr = null;
            }).catch((error) => {
                console.log(error);
            });
@@ -383,6 +393,10 @@ class Controller extends React.Component {
         this.props.socket.emit('setLocalCh', this.mapName+"-"+socketChan);
         this.props.socket.emit('chat', this.mapName+"-"+prevCh+":ch:"+this.props.username+"님께서 "+dirText+"쪽으로 이동 하셨습니다.");
         this.viewLocalMap();
+
+
+        d,moveTimerS,map,mapArr,mapY,mapX,mapYLimit,mapXLimit,dirText = null;
+
       }
 
       /*유저 이동 이벤트 끝*/
@@ -432,8 +446,29 @@ class Controller extends React.Component {
         this.props.socket.emit('rest', this.props.username);
       }
 
-    render(){
 
+
+      shouldComponentUpdate(nextProps, nextState) {
+              let current = {
+                  store: this.state.store,
+                  next:this.state.next,
+                  prev:this.state.prev,
+                  fighting:this.state.fighting,
+                  openStore:this.state.openStore,
+
+              };
+            let next = {
+                store: nextState.openStore,
+                next:nextState.next,
+                prev:nextState.prev,
+                fighting:nextState.fighting,
+                openStore:nextState.openStore,
+            };
+            let update = JSON.stringify(current) !== JSON.stringify(next);
+              return update;
+          }
+
+    render(){
       const nextMap = (
               <li><a onClick={this.moveNextMap}  className="waves-effect waves-light btn red controller-btn attack-btn">NEXT MAP</a></li>
       );

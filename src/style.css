@@ -194,6 +194,7 @@ a {
 
 .chat-map-effect-span
 {
+  
   background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);
       background-size: contain;
   position: absolute;
@@ -619,7 +620,7 @@ nav .brand-logo.center
 .map-view
 {
   color: #FFF;
-  font-size: 0.4em;
+  font-size: 0.8em;
   text-align: center;
 }
 .map-view > p{

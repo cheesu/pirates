@@ -196,6 +196,7 @@ viewTargetHP(data){
 
 
     render(){
+
         return (
           <div id="mapViewContainer" className={this.state.containerClass}>
             <div>

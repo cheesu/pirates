@@ -79,6 +79,10 @@ class FightController extends React.Component {
 
       useSkill(skill){
 
+        if(!this.state.fighting){
+          return false;
+        }
+
         let skillObj = {};
         skillObj.skillname=skill;
         skillObj.username = this.props.attackInfo.userName;
@@ -99,12 +103,26 @@ class FightController extends React.Component {
                   healInfo.maxHP = this.props.userInfo.max_hp;
                   healInfo.maxMP = this.props.userInfo.max_mp;
                   this.props.socket.emit('useItem',healInfo);
+                  this.props.getStatusRequest();
                 }
 
               }).catch((error) => {
                   console.log(error);
               });
       }
+
+    shouldComponentUpdate(nextProps, nextState) {
+      let current = {
+          fighting: this.state.fighting,
+          itemCount: this.props.status.itemCount,
+          };
+      let next = {
+          fighting: nextState.fighting,
+          itemCount: nextProps.status.itemCount,
+          };
+      let update = JSON.stringify(current) !== JSON.stringify(next);
+      return update;
+    }
 
 
     render(){
@@ -135,6 +153,7 @@ class FightController extends React.Component {
               }
           });
       };
+
 
         return (
           <div className="fight-controller-container">

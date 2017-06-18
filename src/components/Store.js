@@ -28,6 +28,7 @@ class Store extends React.Component {
   componentDidMount(){
        $('.collapsible').collapsible();
        $('ul.tabs').tabs();
+
   }
 
   buyItem(item){
