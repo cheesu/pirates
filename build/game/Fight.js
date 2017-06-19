@@ -288,13 +288,13 @@ var fight = function fight(io, info) {
       fightInterval[userInfo.username + "monsterAttack"] = setInterval(function () {
 
         // 방어구 최소방어
-        var dMinDP = userInfo.mount.w.min;
+        var dMinDP = userInfo.mount.d.min;
         if (dMinDP == NaN || dMinDP == null || dMinDP == "" || dMinDP == undefined) {
           dMinDP = 0;
         }
 
         // 방어구 최대 방어
-        var dMaxDP = userInfo.mount.w.max;
+        var dMaxDP = userInfo.mount.d.max;
         if (dMaxDP == NaN || dMaxDP == null || dMaxDP == "" || dMaxDP == undefined) {
           dMaxDP = 0;
         }
@@ -302,6 +302,10 @@ var fight = function fight(io, info) {
         var randomDP = Math.floor(Math.random() * dMaxDP) + dMinDP;
 
         var reDmg = randomDP - localMonsterList[monNum].ap;
+
+        if (reDmg < 0) {
+          reDmg = 1;
+        }
         var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
         fightInterval[userInfo.username + "HP"] -= reDmg;
 
@@ -440,6 +444,9 @@ function expLevelup(userInfo, io, monNum, info) {
   var totalExp = userInfo.exp + upExp;
   var random = Math.floor(Math.random() * 100) + 1;
   var getGold = localMonsterList[monNum].gold + random;
+  if (gap > 7) {
+    random = Math.round(random / 3);
+  }
   var setGold = userInfo.gold + getGold;
   // 경험치 업데이트
   _account2.default.update({ username: info.userName }, { $set: { exp: totalExp, gold: setGold } }, function (err, output) {
