@@ -472,8 +472,13 @@ function checkCritical(dex){
       io.emit(userInfo.username+"endFight", "");
     });
 
+    let addLV = Math.round(userInfo.lv/10);
+    if(addLV==0){
+      addLV = 1;
+    }
+    
     // 레벨업 판단
-    if((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6 < totalExp){
+    if(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV < totalExp){
       let lvUp = userInfo.lv+1;
       let strUP = userInfo.str+2;
       let dexUP = userInfo.dex+2;

@@ -42,6 +42,29 @@ class RightMenu extends React.Component {
        $('.collapsible').collapsible();
   }
 
+calcExp(){
+  let currentLV = this.props.status.lv;
+  let nextLV = this.props.status.lv+1;
+  let addLV = currentLV/10;
+  let addNextLV = nextLV/10;
+
+  if(addLV==0){
+    addLV = 1;
+  }
+  if(addNextLV==0){
+    addNextLV = 1;
+  }
+
+  let currentExp = ((logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV;
+  let nextExp = ((logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV;
+
+
+}
+
+logB(x, base) {
+  return Math.log(x) / Math.log(base);
+}
+
     render() {
 
       const mapDataToLinks = (data) => {
