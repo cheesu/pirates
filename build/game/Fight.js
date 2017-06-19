@@ -287,7 +287,21 @@ var fight = function fight(io, info) {
       // 몬스터가 공격
       fightInterval[userInfo.username + "monsterAttack"] = setInterval(function () {
 
-        var reDmg = localMonsterList[monNum].ap;
+        // 방어구 최소방어
+        var dMinDP = userInfo.mount.w.min;
+        if (dMinDP == NaN || dMinDP == null || dMinDP == "" || dMinDP == undefined) {
+          dMinDP = 0;
+        }
+
+        // 방어구 최대 방어
+        var dMaxDP = userInfo.mount.w.max;
+        if (dMaxDP == NaN || dMaxDP == null || dMaxDP == "" || dMaxDP == undefined) {
+          dMaxDP = 0;
+        }
+
+        var randomDP = Math.floor(Math.random() * dMaxDP) + dMinDP;
+
+        var reDmg = randomDP - localMonsterList[monNum].ap;
         var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
         fightInterval[userInfo.username + "HP"] -= reDmg;
 

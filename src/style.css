@@ -194,7 +194,7 @@ a {
 
 .chat-map-effect-span
 {
-  
+
   background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);
       background-size: contain;
   position: absolute;
@@ -1114,4 +1114,22 @@ ul.item-store-results {
     animation-duration: 0.3s;
     -webkit-animation-name: item-store-leave;
     animation-name: item-store-leave;
+}
+
+@media only screen and (min-width: 300px){
+  html {
+    font-size: 13px;
+}
+}
+
+@media only screen and (min-width: 350px){
+  html {
+    font-size: 14px;
+}
+}
+
+@media only screen and (min-width: 400px){
+  html {
+    font-size: 15px;
+}
 }
