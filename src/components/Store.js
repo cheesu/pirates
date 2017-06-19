@@ -63,6 +63,19 @@ class Store extends React.Component {
 
     return itemCount;
   }
+  shouldComponentUpdate(nextProps, nextState) {
+          let current = {
+              user: this.props.userInfo,
+              store: this.props.items,
+
+          };
+        let next = {
+            user: nextProps.userInfo,
+            store: nextProps.items,
+        };
+        let update = JSON.stringify(current) !== JSON.stringify(next);
+          return update;
+      }
 
     render() {
       const mapDataToLinks = (data,tabType) => {

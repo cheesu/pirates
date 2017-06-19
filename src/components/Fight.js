@@ -19,8 +19,6 @@ class Fight extends React.Component {
 
     }
 
-
-
     componentDidMount(){
       console.log("파이트 화면 뷰");
     }

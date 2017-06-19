@@ -7,17 +7,14 @@ import { getStatusRequest  } from 'Actions/authentication';
 class UserItem extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             keyword: '',
             userItem:false,
         };
-
         this.handleClose = this.handleClose.bind(this);
         this.useItem = this.useItem.bind(this);
         this.countItem = this.countItem.bind(this);
           this.props.userItemRequest();
-
     }
 
     handleClose() {
@@ -79,7 +76,7 @@ class UserItem extends React.Component {
         }
           return data.map((item, i) => {
             var count = this.countItem(item);
-            if(item.kind == "p"){
+            if(item.kind == "p"&&count!=0){
               return (
                 <li key={i}>
                   <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
@@ -92,7 +89,7 @@ class UserItem extends React.Component {
                 </li>
                );
             }
-            else if(item.kind == "w"){
+            else if(item.kind == "w"&&count!=0){
               return (
                     <li key={i}>
                       <div className="collapsible-header"><span className="badge">{this.props.userInfo.mount.w.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
@@ -105,7 +102,7 @@ class UserItem extends React.Component {
                     </li>
                   );
             }
-            else if(item.kind == "d"){
+            else if(item.kind == "d"&&count!=0){
               return (
                     <li key={i}>
                       <div className="collapsible-header"><span className="badge">  {this.props.userInfo.mount.d.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
@@ -133,7 +130,7 @@ class UserItem extends React.Component {
                 </div>
                 <div className="container item-container">
                   <p>소지금 : <span>{this.props.items.gold}</span> Gold</p>
-                    <ul className="collapsible item-list" data-collapsible="accordion">
+                    <ul className="collapsible item-list user-inven-ul" data-collapsible="accordion">
                       { mapDataToLinks(this.props.items.itemList) }
                     </ul>
 

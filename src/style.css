@@ -450,7 +450,7 @@ ul.search-results {
 
 ul.right-menu-results {
     text-align: center;
-    font-size: 22px;
+    font-size: 1.2em;
     margin-top: 0px;
 }
 
@@ -931,6 +931,10 @@ ul.user-item-results {
 
 .user-item-results a:hover {
     background-color: rgba(255, 255, 255, 0.10);
+}
+
+.user-inven-ul{
+  overflow: auto;
 }
 
 @-webkit-keyframes user-item-enter {

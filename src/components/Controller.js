@@ -455,7 +455,7 @@ class Controller extends React.Component {
                   prev:this.state.prev,
                   fighting:this.state.fighting,
                   openStore:this.state.openStore,
-
+                  user: this.props.userInfo,
               };
             let next = {
                 store: nextState.openStore,
@@ -463,6 +463,7 @@ class Controller extends React.Component {
                 prev:nextState.prev,
                 fighting:nextState.fighting,
                 openStore:nextState.openStore,
+                user: nextProps.userInfo,
             };
             let update = JSON.stringify(current) !== JSON.stringify(next);
               return update;

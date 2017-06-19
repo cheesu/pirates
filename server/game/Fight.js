@@ -300,9 +300,11 @@ var fight = function (io,info){
               }
 
               let randomDP = Math.floor(Math.random() * dMaxDP) + dMinDP;
+              console.log(dMinDP);
+              console.log(dMaxDP);
+              console.log(randomDP);
 
-
-              let reDmg = randomDP - localMonsterList[monNum].ap
+              let reDmg =  localMonsterList[monNum].ap - randomDP
 
               if(reDmg < 0){
                 reDmg = 1;
@@ -385,6 +387,9 @@ var fight = function (io,info){
 
               let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)+wAP - localMonsterList[monNum].dp ;
               dmg = Math.round(dmg);
+              if(dmg < 0){
+                dmg = 1;
+              }
 
               var critical = checkCritical(userInfo.dex);
               let result="";
