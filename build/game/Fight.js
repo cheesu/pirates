@@ -239,7 +239,7 @@ var useSkill = function useSkill(io, info) {
               io.emit(info.ch, "[monsterDieMsg]" + localMonsterList[monNum].dieMsg);
               io.emit(info.ch + "fight", "[monsterDieMsg]" + localMonsterList[monNum].dieMsg);
 
-              expLevelup(userInfo, io, monNum, info); // 렙업인지 경치만 획득인지 계산한다
+              expLevelup(userInfo, io, monNum, info, "스킬"); // 렙업인지 경치만 획득인지 계산한다
             }
 
             clearInterval(fightInterval[userInfo.username + "skillInterval"]);
@@ -418,7 +418,7 @@ var fight = function fight(io, info) {
           localMonsterList[monNum].exist = false;
           io.emit(info.ch, "[monsterDieMsg]" + localMonsterList[monNum].dieMsg);
           io.emit(info.ch + "fight", "[monsterDieMsg]" + localMonsterList[monNum].dieMsg);
-          expLevelup(userInfo, io, monNum, info); // 렙업인지 경치만 획득인지 계산한다
+          expLevelup(userInfo, io, monNum, info, "평타"); // 렙업인지 경치만 획득인지 계산한다
         }
       }, attackSpeed);
     }
@@ -437,28 +437,25 @@ function checkCritical(dex) {
 }
 
 //경험치 획득 &
-function expLevelup(userInfo, io, monNum, info) {
+function expLevelup(userInfo, io, monNum, info, kind) {
   // 경험치 계산
   var upExp = localMonsterList[monNum].exp;
-  var gap = userInfo.lv - localMonsterList[monNum].lv;
-  if (gap > 7) {
-    upExp = Math.round(upExp / 2);
-  }
-  if (gap < -2) {
-    upExp = Math.round(upExp * 1.5);
-  }
-  var totalExp = userInfo.exp + upExp;
   var random = Math.floor(Math.random() * 100) + 1;
   var getGold = localMonsterList[monNum].gold + random;
-  if (gap > 7) {
-    random = Math.round(random / 3);
+
+  var gap = userInfo.lv - localMonsterList[monNum].lv;
+  if (gap > 5) {
+    upExp = Math.round(upExp / 3);
+    getGold = Math.round(getGold / 3);
   }
+
+  var totalExp = userInfo.exp + upExp;
   var setGold = userInfo.gold + getGold;
   // 경험치 업데이트
-  _account2.default.update({ username: info.userName }, { $set: { exp: totalExp, gold: setGold } }, function (err, output) {
+  _account2.default.update({ username: userInfo.username }, { $set: { exp: totalExp, gold: setGold } }, function (err, output) {
     if (err) console.log(err);
-    io.emit(userInfo.username, "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + localMonsterList[monNum].exp + "과 " + getGold + "골드를 획득 하였습니다.");
-    io.emit(userInfo.username + "fight", "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + localMonsterList[monNum].exp + "를 획득 하였습니다.");
+    io.emit(userInfo.username, "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + upExp + "과 " + getGold + "골드를 획득 하였습니다.");
+    io.emit(userInfo.username + "fight", "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + upExp + "과 " + getGold + "골드를 획득 하였습니다.");
     io.emit(userInfo.username + "전투", "endFight");
     io.emit(userInfo.username + "endFight", "");
   });
