@@ -29,7 +29,9 @@ var Monster = new Schema({
     attackMsg: String,
     dieMsg: String,
     exp: Number(),
-    gold: Number()
+    gold: Number(),
+    dropItem: Array(),
+    dropPer: Number()
 
 });
 

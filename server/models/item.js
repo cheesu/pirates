@@ -14,6 +14,7 @@ const Item = new Schema({
    msg: String,
    effectMSG:String,
    heal:String,
+   option:Object(),
 });
 
 

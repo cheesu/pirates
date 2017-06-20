@@ -27,7 +27,7 @@ var router = _express2.default.Router();
 
 // 몬스터 리젠
 var initServer = false;
-var regenMonster = setInterval(loadMonsterList, 1000 * 60 * 3);
+var regenMonster = setInterval(loadMonsterList, 1000 * 10 * 1);
 var bossGen = 0;
 var monsters;
 var localMonsterList = [];
@@ -40,10 +40,9 @@ function loadMonsterList() {
   _monster2.default.find().exec(function (err, monster) {
     if (err) throw err;
     monsters = eval(monster);
-    console.log("몬스터 로드, 지역 배치 시작");
+
     var genMonster = [];
     for (var monCount = 0; monCount < monsters.length; monCount++) {
-      console.log(monsters[monCount].name + "배치 시작");
       var monLocalArr = monsters[monCount].area.split(",");
       for (var localCount = 0; localCount < monLocalArr.length; localCount++) {
         var monObj = new Object();
@@ -65,18 +64,30 @@ function loadMonsterList() {
         monObj.area = monsters[monCount].mapName + "-" + monLocalArr[localCount];
 
         if (!initServer) {
+          if (monObj.type == 'boss') {
+            monObj.dropItem = monsters[monCount].dropItem;
+            monObj.dropPer = monsters[monCount].dropPer;
+          }
           localMonsterList.push(monObj);
         } else {
           if (!localMonsterList[monCount].exist && localMonsterList[monCount].type == "normal") {
+            console.log("죽은몹 재배치");
+            console.log(monsters[monCount].name + "배치 시작");
             localMonsterList[monCount] = monObj;
-          } else if (!localMonsterList[monCount].exist && localMonsterList[monCount].type == "boss" && bossGen == 4) {
+          } else if (!localMonsterList[monCount].exist && localMonsterList[monCount].type == "boss" && bossGen == 0) {
+            console.log("-------------BOSS GEN!----------------------------");
+            console.log(monsters[monCount].name + "배치 시작");
             monObj.dropItem = monsters[monCount].dropItem;
-            monObj.per = monsters[monCount].per;
+            monObj.dropPer = monsters[monCount].dropPer;
             localMonsterList[monCount] = monObj;
           }
-          bossGen++;
         }
       }
+    }
+    initServer = true;
+    // bossGen++;
+    if (bossGen == 4) {
+      bossGen = 0;
     }
   });
 }
@@ -487,13 +498,31 @@ function expLevelup(userInfo, io, monNum, info, kind) {
     // 보스 템드랍
     if (localMonsterList[monNum].type == "boss") {
       var dropPer = Math.floor(Math.random() * 100) + 1;
-      if (dropPer <= localMonsterList[monNum].per) {
+
+      console.log("드랍 숫자");
+      console.log(dropPer);
+      if (dropPer < 70) {
+        if (userInfo.item.indexOf('ph3') != -1) {
+          userInfo.item.push('ph3');
+        }
+        if (userInfo.itemCount['ph3'] == undefined) {
+          userInfo.itemCount.ph3 = 5;
+        } else {
+          userInfo.itemCount.ph3 = userInfo.itemCount.ph3 + 5;
+        }
+        io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
+        io.emit(userInfo.username + "fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
+      }
+
+      console.log("보스드랍확률");
+      console.log(localMonsterList[monNum].dropPer);
+      if (dropPer <= localMonsterList[monNum].dropPer) {
         var dropItems = localMonsterList[monNum].dropItem;
         var itemIndex = Math.floor(Math.random() * dropItems.length);
         var getItem = dropItems[itemIndex];
         userInfo.item.push(getItem);
-        io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
-        io.emit(userInfo.username + "fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
+        io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
+        io.emit(userInfo.username + "fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
       }
     }
   } catch (e) {
@@ -501,7 +530,7 @@ function expLevelup(userInfo, io, monNum, info, kind) {
     console.log(e);
   }
   // 경험치 업데이트
-  _account2.default.update({ username: userInfo.username }, { $set: { exp: totalExp, gold: setGold, item: userInfo.item } }, function (err, output) {
+  _account2.default.update({ username: userInfo.username }, { $set: { exp: totalExp, gold: setGold, item: userInfo.item, itemCount: userInfo.itemCount } }, function (err, output) {
     if (err) console.log(err);
     io.emit(userInfo.username, "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + upExp + "과 " + getGold + "골드를 획득 하였습니다.");
     io.emit(userInfo.username + "fight", "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + upExp + "과 " + getGold + "골드를 획득 하였습니다.");

@@ -20,6 +20,8 @@ const Monster = new Schema({
     dieMsg:String,
     exp:Number(),
     gold:Number(),
+    dropItem:Array(),
+    dropPer:Number(),
 
 });
 

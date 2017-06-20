@@ -23,7 +23,8 @@ var Item = new Schema({
   type: String,
   msg: String,
   effectMSG: String,
-  heal: String
+  heal: String,
+  option: Object()
 });
 
 exports.default = _mongoose2.default.model('item', Item);
