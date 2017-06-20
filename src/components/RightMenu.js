@@ -12,11 +12,14 @@ class RightMenu extends React.Component {
         this.state = {
             keyword: '',
             userItem:false,
+            expPer:0
         };
 
         this.handleClose = this.handleClose.bind(this);
         this.handleRightMenu = this.handleRightMenu.bind(this);
         this.toggleUserItem = this.toggleUserItem.bind(this);
+        this.calcExp = this.calcExp.bind(this);
+
       var userName = this.props.status.currentUser;
     }
 
@@ -39,6 +42,7 @@ class RightMenu extends React.Component {
   componentDidMount(){
       this.props.getStatusRequest();
       this.props.skillRequest(this.props.status);
+      this.calcExp();
        $('.collapsible').collapsible();
   }
 
@@ -55,8 +59,20 @@ calcExp(){
     addNextLV = 1;
   }
 
-  let currentExp = ((logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV;
-  let nextExp = ((logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV;
+  let currentLVExp = ((this.logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV;
+  let nextLVExp = ((this.logB(nextLV, 20)*1000)*nextLV*nextLV/6)*addNextLV;
+  let currentTotalExp = this.props.status.exp;
+
+  let upExp = nextLVExp - currentLVExp;
+  let nowExp = currentTotalExp - currentLVExp;
+  let expPercent = nowExp / upExp * 100;
+
+  expPercent = expPercent.toFixed(2);
+  this.setState({
+      expPer: expPercent
+  });
+
+
 
 
 }
@@ -109,7 +125,7 @@ logB(x, base) {
                           <li className="stat-li"> STR: <span>{this.props.status.str}</span></li>
                           <li className="stat-li"> DEX: <span>{this.props.status.dex}</span></li>
                           <li className="stat-li"> INT: <span>{this.props.status.int}</span></li>
-                          <li> EXP: <span>{this.props.status.exp}</span></li>
+                          <li> EXP: <span>{this.props.status.exp}</span>  [{this.state.expPer}%]</li>
                           <li>  </li>
                       </ul>
                     </div>

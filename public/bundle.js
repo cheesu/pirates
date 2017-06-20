@@ -22418,12 +22418,15 @@ var RightMenu = function (_React$Component) {
 
         _this.state = {
             keyword: '',
-            userItem: false
+            userItem: false,
+            expPer: 0
         };
 
         _this.handleClose = _this.handleClose.bind(_this);
         _this.handleRightMenu = _this.handleRightMenu.bind(_this);
         _this.toggleUserItem = _this.toggleUserItem.bind(_this);
+        _this.calcExp = _this.calcExp.bind(_this);
+
         var userName = _this.props.status.currentUser;
         return _this;
     }
@@ -22451,7 +22454,41 @@ var RightMenu = function (_React$Component) {
         value: function componentDidMount() {
             this.props.getStatusRequest();
             this.props.skillRequest(this.props.status);
+            this.calcExp();
             $('.collapsible').collapsible();
+        }
+    }, {
+        key: 'calcExp',
+        value: function calcExp() {
+            var currentLV = this.props.status.lv;
+            var nextLV = this.props.status.lv + 1;
+            var addLV = currentLV / 10;
+            var addNextLV = nextLV / 10;
+
+            if (addLV == 0) {
+                addLV = 1;
+            }
+            if (addNextLV == 0) {
+                addNextLV = 1;
+            }
+
+            var currentLVExp = this.logB(currentLV, 20) * 1000 * currentLV * currentLV / 6 * addLV;
+            var nextLVExp = this.logB(nextLV, 20) * 1000 * nextLV * nextLV / 6 * addNextLV;
+            var currentTotalExp = this.props.status.exp;
+
+            var upExp = nextLVExp - currentLVExp;
+            var nowExp = currentTotalExp - currentLVExp;
+            var expPercent = nowExp / upExp * 100;
+
+            expPercent = expPercent.toFixed(2);
+            this.setState({
+                expPer: expPercent
+            });
+        }
+    }, {
+        key: 'logB',
+        value: function logB(x, base) {
+            return Math.log(x) / Math.log(base);
         }
     }, {
         key: 'render',
@@ -22639,7 +22676,10 @@ var RightMenu = function (_React$Component) {
                                     'span',
                                     null,
                                     this.props.status.exp
-                                )
+                                ),
+                                '  [',
+                                this.state.expPer,
+                                '%]'
                             ),
                             _react2.default.createElement(
                                 'li',
