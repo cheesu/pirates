@@ -44,6 +44,7 @@ function loadMonsterList(){
               monObj.exp = monsters[monCount].exp;
               monObj.gold = monsters[monCount].gold;
               monObj.area= monsters[monCount].mapName+"-"+monLocalArr[localCount];
+
               if(!initServer){
                 localMonsterList.push(monObj);
               }else{
@@ -51,6 +52,8 @@ function loadMonsterList(){
                   localMonsterList[monCount] = monObj;
                 }
                 else if(!localMonsterList[monCount].exist&&localMonsterList[monCount].type=="boss"&&bossGen==4){
+                  monObj.dropItem = monsters[monCount].dropItem;
+                  monObj.per = monsters[monCount].per;
                   localMonsterList[monCount] = monObj;
                 }
                 bossGen++;
@@ -308,8 +311,45 @@ var fight = function (io,info){
               if(reDmg < 0){
                 reDmg = 1;
               }
+
+
+
               let userHP = fightInterval[userInfo.username+"HP"] - reDmg;
               fightInterval[userInfo.username+"HP"] -= reDmg;
+
+
+              try {
+                if(userInfo.mount.d.type=="unique"){
+                  let ud = userInfo.mount.d;
+                  let active = Math.floor(Math.random() * 100)+1;
+                  if(active <= ud.option.per){
+                    if(ud.option.option=="heal"){
+                      userInfo.hp = userInfo.max_hp;
+                      fightInterval[userInfo.username+"HP"] = userInfo.max_hp;
+                      userHP = userInfo.max_hp;
+                      io.emit(info.ch+"fight", ud.option.msg);
+                    }
+                    else if(ud.option.option=="block"){
+                      userInfo.hp += reDmg;
+                      fightInterval[userInfo.username+"HP"] += reDmg;
+                      userHP += reDmg;
+                      reDmg = 0;
+                      io.emit(info.ch+"fight", ud.option.msg);
+                    }
+                    else if(ud.option.option=="counter"){
+                      localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg*10;
+                      io.emit(info.ch+"fight", ud.option.msg+"["+reDmg*10+"]");
+                    }
+                  }
+                }
+              } catch (e) {
+                console.log("유닉 방어구 발동 오류");
+                  console.log(e);
+              }
+
+
+
+
 
               // 몬스터 처치후 발동되는 인터벌 막기위한 판단
               if(!fightInterval[userInfo.username+"fighting"]){
@@ -462,8 +502,26 @@ function checkCritical(dex){
 
     let totalExp = userInfo.exp + upExp;
     let setGold = userInfo.gold + getGold;
+
+    try {
+      // 보스 템드랍
+      if(localMonsterList[monNum].type=="boss"){
+        let dropPer =  Math.floor(Math.random() * 100)+1;
+        if(dropPer <= localMonsterList[monNum].per){
+          let dropItems = localMonsterList[monNum].dropItem;
+          let itemIndex =  Math.floor(Math.random() * dropItems.length);
+          let getItem = dropItems[itemIndex];
+          userInfo.item.push(getItem);
+          io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
+          io.emit(userInfo.username+"fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
+        }
+      }
+    } catch (e) {
+      console.log("보스 템드랍  오류");
+        console.log(e);
+    }
     // 경험치 업데이트
-    Account.update({username: userInfo.username},{$set:{exp:totalExp, gold:setGold}}, function(err, output){
+    Account.update({username: userInfo.username},{$set:{exp:totalExp, gold:setGold, item:userInfo.item}}, function(err, output){
       if(err) console.log(err);
       io.emit(userInfo.username, "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+upExp+"과 "+getGold +"골드를 획득 하였습니다.");
       io.emit(userInfo.username+"fight", "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+upExp+"과 "+getGold +"골드를 획득 하였습니다.");
