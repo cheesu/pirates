@@ -59,6 +59,7 @@ export function loginSuccess(info) {
         mount:info.mount,
         gold:info.gold,
         itemCount:info.itemCount,
+        mapName:info.mapName,
     };
 }
 
@@ -144,6 +145,7 @@ export function getStatusSuccess(info) {
         mount:info.mount,
         gold:info.gold,
         itemCount:info.itemCount,
+        mapName:info.mapName,
     };
 }
 

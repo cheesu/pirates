@@ -338,6 +338,13 @@ router.get('/buyItem/:itemID', function (req, res) {
     });
 });
 
+// 맵 이동시 위치 저장
+router.get('/saveMap/:mapName', function (req, res) {
+    _account2.default.update({ username: req.session.loginInfo.username }, { $set: { mapName: req.params.mapName } }, function (err, output) {
+        res.json({ msg: "맵이동 저장 완료." });
+    });
+});
+
 /*
  SEARCH USER: GET /api/account/search/:username
  */

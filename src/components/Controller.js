@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import {debounce} from 'throttle-debounce';
 import { Fight, Store } from 'Components';
+import cookie from 'react-cookies'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 class Controller extends React.Component {
   constructor(props, context) {
@@ -19,8 +20,7 @@ class Controller extends React.Component {
           };
 
           this.endTime = 99;
-          this.socketCh = '0-0';
-          this.mapLocal = [0,0];
+
           this.attackInfo = null;
           this.moveUp = this.moveUp.bind(this);
           this.moveLeft = this.moveLeft.bind(this);
@@ -40,9 +40,27 @@ class Controller extends React.Component {
           this.toggleFight = this.toggleFight.bind(this);
           this.toggleRest = this.toggleRest.bind(this);
           this.toggleOpenStore = this.toggleOpenStore.bind(this);
+          this.saveMap = this.saveMap.bind(this);
 
-          this.mapName = "푸른해변";
+          this.mapName = this.props.userInfo.mapName;
+          if(this.mapName==undefined){
+            this.mapName = "푸른해변";
+          }
 
+        let cookieMapLocal =   cookie.load("map");
+
+        if(cookieMapLocal==undefined){
+          cookieMapLocal = "0-0";
+        }
+
+          console.log(cookieMapLocal);
+
+          this.socketCh = cookieMapLocal;
+            console.log(this.socketCh);
+          let localArr = cookieMapLocal.split("-");
+          console.log(localArr);
+          this.mapLocal = [localArr[0]*1,localArr[1]*1];
+          console.log(this.mapLocal);
       }
 
 /*
@@ -124,6 +142,16 @@ class Controller extends React.Component {
             });
       }
 
+      saveMap(){
+        axios.get('/api/account/saveMap/' + this.mapName)
+           .then((response) => {
+             console.log(response.data);
+              console.log(response.data.msg);
+           }).catch((error) => {
+               console.log(error);
+           });
+      }
+
 
       moveNextMap(){
         axios.get('/api/map/nextMap/' + this.mapName)
@@ -146,6 +174,8 @@ class Controller extends React.Component {
              this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
              this.viewLocalMap();
              map,mapY,mapArr = null;
+
+             this.saveMap();
            }).catch((error) => {
                console.log(error);
            });
@@ -173,6 +203,7 @@ class Controller extends React.Component {
              this.props.socket.emit('setLocalCh', this.mapName+"-"+this.socketCh);
              this.viewLocalMap();
              map,mapY,mapArr = null;
+             this.saveMap();
            }).catch((error) => {
                console.log(error);
            });
@@ -181,6 +212,8 @@ class Controller extends React.Component {
       // 체력
       checkDead(){
           this.props.socket.emit('private',"전투중 의식을 잃고 쓰러집니다.");
+          this.mapName="푸른해변";
+          this.getMapAxio();
           this.mapLocal = [0,0];
           this.props.socket.emit('setLocalCh', "0-0");
           this.props.socket.emit('chat', "0-0:ch:"+this.props.username+"님께서 죽었다 깨어났습니다.");
@@ -393,7 +426,7 @@ class Controller extends React.Component {
         this.props.socket.emit('setLocalCh', this.mapName+"-"+socketChan);
         this.props.socket.emit('chat', this.mapName+"-"+prevCh+":ch:"+this.props.username+"님께서 "+dirText+"쪽으로 이동 하셨습니다.");
         this.viewLocalMap();
-
+        cookie.save("map", socketChan, { path: '/' });
 
         d,moveTimerS,map,mapArr,mapY,mapX,mapYLimit,mapXLimit,dirText = null;
 

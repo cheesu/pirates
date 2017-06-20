@@ -20,6 +20,7 @@ const Account = new Schema({
     item:Array(),
     mount:Object(),
     itemCount:Object(),
+    mapName:String,
     created: { type: Date, default: Date.now }
 });
 
