@@ -7,7 +7,7 @@ const router = express.Router();
 
 // 몬스터 리젠
 var initServer = false;
-var regenMonster = setInterval(loadMonsterList, 1000*10*1);
+var regenMonster = setInterval(loadMonsterList, 1000*60*2);
 var bossGen = 0;
 var monsters;
 var localMonsterList=[];
@@ -52,23 +52,24 @@ function loadMonsterList(){
                 }
                 localMonsterList.push(monObj);
               }else{
-                if(!localMonsterList[monCount].exist&&localMonsterList[monCount].type=="normal"){
-                  console.log("죽은몹 재배치");
-                  console.log(monsters[monCount].name+"배치 시작");
-                  localMonsterList[monCount] = monObj;
-                }
-                else if(!localMonsterList[monCount].exist&&localMonsterList[monCount].type=="boss"&&bossGen==0){
-                  console.log("-------------BOSS GEN!----------------------------");
-                  console.log(monsters[monCount].name+"배치 시작");
-                  monObj.dropItem = monsters[monCount].dropItem;
-                  monObj.dropPer = monsters[monCount].dropPer;
-                  localMonsterList[monCount] = monObj;
+                for(let listCount=0; listCount < localMonsterList.length; listCount++){
+                  if(!localMonsterList[listCount].exist&&monObj.type=="normal"&&localMonsterList[listCount].name==monObj.name&&localMonsterList[listCount].area==monObj.area){
+
+                    localMonsterList[listCount] = monObj;
+                  }
+                  else if(!localMonsterList[listCount].exist&&monObj.type=="boss"&&bossGen==0&&localMonsterList[listCount].name==monObj.name&&localMonsterList[listCount].area==monObj.area){
+                    console.log("-------------BOSS GEN!----------------------------");
+                    console.log(monsters[monCount].name+"배치 시작");
+                    monObj.dropItem = monsters[monCount].dropItem;
+                    monObj.dropPer = monsters[monCount].dropPer;
+                    localMonsterList[listCount] = monObj;
+                  }
                 }
               }
            }
          }
          initServer = true;
-        // bossGen++;
+         bossGen++;
          if(bossGen==4){
            bossGen =0;
          }
@@ -511,6 +512,8 @@ function checkCritical(dex){
       getGold =  Math.round(getGold/3);
     }
 
+    upExp = Math.round(upExp*2.5);
+
     let totalExp = userInfo.exp + upExp;
     let setGold = userInfo.gold + getGold;
 
@@ -518,14 +521,11 @@ function checkCritical(dex){
       // 보스 템드랍
       if(localMonsterList[monNum].type=="boss"){
         let dropPer =  Math.floor(Math.random() * 100)+1;
-
-          console.log("드랍 숫자");
-          console.log(dropPer);
         if(dropPer < 70){
-          if (userInfo.item.indexOf('ph3') != -1) {
+          if (userInfo.item.indexOf('ph3') == -1) {
               userInfo.item.push('ph3');
           }
-          if(userInfo.itemCount['ph3']==undefined){
+          if(userInfo.itemCount.ph3==undefined){
             userInfo.itemCount.ph3 = 5;
           }else{
             userInfo.itemCount.ph3 = userInfo.itemCount.ph3 +5;
@@ -534,12 +534,21 @@ function checkCritical(dex){
           io.emit(userInfo.username+"fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
         }
 
-        console.log("보스드랍확률");
-        console.log(localMonsterList[monNum].dropPer);
         if(dropPer <= localMonsterList[monNum].dropPer){
           let dropItems = localMonsterList[monNum].dropItem;
-          let itemIndex =  Math.floor(Math.random() * dropItems.length);
+          let itemIndex =  Math.floor(Math.random() * (dropItems.length-1));
           let getItem = dropItems[itemIndex];
+
+          if (userInfo.item.indexOf(getItem) == -1) {
+              userInfo.item.push(getItem);
+          }
+          if(userInfo.itemCount[getItem]==undefined){
+            userInfo.itemCount[getItem] = 1;
+          }else{
+            userInfo.itemCount[getItem] = userInfo.itemCount[getItem] +1;
+          }
+
+
           userInfo.item.push(getItem);
           io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
           io.emit(userInfo.username+"fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
