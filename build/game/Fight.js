@@ -229,7 +229,7 @@ var useSkill = function useSkill(io, info) {
             }
 
             io.emit(info.ch + "monsterHP", targetCurrentHP + "-" + localMonsterList[monNum].maxHP);
-
+            io.emit(userInfo.username + "[SkillEnd]", "");
             // 몬스터 처치
             if (localMonsterList[monNum].hp <= 0) {
               fightInterval[userInfo.username + "fighting"] = false; // 몬스터 처치후 발동되는 인터벌 막기위한 변수

@@ -847,7 +847,7 @@ nav .brand-logo.center
 .fight-view
 {
   color:#fff;
-  height: calc(90% - 7em);
+  height: calc(90% - 12em);
   overflow: scroll;
   word-break: break-all;
   overflow-x: hidden;
@@ -882,7 +882,22 @@ nav .brand-logo.center
   float: left;
   margin-left: -1px;
   z-index: 1;
+  width: 50%;
+  height: 8em;
+  text-align: left;
+  overflow: auto;
 }
+
+
+.fight-btn-li  > a{
+  float: left;
+}
+
+.skill-btn
+{
+  font-size: 0.6em;
+}
+
 
 
 /*user Item0*/

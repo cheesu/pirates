@@ -10,7 +10,7 @@ class FightController extends React.Component {
           super(props, context);
           this.state = {
               msg: "",
-              fighting:true,
+              fighting:true
           };
 
           this.handleClose = this.handleClose.bind(this);
@@ -26,17 +26,6 @@ class FightController extends React.Component {
       componentDidMount(){
         this.props.getStatusRequest();
         this.props.skillRequest(this.props.status);
-        $('.dropdown-button').dropdown({
-              inDuration: 10,
-             outDuration: 10,
-             constrainWidth: false, // Does not change width of dropdown to that of the activator
-             hover: true, // Activate on hover
-             gutter: 0, // Spacing from edge
-             belowOrigin: false, // Displays dropdown below the button
-             alignment: 'left', // Displays dropdown with edge aligned to the left of button
-             stopPropagation: false // Stops event propagation
-           });
-
 
           this.props.socket.emit('attack',this.props.attackInfo);
           let handleCloseExit = this.handleCloseExit.bind(this);
@@ -45,6 +34,10 @@ class FightController extends React.Component {
           toggleFight();
           //handleCloseExit();
           });
+
+          this.props.socket.on(this.props.attackInfo.userName+"[SkillEnd]", function(data){ //귓말
+          $(".skill-btn").attr('class','waves-effect waves-light btn item-btn skill-btn');
+        }.bind(this));
 
           this.props.socket.on(this.props.attackInfo.userName+"DEAD", function(data){ //귓말
           console.log("님 으앙쥬금");
@@ -82,6 +75,8 @@ class FightController extends React.Component {
         if(!this.state.fighting){
           return false;
         }
+
+        $(".skill-btn").attr('class','waves-effect waves-light btn item-btn skill-btn disabled');
 
         let skillObj = {};
         skillObj.skillname=skill;
@@ -127,18 +122,18 @@ class FightController extends React.Component {
 
     render(){
       const run = (
-          <li className="fight-btn-li"><a onClick={this.handleClose}  className="waves-effect waves-light btn red ">Run</a></li>
+          <a onClick={this.handleClose}  className="waves-effect waves-light btn red ">Run</a>
       );
 
       const exit = (
-          <li className="fight-btn-li"><a onClick={this.handleCloseExit}  className="waves-effect waves-light btn red ">Exit</a></li>
+          <a onClick={this.handleCloseExit}  className="waves-effect waves-light btn red ">Exit</a>
       );
 
       const mapDataToLinks = (data) => {
           return data.map((skill, i) => {
             if(skill.lv <= this.props.status.lv){
               return (
-                  <li key={i}  ><a href="#!" onClick={this.useSkill.bind(this,skill.name)} data-name={skill.name} >{skill.name} - {skill.mp}mp</a></li>
+                  <a key={i} className='waves-effect waves-light btn item-btn skill-btn' href="#!" onClick={this.useSkill.bind(this,skill.name)} data-name={skill.name} >{skill.name} - {skill.mp}mp</a>
                );
             }
           });
@@ -146,9 +141,9 @@ class FightController extends React.Component {
 
       const itemMapDataToLinks = (data) => {
           return data.map((item, i) => {
-              if(item.kind == "p"){
+              if(item.kind == "p" && this.props.status.itemCount[item.id] != 0){
                 return (
-                  <li key={i}  ><a href="#!" onClick={this.useItem.bind(this,item.id)} data-name={item.name} >{item.name}- {this.props.status.itemCount[item.id]}개</a></li>
+                  <a key={i} className='waves-effect waves-light btn item-btn' href="#!" onClick={this.useItem.bind(this,item.id)} data-name={item.name} >{item.name}- {this.props.status.itemCount[item.id]}개</a>
                 )
               }
           });
@@ -160,21 +155,16 @@ class FightController extends React.Component {
                 <ul className="fight-btn-ul">
                 { /*    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li> */}
 
-                    { this.state.fighting  ? run : exit }
+                  <li className="fight-btn-li">
+                       { itemMapDataToLinks(this.props.items.itemList) }
+                  </li>
 
                     <li className="fight-btn-li">
-                      <a id="skillDrop" className='dropdown-button btn' href='#!' data-activates='dropdown1' >Use Skill</a>
-                       <ul id='dropdown1' className='dropdown-content'>
+                          { this.state.fighting  ? run : exit }
                           { mapDataToLinks(this.props.skills) }
-                       </ul>
                     </li>
 
-                    <li className="fight-btn-li">
-                      <a id="itemDrop" ref="itemDrop" className='dropdown-button btn' href='#!' data-activates='dropdown2' >Use Item</a>
-                       <ul id='dropdown2' className='dropdown-content'>
-                         { itemMapDataToLinks(this.props.items.itemList) }
-                       </ul>
-                    </li>
+
 
 
                 </ul>

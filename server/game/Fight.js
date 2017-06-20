@@ -219,11 +219,10 @@ var useSkill = function(io,info){
                   //  let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
                     io.emit(info.ch+"fight", skillAttackMsg);
                   //  io.emit(info.ch+"fight", monHPMsg);
-
                   }
 
                   io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
-
+                  io.emit(userInfo.username+"[SkillEnd]", "");
                   // 몬스터 처치
                   if(localMonsterList[monNum].hp<=0){
                     fightInterval[userInfo.username+"fighting"] = false;// 몬스터 처치후 발동되는 인터벌 막기위한 변수
@@ -476,7 +475,7 @@ function checkCritical(dex){
     if(addLV==0){
       addLV = 1;
     }
-    
+
     // 레벨업 판단
     if(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV < totalExp){
       let lvUp = userInfo.lv+1;
