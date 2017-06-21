@@ -41,6 +41,7 @@ class Controller extends React.Component {
           this.toggleRest = this.toggleRest.bind(this);
           this.toggleOpenStore = this.toggleOpenStore.bind(this);
           this.saveMap = this.saveMap.bind(this);
+          this.handleKeyPress = this.handleKeyPress.bind(this);
 
           this.mapName = this.props.userInfo.mapName;
           if(this.mapName==undefined){
@@ -69,6 +70,23 @@ class Controller extends React.Component {
         return update;
           }
 */
+
+handleKeyPress(e) {
+
+ console.log(e.charCode);
+
+       /*if(e.charCode==13) {
+           if(this.props.mode) {
+               this.handleLogin();
+           } else {
+               this.handleRegister();
+           }
+       }*/
+
+
+   }
+
+
       toggleFight(){
           this.setState({
               fighting: !this.state.fighting
@@ -514,7 +532,7 @@ class Controller extends React.Component {
       );
 
         return (
-          <div className="controller-container">
+          <div className="controller-container" onKeyPress={this.handleKeyPress}>
                 <ul>
                     <li><a onClick={this.moveUp}  ><i className="medium  material-icons controller-btn up waves-effect waves-light">navigation</i></a></li>
                     <li><a onClick={this.moveLeft}><i className="medium material-icons controller-btn left waves-effect waves-light">navigation</i></a></li>

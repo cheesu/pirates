@@ -181,7 +181,9 @@ io.on('connection', (socket) => {
     socket.on('whisper', function(wObj){
       console.log(wObj);
       let sedMsg = "[귓속말] "+ wObj.sendUser + ": "+wObj.msg;
+      let sedMsg2 = "[귓속말] "+ wObj.target + ">>: "+wObj.msg;
       io.emit(wObj.target, sedMsg);
+      io.emit(wObj.sendUser, sedMsg2);
     });
 
 

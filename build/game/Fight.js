@@ -511,13 +511,23 @@ function expLevelup(userInfo, io, monNum, info, kind) {
         } else {
           userInfo.itemCount.ph3 = userInfo.itemCount.ph3 + 5;
         }
+
+        if (userInfo.item.indexOf('pm3') == -1) {
+          userInfo.item.push('pm3');
+        }
+        if (userInfo.itemCount.pm3 == undefined) {
+          userInfo.itemCount.pm3 = 5;
+        } else {
+          userInfo.itemCount.pm3 = userInfo.itemCount.pm3 + 5;
+        }
+
         io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
         io.emit(userInfo.username + "fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
       }
 
       if (dropPer <= localMonsterList[monNum].dropPer) {
         var dropItems = localMonsterList[monNum].dropItem;
-        var itemIndex = Math.floor(Math.random() * (dropItems.length - 1));
+        var itemIndex = Math.floor(Math.random() * dropItems.length);
         var getItem = dropItems[itemIndex];
 
         if (userInfo.item.indexOf(getItem) == -1) {

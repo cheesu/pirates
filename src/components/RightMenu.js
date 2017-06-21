@@ -129,8 +129,8 @@ logB(x, base) {
                           <li className="stat-li"> STR: <span>{this.props.status.str}</span></li>
                           <li className="stat-li"> DEX: <span>{this.props.status.dex}</span></li>
                           <li className="stat-li"> INT: <span>{this.props.status.int}</span></li>
-                          <li> EXP: <span>{this.props.status.exp}</span>  [{this.state.expPer}%]</li>
-                          <li> NEXT EXP: <span>{this.state.nextExp}</span></li>
+                          <li> EXP: <span>{this.props.status.exp}</span></li>
+                          <li> NEXT EXP: <span>{this.state.nextLVExp}</span></li>
                           <li>  </li>
                       </ul>
                     </div>

@@ -203,7 +203,9 @@ io.on('connection', function (socket) {
   socket.on('whisper', function (wObj) {
     console.log(wObj);
     var sedMsg = "[귓속말] " + wObj.sendUser + ": " + wObj.msg;
+    var sedMsg2 = "[귓속말] " + wObj.target + ">>: " + wObj.msg;
     io.emit(wObj.target, sedMsg);
+    io.emit(wObj.sendUser, sedMsg2);
   });
 
   socket.on('attack', function (info) {

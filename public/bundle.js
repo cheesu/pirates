@@ -20178,6 +20178,7 @@ var Controller = function (_React$Component) {
     _this.toggleRest = _this.toggleRest.bind(_this);
     _this.toggleOpenStore = _this.toggleOpenStore.bind(_this);
     _this.saveMap = _this.saveMap.bind(_this);
+    _this.handleKeyPress = _this.handleKeyPress.bind(_this);
 
     _this.mapName = _this.props.userInfo.mapName;
     if (_this.mapName == undefined) {
@@ -20208,8 +20209,21 @@ var Controller = function (_React$Component) {
             }
   */
 
-
   _createClass(Controller, [{
+    key: 'handleKeyPress',
+    value: function handleKeyPress(e) {
+
+      console.log(e.charCode);
+
+      /*if(e.charCode==13) {
+          if(this.props.mode) {
+              this.handleLogin();
+          } else {
+              this.handleRegister();
+          }
+      }*/
+    }
+  }, {
     key: 'toggleFight',
     value: function toggleFight() {
       this.setState({
@@ -20669,7 +20683,7 @@ var Controller = function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        { className: 'controller-container' },
+        { className: 'controller-container', onKeyPress: this.handleKeyPress },
         _react2.default.createElement(
           'ul',
           null,
@@ -22680,10 +22694,7 @@ var RightMenu = function (_React$Component) {
                                     'span',
                                     null,
                                     this.props.status.exp
-                                ),
-                                '  [',
-                                this.state.expPer,
-                                '%]'
+                                )
                             ),
                             _react2.default.createElement(
                                 'li',
@@ -22692,7 +22703,7 @@ var RightMenu = function (_React$Component) {
                                 _react2.default.createElement(
                                     'span',
                                     null,
-                                    this.state.nextExp
+                                    this.state.nextLVExp
                                 )
                             ),
                             _react2.default.createElement(
