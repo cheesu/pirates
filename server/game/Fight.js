@@ -226,8 +226,6 @@ var useSkill = function(io,info){
                       localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
                     }
 
-
-                    localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
                      targetCurrentHP = localMonsterList[monNum].hp;
                     if(localMonsterList[monNum].hp < 0){
                       targetCurrentHP = 0;

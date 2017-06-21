@@ -18,12 +18,13 @@ class FightController extends React.Component {
           this.toggleFight = this.toggleFight.bind(this);
           this.useSkill = this.useSkill.bind(this);
           this.useItem = this.useItem.bind(this);
-
+          this.handleKeyPress = this.handleKeyPress.bind(this);
           this.props.userItemRequest();
       }
 
 
       componentDidMount(){
+        //$("#fightControllerContainer").attr("tabIndex",0);
         this.props.getStatusRequest();
         this.props.skillRequest(this.props.status);
 
@@ -52,6 +53,25 @@ class FightController extends React.Component {
         this.props.socket.off(this.props.attackInfo.userName+"DEAD");
 
       }
+
+      handleKeyPress(e) {
+/*        console.log("testtesttest");
+        let skillBtn = $(".skill-btn");
+        console.log(skillBtn);
+        console.log(e.charCode);
+
+             if(e.charCode==113) {
+                skillBtn[0].onClick;
+             }
+             else if(e.charCode==119){
+               skillBtn[1].onClick;
+             }
+             else if(e.charCode==101){
+               skillBtn[2].onClick;
+             }
+*/
+
+         }
 
       handleClose() {
         this.props.getStatusRequest();
@@ -151,7 +171,7 @@ class FightController extends React.Component {
 
 
         return (
-          <div className="fight-controller-container">
+          <div id="fightControllerContainer" className="fight-controller-container" onKeyPress={this.handleKeyPress}>
                 <ul className="fight-btn-ul">
                 { /*    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li> */}
 

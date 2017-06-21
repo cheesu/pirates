@@ -54,14 +54,10 @@ class Controller extends React.Component {
           cookieMapLocal = "0-0";
         }
 
-          console.log(cookieMapLocal);
 
           this.socketCh = cookieMapLocal;
-            console.log(this.socketCh);
           let localArr = cookieMapLocal.split("-");
-          console.log(localArr);
           this.mapLocal = [localArr[0]*1,localArr[1]*1];
-          console.log(this.mapLocal);
       }
 
 /*
@@ -73,15 +69,24 @@ class Controller extends React.Component {
 
 handleKeyPress(e) {
 
- console.log(e.charCode);
-
-       /*if(e.charCode==13) {
-           if(this.props.mode) {
-               this.handleLogin();
-           } else {
-               this.handleRegister();
-           }
-       }*/
+       if(e.charCode==97) {
+          this.actionMove("left");
+       }
+       else if(e.charCode==119){
+         this.actionMove("up");
+       }
+       else if(e.charCode==115){
+         this.actionMove("down");
+       }
+       else if(e.charCode==100){
+         this.actionMove("right");
+       }
+       else if(e.charCode==32){
+         this.attack();
+       }
+       else if(e.charCode==114){
+         this.rest();
+       }
 
 
    }
@@ -99,6 +104,7 @@ handleKeyPress(e) {
           });
       }
       componentDidMount(){
+        $("#contrillerContainer").attr("tabIndex",0);
         this.props.getStatusRequest();
         this.props.userItemRequest();
 
@@ -532,7 +538,7 @@ handleKeyPress(e) {
       );
 
         return (
-          <div className="controller-container" onKeyPress={this.handleKeyPress}>
+          <div id="contrillerContainer" className="controller-container" onKeyPress={this.handleKeyPress} >
                 <ul>
                     <li><a onClick={this.moveUp}  ><i className="medium  material-icons controller-btn up waves-effect waves-light">navigation</i></a></li>
                     <li><a onClick={this.moveLeft}><i className="medium material-icons controller-btn left waves-effect waves-light">navigation</i></a></li>
