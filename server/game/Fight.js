@@ -164,6 +164,8 @@ var useSkill = function(io,info){
               let skillCasting = skillInfo.casting.split(",");
               fightInterval[userInfo.username+"CastingCount"] = 0;
               fightInterval[userInfo.username+"skill"] = true;
+              let coolDown = userInfo.int;
+              // 스킬 캐스팅 인터벌
               fightInterval[userInfo.username+"skillInterval"] = setInterval(function(){
                 if(fightInterval[userInfo.username+"CastingCount"]==null){
                   clearInterval(fightInterval[userInfo.username+"skillInterval"]);
@@ -255,7 +257,7 @@ var useSkill = function(io,info){
                   fightInterval[userInfo.username+"skillInterval"] = null;
                   fightInterval[userInfo.username+"skill"] = false;
                 }
-              },1000); // 인터벌 종료
+              },1000-coolDown); // 인터벌 종료
 
             }); // 엠피 소모 업데이트 종료
 
@@ -339,18 +341,18 @@ var fight = function (io,info){
                       userInfo.hp = userInfo.max_hp;
                       fightInterval[userInfo.username+"HP"] = userInfo.max_hp;
                       userHP = userInfo.max_hp;
-                      io.emit(info.ch+"fight", ud.option.msg);
+                      io.emit(info.ch+"fight", "[item] "+ud.option.msg);
                     }
                     else if(ud.option.option=="block"){
                       userInfo.hp += reDmg;
                       fightInterval[userInfo.username+"HP"] += reDmg;
                       userHP += reDmg;
                       reDmg = 0;
-                      io.emit(info.ch+"fight", ud.option.msg);
+                      io.emit(info.ch+"fight", "[item] "+ud.option.msg);
                     }
                     else if(ud.option.option=="counter"){
                       localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg*10;
-                      io.emit(info.ch+"fight", ud.option.msg+"["+reDmg*10+"]");
+                      io.emit(info.ch+"fight", "[item] "+ud.option.msg+"["+reDmg*10+"]");
                     }
                   }
                 }
@@ -384,6 +386,7 @@ var fight = function (io,info){
                   fightInterval[userInfo.username+"fighting"] = false;
                   clearInterval(fightInterval[userInfo.username+"monsterAttack"]);
                   clearInterval(fightInterval[userInfo.username+"userAttack"]);
+
                   Account.update({username: userInfo.username},{$set:{hp:userInfo.max_hp}}, function(err, output){
                     if(err) console.log(err);
                     io.emit(info.ch+"fight", localMonsterList[monNum].name+"의 일격을 맞고 "+userInfo.username+"님이 정신을 잃고 쓰러집니다.");
@@ -512,8 +515,6 @@ function checkCritical(dex){
       getGold =  Math.round(getGold/3);
     }
 
-    upExp = Math.round(upExp*2.5);
-
     let totalExp = userInfo.exp + upExp;
     let setGold = userInfo.gold + getGold;
 
@@ -567,7 +568,7 @@ function checkCritical(dex){
       io.emit(userInfo.username+"endFight", "");
     });
 
-    let addLV = Math.round(userInfo.lv/10);
+    let addLV = Math.floor(userInfo.lv/10);
     if(addLV==0){
       addLV = 1;
     }
@@ -580,25 +581,30 @@ function checkCritical(dex){
       let intUP = userInfo.int+2;
       let max_mpUP = userInfo.max_mp;
       let max_hpUP = userInfo.max_hp;
-      let jobBouns = 2;
+      let jobBouns = 3;
       if(userInfo.job=="검사"){
         strUP = strUP+jobBouns;
         intUP = intUP-1;
-        max_mpUP += (userInfo.lv*10)*0.2;
-        max_hpUP += (userInfo.lv*10)*0.6;
+        max_mpUP += 15
+        max_mpUP += 15
+        max_mpUP += (userInfo.lv*10)*0.3;
+        max_hpUP += (userInfo.lv*10)*0.9;
       }
       else if(userInfo.job=="마법사"){
         intUP = intUP+jobBouns;
         dexUP = dexUP-1;
-        max_mpUP += (userInfo.lv*10)*0.6;
-        max_hpUP += (userInfo.lv*10)*0.2;
+        max_mpUP += 15
+        max_mpUP += 15
+        max_mpUP += (userInfo.lv*10)*0.7;
+        max_hpUP += (userInfo.lv*10)*0.5;
       }
       else if(userInfo.job=="암살자"){
         dexUP = dexUP+jobBouns;
         strUP = strUP-1
         max_mpUP += 15
-        max_mpUP += (userInfo.lv*10)*0.3;
-        max_hpUP += (userInfo.lv*10)*0.5;
+        max_mpUP += 15
+        max_mpUP += (userInfo.lv*10)*0.5;
+        max_hpUP += (userInfo.lv*10)*0.7;
       }
 
       Account.update({username: userInfo.username},{$set:{lv:lvUp, str:strUP, int:intUP, dex:dexUP, max_hp:max_hpUP, max_mp:max_mpUP, mp:max_mpUP, hp:max_hpUP}}, function(err, output){

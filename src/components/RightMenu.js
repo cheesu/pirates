@@ -12,7 +12,8 @@ class RightMenu extends React.Component {
         this.state = {
             keyword: '',
             userItem:false,
-            expPer:0
+            expPer:0,
+            nextLVExp:0,
         };
 
         this.handleClose = this.handleClose.bind(this);
@@ -49,8 +50,8 @@ class RightMenu extends React.Component {
 calcExp(){
   let currentLV = this.props.status.lv;
   let nextLV = this.props.status.lv+1;
-  let addLV = currentLV/10;
-  let addNextLV = nextLV/10;
+  let addLV = Math.floor(currentLV/10);
+  let addNextLV = Math.floor(nextLV/10);
 
   if(addLV==0){
     addLV = 1;
@@ -69,8 +70,11 @@ calcExp(){
 
   expPercent = expPercent.toFixed(2);
   this.setState({
-      expPer: expPercent
+      expPer: expPercent,
+      nextLVExp:nextLVExp
   });
+
+
 
 
 
@@ -126,6 +130,7 @@ logB(x, base) {
                           <li className="stat-li"> DEX: <span>{this.props.status.dex}</span></li>
                           <li className="stat-li"> INT: <span>{this.props.status.int}</span></li>
                           <li> EXP: <span>{this.props.status.exp}</span>  [{this.state.expPer}%]</li>
+                          <li> NEXT EXP: <span>{this.state.nextExp}</span></li>
                           <li>  </li>
                       </ul>
                     </div>

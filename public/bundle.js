@@ -22421,7 +22421,8 @@ var RightMenu = function (_React$Component) {
         _this.state = {
             keyword: '',
             userItem: false,
-            expPer: 0
+            expPer: 0,
+            nextLVExp: 0
         };
 
         _this.handleClose = _this.handleClose.bind(_this);
@@ -22464,8 +22465,8 @@ var RightMenu = function (_React$Component) {
         value: function calcExp() {
             var currentLV = this.props.status.lv;
             var nextLV = this.props.status.lv + 1;
-            var addLV = currentLV / 10;
-            var addNextLV = nextLV / 10;
+            var addLV = Math.floor(currentLV / 10);
+            var addNextLV = Math.floor(nextLV / 10);
 
             if (addLV == 0) {
                 addLV = 1;
@@ -22484,7 +22485,8 @@ var RightMenu = function (_React$Component) {
 
             expPercent = expPercent.toFixed(2);
             this.setState({
-                expPer: expPercent
+                expPer: expPercent,
+                nextLVExp: nextLVExp
             });
         }
     }, {
@@ -22682,6 +22684,16 @@ var RightMenu = function (_React$Component) {
                                 '  [',
                                 this.state.expPer,
                                 '%]'
+                            ),
+                            _react2.default.createElement(
+                                'li',
+                                null,
+                                ' NEXT EXP: ',
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    this.state.nextExp
+                                )
                             ),
                             _react2.default.createElement(
                                 'li',
