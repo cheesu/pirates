@@ -7,6 +7,7 @@ const Account = new Schema({
     username: String,
     password: String,
     job:String,
+    job2:String,
     lv:Number(),
     exp:Number(),
     max_hp:Number(),

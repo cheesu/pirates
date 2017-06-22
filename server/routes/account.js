@@ -453,10 +453,25 @@ router.get('/changeJob/:jobName', (req, res) => {
               res.json({msg:"레벨이 부족 합니다."});
             }
             else{
-              userInfo.gold = userInfo.gold - 1000000;
+              userInfo.gold = userInfo.gold - 100000;
 
-              Account.update({username: userInfo.username},{$set:{job:jobName , gold:userInfo.gold}}, function(err, output){
-                res.json({msg:"전직 완료 하였습니다."});
+              let jobTxt = "";
+              let job2 = "";
+              if(userInfo.job == "마법사"){
+                job2 = '깨달은 현자';
+                jobTxt = "깨달은 현자가 되었습니다. 깨달은 현자의 능력 고속영창과 주문보호를 할 수 있습니다.";
+              }
+              if(userInfo.job == "검사"){
+                job2 = '검의 달인';
+                jobTxt = "검의 달인이 되었습니다 무기상쇄와 검기를 사용 할 수 있습니다."
+              }
+              if(userInfo.job == "암살자"){
+                job2 = '그림자 살귀';
+                jobTxt = "그림자 살귀가 되었습니다. 그림자 숨기와 이화접목을 사용 할 수 있습니다."
+              }
+
+              Account.update({username: userInfo.username},{$set:{job2:job2 , gold:userInfo.gold}}, function(err, output){
+                res.json({msg:jobTxt});
               });
             }
 

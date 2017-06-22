@@ -954,6 +954,12 @@ ul.user-item-results {
   max-height: 20em;
 }
 
+
+.ad-container
+{
+  height: 100%;
+}
+
 @-webkit-keyframes user-item-enter {
     0% {
         opacity: 0;
@@ -1031,6 +1037,12 @@ ul.user-item-results {
 }
 
 
+.use-scroll-msg
+{
+  font-size: 1em;
+  color: #FFF;
+  text-align: center;
+}
 
 /* item-store */
 .item-store-screen {

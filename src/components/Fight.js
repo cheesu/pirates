@@ -9,7 +9,6 @@ class Fight extends React.Component {
         this.state = {
             userList: [],
         };
-        console.log("생성");
         this.handleClose = this.handleClose.bind(this);
         this.socket = this.props.socket;
         this.props.attackInfo;

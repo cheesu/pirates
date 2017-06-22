@@ -19,9 +19,16 @@ class RightMenu extends React.Component {
         this.handleClose = this.handleClose.bind(this);
         this.handleRightMenu = this.handleRightMenu.bind(this);
         this.toggleUserItem = this.toggleUserItem.bind(this);
+        this.onAllClose = this.onAllClose.bind(this);
+
         this.calcExp = this.calcExp.bind(this);
 
       var userName = this.props.status.currentUser;
+    }
+
+    onAllClose(){
+      this.toggleUserItem();
+      this.handleClose();
     }
 
     handleClose() {
@@ -125,7 +132,9 @@ logB(x, base) {
                           <li> LV: <span>{this.props.status.lv}</span></li>
                           <li> HP: <span>{this.props.status.hp} / {this.props.status.max_hp}</span></li>
                           <li> MP: <span>{this.props.status.mp} / {this.props.status.max_mp}</span></li>
-                          <li> JOB: <span>{this.props.status.job}</span></li>
+                          <li> JOB: <span>{this.props.status.job} {this.props.status.job2} </span>
+
+                          </li>
                           <li className="stat-li"> STR: <span>{this.props.status.str}</span></li>
                           <li className="stat-li"> DEX: <span>{this.props.status.dex}</span></li>
                           <li className="stat-li"> INT: <span>{this.props.status.int}</span></li>
@@ -148,6 +157,7 @@ logB(x, base) {
                 <ReactCSSTransitionGroup transitionName="user-item" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.userItem ? <UserItem onClose={this.toggleUserItem}
+                                                      onAllClose={this.onAllClose}
                                                       userInfo = {this.props.status}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>

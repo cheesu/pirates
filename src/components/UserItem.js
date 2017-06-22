@@ -1,26 +1,34 @@
 import React from 'react';
 import axios from 'axios';
-import { browserHistory, Link } from 'react-router';
+import { browserHistory, Link, Redirect } from 'react-router';
+
 import { connect } from 'react-redux';
 import { userItemRequest  } from 'Actions/item';
 import { getStatusRequest  } from 'Actions/authentication';
 class UserItem extends React.Component {
-    constructor(props) {
-        super(props);
+
+
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             keyword: '',
             userItem:false,
+            useScroll:false,
         };
         this.handleClose = this.handleClose.bind(this);
+        this.handleAllClose = this.handleAllClose.bind(this);
         this.useItem = this.useItem.bind(this);
         this.countItem = this.countItem.bind(this);
-          this.props.userItemRequest();
+        this.props.userItemRequest();
     }
 
     handleClose() {
         this.props.onClose();
     }
 
+    handleAllClose(){
+      this.props.onAllClose();
+    }
 
   componentDidMount(){
        $('.collapsible').collapsible();
@@ -55,6 +63,10 @@ class UserItem extends React.Component {
             this.props.getStatusRequest();
             let msg = response.data.msg;
              Materialize.toast(msg, 1000);
+             this.handleAllClose();
+             this.setState({
+               useScroll:true
+             });
           }).catch((error) => {
               console.log(error);
           });
@@ -75,6 +87,9 @@ class UserItem extends React.Component {
   }
 
     render() {
+
+      const goScroll = ( <Redirect to="/home"/> );
+
       const mapDataToLinks = (data) => {
         if(data==undefined){
           return (<li>
@@ -157,12 +172,14 @@ class UserItem extends React.Component {
                     <ul className="collapsible item-list user-inven-ul" data-collapsible="accordion">
                       { mapDataToLinks(this.props.items.itemList) }
                     </ul>
-
                 </div>
+                { this.state.useScroll  ? goScroll : undefined }
+
             </div>
         );
     }
 }
+
 
 
 UserItem.propTypes = {

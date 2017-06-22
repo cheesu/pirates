@@ -7,8 +7,27 @@ class ChangeJob extends React.Component {
     constructor(props) {
         super(props);
 
+        let ma = false;
+        let as = false;
+        let sw = false;
+
+        if(this.props.userInfo.job=="검사"){
+          sw =  true;
+        }
+        if(this.props.userInfo.job=="마법사"){
+          ma =  true;
+        }
+        if(this.props.userInfo.job=="암살자"){
+          as =  true;
+        }
+
+
+
         this.state = {
-            keyword: ''
+            keyword: '',
+            ma:ma,
+            as:as,
+            sw:sw
         };
 
         this.handleClose = this.handleClose.bind(this);
@@ -34,7 +53,10 @@ class ChangeJob extends React.Component {
       return false;
     }
 
-    var con_test = confirm(jobName+"(으)로 전직 하시겠습니까?");
+
+
+
+    var con_test = confirm("전직 하시겠습니까?");
     if(con_test){
       axios.get('/api/account/changeJob/' + jobName)
          .then((response) => {
@@ -65,7 +87,9 @@ class ChangeJob extends React.Component {
 
     render() {
 
-
+      const maList = (
+              <li><a onClick={this.toggleOpenChangeJob}  className="waves-effect waves-light btn red controller-btn attack-btn">전직</a></li>
+      );
 
 
         return (
@@ -75,60 +99,19 @@ class ChangeJob extends React.Component {
                       onClick={this.handleClose}>CLOSE</a>
               </div>
               <div className="container item-container">
-                직업엔 귀천이 없다.
+                더 높은 경지를 향해
                 전직을 위해선 레벨 40이상이 되어야 합니다.
                 골드가 10만 골드 소모 됩니다.
                 <p>소지금 : <span>{this.props.userInfo.gold}</span> Gold</p>
                   <ul className="collapsible item-list user-inven-ul" data-collapsible="accordion">
-
                     <li>
-                      <div className="collapsible-header"><span className="badge">투사 </span></div>
+                      <div className="collapsible-header"><span className="badge">더 높은 경지를 향한다. </span></div>
                       <div className="collapsible-body item-msg">
-                        <span>"신체능력의 극한을 수련하는자. 방어적인 타입"</span>
-                        <p><a onClick={this.requestChangeJob.bind(this,"투사")}  className="waves-effect waves-light btn">전직한다</a></p>
+                        <span>"더 높은 경지를 위해서는 그릇을 비워야 합니다."</span>
+                        <p>기존의 스킬들은 사용 할 수가 없게 됩니다.</p>
+                        <p><a onClick={this.requestChangeJob.bind(this,this.props.userInfo.job)}  className="waves-effect waves-light btn">전직한다</a></p>
                       </div>
                     </li>
-
-                    <li>
-                      <div className="collapsible-header"><span className="badge">검객 </span></div>
-                      <div className="collapsible-body item-msg">
-                        <span>"검한자루 만으로 검의 극의를 걷는자. 공격적인 타입"</span>
-                        <p><a onClick={this.requestChangeJob.bind(this,"검객")}  className="waves-effect waves-light btn">전직한다</a></p>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="collapsible-header"><span className="badge">닌자 </span></div>
-                      <div className="collapsible-body item-msg">
-                        <span>"그의 모습을 본 사람은 없다.  회피 특화"</span>
-                        <p><a onClick={this.requestChangeJob.bind(this,"닌자")}  className="waves-effect waves-light btn">전직한다</a></p>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="collapsible-header"><span className="badge">어쌔신 </span></div>
-                      <div className="collapsible-body item-msg">
-                        <span>"의뢰받은 사람중 살아있는자는 없다.  공격 특화"</span>
-                        <p><a onClick={this.requestChangeJob.bind(this,"어쌔신")}  className="waves-effect waves-light btn">전직한다</a></p>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="collapsible-header"><span className="badge">현자 </span></div>
-                      <div className="collapsible-body item-msg">
-                        <span>"끝없이 세계의 비밀을 탐구하는 현자  공격적인 타입"</span>
-                        <p><a onClick={this.requestChangeJob.bind(this,"현자")}  className="waves-effect waves-light btn">전직한다</a></p>
-                      </div>
-                    </li>
-
-                    <li>
-                      <div className="collapsible-header"><span className="badge">성자 </span></div>
-                      <div className="collapsible-body item-msg">
-                        <span>"깨달음을 얻은자  방어적인 타입"</span>
-                        <p><a onClick={this.requestChangeJob.bind(this,"성자")}  className="waves-effect waves-light btn">전직한다</a></p>
-                      </div>
-                    </li>
-
                   </ul>
 
               </div>

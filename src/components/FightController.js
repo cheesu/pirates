@@ -130,10 +130,12 @@ class FightController extends React.Component {
       let current = {
           fighting: this.state.fighting,
           itemCount: this.props.status.itemCount,
+          skills: this.props.skills
           };
       let next = {
           fighting: nextState.fighting,
           itemCount: nextProps.status.itemCount,
+          skills: nextProps.skills
           };
       let update = JSON.stringify(current) !== JSON.stringify(next);
       return update;
@@ -151,7 +153,7 @@ class FightController extends React.Component {
 
       const mapDataToLinks = (data) => {
           return data.map((skill, i) => {
-            if(skill.lv <= this.props.status.lv){
+            if(skill.lv <= this.props.status.lv && skill.type != "passive" ){
               return (
                   <a key={i} className='waves-effect waves-light btn item-btn skill-btn' href="#!" onClick={this.useSkill.bind(this,skill.name)} data-name={skill.name} >{skill.name} - {skill.mp}mp</a>
                );

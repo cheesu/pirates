@@ -135,8 +135,15 @@ var useSkill = function(io,info){
             Account.update({username: userInfo.username},{$set:{mp:userMP}}, function(err, output){
               if(err) console.log(err);
 
+          /*    if(userInfo.job2 != "깨달은 현자" && info.skillCount==2){
+                userInfo.username = userInfo.username+"2";
+              }
+*/
               io.emit(userInfo.username+"userMP", userMP+"-"+userInfo.max_mp);
               fightInterval[userInfo.username+"MP"] = userMP;
+
+
+
               if(fightInterval[userInfo.username+"skill"]){
                 io.emit(userInfo.username+"fight", "[skill]이미 스킬을 시전 중 입니다.");
                 return false;
@@ -165,6 +172,11 @@ var useSkill = function(io,info){
               fightInterval[userInfo.username+"CastingCount"] = 0;
               fightInterval[userInfo.username+"skill"] = true;
               let coolDown = userInfo.int;
+
+              if(userInfo.job2 == "깨달은 현자"){
+                coolDown = coolDown*1.5;
+              }
+
               // 스킬 캐스팅 인터벌
               fightInterval[userInfo.username+"skillInterval"] = setInterval(function(){
                 if(fightInterval[userInfo.username+"CastingCount"]==null){
@@ -207,6 +219,13 @@ var useSkill = function(io,info){
 
                   var wAP = wMinAP+randomAP;
 
+                  if(userInfo.job2=='검의 달인'){
+                    let passive = Math.floor(Math.random() * 1000)+1;
+                    if(userInfo.str > passive){
+                      wAP = wAP*2;
+                      io.emit(info.ch+"fight", "[passive] 검의 달인 "+userInfo.username+"님의 "+userInfo.mount.w.name+"에서 푸른 검기가 생성됩니다. 공격력이 증가 합니다.");
+                    }
+                  }
 
                   let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)+wAP)*skillInfo.dmg) - localMonsterList[monNum].dp;
                   dmg = Math.round(dmg);
@@ -314,9 +333,6 @@ var fight = function (io,info){
               }
 
               let randomDP = Math.floor(Math.random() * dMaxDP) + dMinDP;
-              console.log(dMinDP);
-              console.log(dMaxDP);
-              console.log(randomDP);
 
               let reDmg =  localMonsterList[monNum].ap - randomDP
 
@@ -324,6 +340,34 @@ var fight = function (io,info){
                 reDmg = 1;
               }
 
+              if(userInfo.job2=='깨달은 현자'&&fightInterval[userInfo.username+"skill"]){
+                reDmg = reDmg/2;
+                io.emit(info.ch+"fight", "[passive] 캐스팅중인 깨달은 현자  "+userInfo.username+"님의 "+userInfo.mount.w.name+"이 빛이나며 보호막이 생성됩니다. 주문보호의 영향으로 데미지가 감소합니다.");
+              }
+
+              if(userInfo.job2=='검의 달인'){
+                let passive = Math.floor(Math.random() * 1000)+1;
+                if(userInfo.str > passive){
+                  reDmg = 0;
+                  io.emit(info.ch+"fight", "[passive] 검의 달인 "+userInfo.username+"님의 "+userInfo.mount.w.name+"이 '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
+                }
+              }
+
+              if(userInfo.job2=='그림자 살귀'){
+                let passive = Math.floor(Math.random() * 1000)+1;
+                if(userInfo.dex > passive){
+                  reDmg = 0;
+                  io.emit(info.ch+"fight", "[passive] 그림자 갈귀 "+userInfo.username+"님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
+                }
+              }
+
+              if(userInfo.job2=='그림자 살귀'){
+                let passive = Math.floor(Math.random() * 1000)+1;
+                if(userInfo.dex > passive){
+                  localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg*10;
+                  io.emit(info.ch+"fight", "[passive] 그림자 갈귀 "+userInfo.username+"님의 "+userInfo.mount.w.name+"가 적의 공격을 타고 흘러 반격합니다. ["+reDmg*10+"]");
+                }
+              }
 
 
               let userHP = fightInterval[userInfo.username+"HP"] - reDmg;
@@ -434,6 +478,15 @@ var fight = function (io,info){
               let randomAP = Math.floor(Math.random() * wMaxAP) + 1;
 
               var wAP = wMinAP+randomAP;
+
+              if(userInfo.job2=='검의 달인'){
+                let passive = Math.floor(Math.random() * 1000)+1;
+                if(userInfo.str > passive){
+                  wAP = wAP*2;
+                  io.emit(info.ch+"fight", "[passive] 검의 달인 "+userInfo.username+"님의 "+userInfo.mount.w.name+"에서 푸른 검기가 생성됩니다. 공격력이 증가 합니다.");
+                }
+              }
+
 
               console.log("무기 공격력"+wMinAP+"+"+randomAP+"="+wAP);
 
