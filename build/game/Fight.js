@@ -498,10 +498,42 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   var setGold = userInfo.gold + getGold;
 
   try {
+    var dropPer = Math.floor(Math.random() * 1000) + 1;
+    if (dropPer < 2) {
+      if (userInfo.item.indexOf('ow1') == -1) {
+        userInfo.item.push('ow1');
+      }
+      if (userInfo.itemCount.ow1 == undefined) {
+        userInfo.itemCount.ow1 = 1;
+      } else {
+        userInfo.itemCount.ow1 = userInfo.itemCount.ow1 + 1;
+      }
+      io.emit(userInfo.username, "[시스템] 몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
+      io.emit(userInfo.username + "fight", "[시스템]  몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
+    }
+
+    if (dropPer < 5) {
+      if (userInfo.item.indexOf('ow2') == -1) {
+        userInfo.item.push('ow2');
+      }
+      if (userInfo.itemCount.ow2 == undefined) {
+        userInfo.itemCount.ow2 = 1;
+      } else {
+        userInfo.itemCount.ow2 = userInfo.itemCount.ow2 + 1;
+      }
+      io.emit(userInfo.username, "[시스템] 몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
+      io.emit(userInfo.username + "fight", "[시스템]  몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
+    }
+  } catch (e) {
+    console.log("보스 템드랍  오류");
+    console.log(e);
+  }
+
+  try {
     // 보스 템드랍
     if (localMonsterList[monNum].type == "boss") {
-      var dropPer = Math.floor(Math.random() * 100) + 1;
-      if (dropPer < 70) {
+      var _dropPer = Math.floor(Math.random() * 100) + 1;
+      if (_dropPer < 70) {
         if (userInfo.item.indexOf('ph3') == -1) {
           userInfo.item.push('ph3');
         }
@@ -524,7 +556,7 @@ function expLevelup(userInfo, io, monNum, info, kind) {
         io.emit(userInfo.username + "fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 전리품을 획득 하였습니다.");
       }
 
-      if (dropPer <= localMonsterList[monNum].dropPer) {
+      if (_dropPer <= localMonsterList[monNum].dropPer) {
         var dropItems = localMonsterList[monNum].dropItem;
         var itemIndex = Math.floor(Math.random() * dropItems.length);
         var getItem = dropItems[itemIndex];
@@ -570,21 +602,26 @@ function expLevelup(userInfo, io, monNum, info, kind) {
     var max_mpUP = userInfo.max_mp;
     var max_hpUP = userInfo.max_hp;
     var jobBouns = 3;
-    if (userInfo.job == "검사") {
+
+    if (userInfo.job != "검사" || userInfo.job != "마법사" || userInfo.job != "암살자") {
+      jobBouns = 4;
+    }
+
+    if (userInfo.job == "검사" || userInfo.job == "투사" || userInfo.job == "검객") {
       strUP = strUP + jobBouns;
       intUP = intUP - 1;
       max_mpUP += 15;
       max_mpUP += 15;
       max_mpUP += userInfo.lv * 10 * 0.3;
       max_hpUP += userInfo.lv * 10 * 0.9;
-    } else if (userInfo.job == "마법사") {
+    } else if (userInfo.job == "마법사" || userInfo.job == "현자" || userInfo.job == "성자") {
       intUP = intUP + jobBouns;
       dexUP = dexUP - 1;
       max_mpUP += 15;
       max_mpUP += 15;
       max_mpUP += userInfo.lv * 10 * 0.7;
       max_hpUP += userInfo.lv * 10 * 0.5;
-    } else if (userInfo.job == "암살자") {
+    } else if (userInfo.job == "암살자" || userInfo.job == "어쌔신" || userInfo.job == "닌자") {
       dexUP = dexUP + jobBouns;
       strUP = strUP - 1;
       max_mpUP += 15;

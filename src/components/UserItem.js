@@ -48,6 +48,17 @@ class UserItem extends React.Component {
               console.log(error);
           });
   }
+  useScroll(itemId){
+       axios.get('/api/account/useScroll/' + itemId)
+          .then((response) => {
+            console.log(response);
+            this.props.getStatusRequest();
+            let msg = response.data.msg;
+             Materialize.toast(msg, 1000);
+          }).catch((error) => {
+              console.log(error);
+          });
+  }
 
   countItem(item){
     let havItem = this.props.userInfo.itemCount
@@ -111,6 +122,19 @@ class UserItem extends React.Component {
                         <p>방어력 : {item.min} ~ {item.max}+{item.min}</p>
                         <span>{item.msg}</span>
                         <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
+                      </div>
+                    </li>
+                  );
+
+            }
+            else if(item.kind == "s"&&count!=0){
+              return (
+                    <li key={i}>
+                      <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
+                      <div className="collapsible-body item-msg">
+                        <p>등급 : {item.type}</p>
+                        <span>{item.msg}</span>
+                        <p><a onClick={this.useScroll.bind(this,item.id)}  className="waves-effect waves-light btn">사용</a></p>
                       </div>
                     </li>
                   );

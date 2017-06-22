@@ -243,6 +243,37 @@ router.get('/useItem/:itemID', function (req, res) {
     });
 });
 
+/*스크롤 사용*/
+router.get('/useScroll/:itemID', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var itemid = req.params.itemID;
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+        if (err) throw err;
+        var userInfo = eval(accounts[0]);
+        var useItemCount = 0;
+        try {
+            useItemCount = userInfo.itemCount[itemid];
+        } catch (e) {
+            useItemCount = null;
+        }
+
+        if (useItemCount != null && useItemCount > 0) {
+            userInfo.itemCount[itemid] = userInfo.itemCount[itemid] - 1;
+            _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount } }, function (err, output) {});
+
+            _item2.default.find({ id: itemid }).exec(function (err, item) {
+                var itemInfo = eval(item[0]);
+                console.log(itemInfo);
+                _account2.default.update({ username: userInfo.username }, { $set: { mapName: itemInfo.mapName } }, function (err, output) {
+                    res.json({ msg: itemInfo.effectMSG });
+                });
+            });
+        } else {
+            res.json({ msg: "없는 아이템 입니다." });
+        }
+    });
+});
+
 /*전투중 아이템 사용*/
 router.get('/fightUseItem/:itemID', function (req, res) {
     // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
@@ -335,6 +366,62 @@ router.get('/buyItem/:itemID', function (req, res) {
                 });
             }
         });
+    });
+});
+
+/*아이템 판매*/
+router.get('/sellItem/:itemID', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var itemid = req.params.itemID;
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+        if (err) throw err;
+        var userInfo = eval(accounts[0]);
+
+        _item2.default.find({ id: itemid }).exec(function (err, item) {
+            if (err) throw err;
+
+            var itemInfo = eval(item[0]);
+
+            if (userInfo.itemCount[itemInfo.id] == undefined || userInfo.itemCount[itemInfo.id] <= 0 || userInfo.item.indexOf(itemInfo.id) == -1) {
+                res.json({ msg: "아이템이 없습니다. 팔지 못합니다." });
+            } else {
+
+                var haveCheck = userInfo.itemCount[itemInfo.id];
+
+                if (haveCheck == 1) {
+                    userInfo.item.splice(userInfo.item.indexOf(itemInfo.id), 1);
+                }
+
+                userInfo.gold = userInfo.gold + Math.round(itemInfo.price / 3);
+
+                userInfo.itemCount[itemInfo.id] = haveCheck - 1;
+                _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, item: userInfo.item, gold: userInfo.gold } }, function (err, output) {
+                    res.json({ msg: "판매 완료 하였습니다." });
+                });
+            }
+        });
+    });
+});
+
+/*전직 한다*/
+router.get('/changeJob/:jobName', function (req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    var jobName = req.params.jobName;
+    _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+        if (err) throw err;
+        var userInfo = eval(accounts[0]);
+
+        if (100000 > userInfo.gold) {
+            res.json({ msg: "소지금이 부족합니다 스크립트 조작해서 살 생각 하지 마라" });
+        } else if (40 > userInfo.lv) {
+            res.json({ msg: "레벨이 부족 합니다." });
+        } else {
+            userInfo.gold = userInfo.gold - 1000000;
+
+            _account2.default.update({ username: userInfo.username }, { $set: { job: jobName, gold: userInfo.gold } }, function (err, output) {
+                res.json({ msg: "전직 완료 하였습니다." });
+            });
+        }
     });
 });
 

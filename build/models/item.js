@@ -24,6 +24,7 @@ var Item = new Schema({
   msg: String,
   effectMSG: String,
   heal: String,
+  mapName: String,
   option: Object()
 });
 

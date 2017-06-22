@@ -1,4 +1,5 @@
 import React from 'react';
+import AdSense from 'react-adsense';
 import { Authentication } from 'Components';
 import { connect } from 'react-redux';
 import { loginRequest } from 'Actions/authentication';
@@ -42,7 +43,10 @@ class Login extends React.Component {
 
   render() {
     return (
+
       <div>
+        <AdSense.Google client='ca-pub-9010179770404458'
+                slot='2879935324' />
         <Authentication mode={true}
            onLogin={this.handleLogin}/>
       </div>

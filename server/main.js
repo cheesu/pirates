@@ -260,6 +260,9 @@ io.sockets.on("connection", function(socket){
           else if(val == 9){
             msg[countY][countX] = '♨';
           }
+          else if(val == 11){
+            msg[countY][countX] = '♣';
+          }
       }
     }
     socket.emit('viewMap', msg);

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {debounce} from 'throttle-debounce';
-import { Fight, Store } from 'Components';
+import { Fight, Store, ChangeJob } from 'Components';
 import cookie from 'react-cookies'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 class Controller extends React.Component {
@@ -17,6 +17,8 @@ class Controller extends React.Component {
               rest:false,
               store:false,
               openStore:false,
+              changeJob:false,
+              openChangeJob:false,
           };
 
           this.endTime = 99;
@@ -40,6 +42,9 @@ class Controller extends React.Component {
           this.toggleFight = this.toggleFight.bind(this);
           this.toggleRest = this.toggleRest.bind(this);
           this.toggleOpenStore = this.toggleOpenStore.bind(this);
+          this.toggleOpenChangeJob = this.toggleOpenChangeJob.bind(this);
+
+
           this.saveMap = this.saveMap.bind(this);
           this.handleKeyPress = this.handleKeyPress.bind(this);
 
@@ -103,8 +108,17 @@ handleKeyPress(e) {
               openStore: !this.state.openStore
           });
       }
+
+      toggleOpenChangeJob(){
+          this.setState({
+              openChangeJob: !this.state.openChangeJob
+          });
+      }
+
+
       componentDidMount(){
         $("#contrillerContainer").attr("tabIndex",0);
+        $("#contrillerContainer").focus();
         this.props.getStatusRequest();
         this.props.userItemRequest();
 
@@ -388,7 +402,7 @@ handleKeyPress(e) {
         }
 
 
-        if(!this.state.next&&!this.state.prev&&!this.state.store){
+        if(!this.state.next&&!this.state.prev&&!this.state.store&&!this.state.changeJob){
               mapArr[mapY][mapX] = 0;
         }
         else if(this.state.next){
@@ -398,7 +412,10 @@ handleKeyPress(e) {
           mapArr[mapY][mapX] = 4;
         }else if(this.state.store){
           mapArr[mapY][mapX] = 9;
+        }else if(this.state.changeJob){
+          mapArr[mapY][mapX] = 11;
         }
+
 
         // 다음맵으로 이동
         if(mapArr[map[0]][map[1]]==3){
@@ -429,6 +446,16 @@ handleKeyPress(e) {
           });
         }
 
+        // 전직
+        if(mapArr[map[0]][map[1]]==11){
+          this.setState({
+            changeJob:true,
+          });
+        }else if(this.state.store){
+          this.setState({
+            changeJob:false,
+          });
+        }
 
 
 
@@ -508,10 +535,12 @@ handleKeyPress(e) {
       shouldComponentUpdate(nextProps, nextState) {
               let current = {
                   store: this.state.store,
+                  changeJob: this.state.changeJob,
                   next:this.state.next,
                   prev:this.state.prev,
                   fighting:this.state.fighting,
                   openStore:this.state.openStore,
+                  openChangeJob:this.state.openChangeJob,
                   user: this.props.userInfo,
               };
             let next = {
@@ -520,6 +549,8 @@ handleKeyPress(e) {
                 prev:nextState.prev,
                 fighting:nextState.fighting,
                 openStore:nextState.openStore,
+                openChangeJob:nextState.openChangeJob,
+                changeJob: nextState.changeJob,
                 user: nextProps.userInfo,
             };
             let update = JSON.stringify(current) !== JSON.stringify(next);
@@ -536,6 +567,10 @@ handleKeyPress(e) {
       const store = (
               <li><a onClick={this.toggleOpenStore}  className="waves-effect waves-light btn red controller-btn attack-btn">Store</a></li>
       );
+      const changeJob = (
+              <li><a onClick={this.toggleOpenChangeJob}  className="waves-effect waves-light btn red controller-btn attack-btn">전직</a></li>
+      );
+
 
         return (
           <div id="contrillerContainer" className="controller-container" onKeyPress={this.handleKeyPress} >
@@ -553,6 +588,7 @@ handleKeyPress(e) {
                     {this.state.next ? nextMap : undefined }
                     {this.state.prev ? prevMap : undefined }
                     {this.state.store ? store : undefined }
+                    {this.state.changeJob ? changeJob : undefined }
                 </ul>
 
                 <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
@@ -568,6 +604,14 @@ handleKeyPress(e) {
                 <ReactCSSTransitionGroup transitionName="item-store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.openStore ? <Store onClose={this.toggleOpenStore}
+                                                  socket={this.props.socket}
+                                                  userInfo = {this.props.userInfo}
+                                                  /> : undefined }
+                </ReactCSSTransitionGroup>
+
+                <ReactCSSTransitionGroup transitionName="item-store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                     { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
+                     {this.state.openChangeJob ? <ChangeJob onClose={this.toggleOpenChangeJob}
                                                   socket={this.props.socket}
                                                   userInfo = {this.props.userInfo}
                                                   /> : undefined }

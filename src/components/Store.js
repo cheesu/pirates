@@ -4,6 +4,7 @@ import { browserHistory, Link } from 'react-router';
 import { connect } from 'react-redux';
 import { getStoreItemRequest  } from 'Actions/item';
 import { getStatusRequest  } from 'Actions/authentication';
+import { userItemRequest  } from 'Actions/item';
 class Store extends React.Component {
     constructor(props) {
         super(props);
@@ -15,7 +16,7 @@ class Store extends React.Component {
 
         this.handleClose = this.handleClose.bind(this);
         this.countItem = this.countItem.bind(this);
-
+          this.props.userItemRequest();
           this.props.getStoreItemRequest();
 
     }
@@ -40,6 +41,20 @@ class Store extends React.Component {
     var con_test = confirm(item.name+"을(를) 구매 하시겠습니까?");
     if(con_test){
       axios.get('/api/account/buyItem/' + item.id)
+         .then((response) => {
+           this.props.getStatusRequest();
+           alert(response.data.msg);
+          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+         }).catch((error) => {
+             console.log(error);
+         });
+    }
+  }
+
+  sellItem(item){
+    var con_test = confirm(item.name+"을(를) 판매 하시겠습니까?");
+    if(con_test){
+      axios.get('/api/account/sellItem/' + item.id)
          .then((response) => {
            this.props.getStatusRequest();
            alert(response.data.msg);
@@ -130,7 +145,50 @@ class Store extends React.Component {
 
                 }
 
+                else if(item.kind == "s"&&tabType==item.kind){
+                  return (
+                        <li key={i}>
+                          <div className="collapsible-header"><span className="badge">  보유개수 {count} </span>{item.name}</div>
+                          <div className="collapsible-body item-msg">
+                            <p>등급 : {item.type} <span>가격 :{item.price} </span></p>
+                            <span>{item.msg}</span>
+                            <p><a onClick={this.buyItem.bind(this,item)}  className="waves-effect waves-light btn">구매</a></p>
+                          </div>
+                        </li>
+                      );
 
+                    }
+
+
+
+          });
+      };
+
+      const mapDataToUserItemLinks = (data) => {
+        console.log(data);
+        if(data==undefined){
+          return (<li>
+            <div className="collapsible-header"><span className="badge">none</span>loading...</div>
+            <div className="collapsible-body item-msg">
+            <span>재시도</span>
+
+            </div>
+          </li>);
+        }
+          return data.map((item, i) => {
+            var count = this.countItem(item);
+            if(count!=0){
+              return (
+                <li key={i}>
+                  <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
+                  <div className="collapsible-body item-msg">
+                    <p>등급 : {item.type} <span>가격 :{Math.round(item.price/2)} </span></p>
+                    <span>{item.msg}</span>
+                    <p><a onClick={this.sellItem.bind(this,item)}  className="waves-effect waves-light btn">판매</a></p>
+                  </div>
+                </li>
+               );
+            }
 
           });
       };
@@ -149,6 +207,8 @@ class Store extends React.Component {
                       <li className="tab col s3"><a className="active" href="#test-swipe-1">Weapon</a></li>
                       <li className="tab col s3"><a href="#test-swipe-2">Armor</a></li>
                       <li className="tab col s3"><a href="#test-swipe-3">Potion</a></li>
+                      <li className="tab col s3"><a href="#test-swipe-4">Scroll</a></li>
+                      <li className="tab col s3"><a href="#test-swipe-5">판매</a></li>
                     </ul>
                     <div id="test-swipe-1" className="col s12 tab-in-container">
                       <ul className="collapsible item-list" data-collapsible="accordion">
@@ -163,6 +223,16 @@ class Store extends React.Component {
                     <div id="test-swipe-3" className="col s12 tab-in-container">
                       <ul className="collapsible item-list" data-collapsible="accordion">
                         { mapDataToLinks(this.props.items,"p") }
+                      </ul>
+                    </div>
+                    <div id="test-swipe-4" className="col s12 tab-in-container">
+                      <ul className="collapsible item-list" data-collapsible="accordion">
+                        { mapDataToLinks(this.props.items,"s") }
+                      </ul>
+                    </div>
+                    <div id="test-swipe-5" className="col s12 tab-in-container">
+                      <ul className="collapsible item-list" data-collapsible="accordion">
+                        { mapDataToUserItemLinks(this.props.userItems.itemList) }
                       </ul>
                     </div>
 
@@ -188,6 +258,7 @@ Store.defaultProps = {
 const mapStateToProps = (state) => {
     return {
         items: state.item.storeItems,
+        userItems: state.item.items,
     };
 };
 
@@ -199,6 +270,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         getStatusRequest: () => {
             return dispatch(getStatusRequest());
+        },
+        userItemRequest: () => {
+            return dispatch(userItemRequest());
         },
     };
 };

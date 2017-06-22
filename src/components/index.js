@@ -13,7 +13,8 @@ import Fightview from './Fightview';
 import FightController from './FightController';
 import UserItem from './UserItem';
 import Store from './Store';
+import ChangeJob from './ChangeJob';
 
 
 
-export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview,Fight, HPview, Fightview, FightController,UserItem,Store};
+export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview,Fight, HPview, Fightview, FightController,UserItem,Store, ChangeJob};
