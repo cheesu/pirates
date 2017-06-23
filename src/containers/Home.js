@@ -4,6 +4,7 @@ import AdSense from 'react-adsense';
 import { Chat, Homeview , Controller, Mapview} from 'Components';
 import { getStatusRequest  } from 'Actions/authentication';
 import { userItemRequest  } from 'Actions/item';
+import cookie from 'react-cookies'
 
 import { browserHistory, Link, Redirect } from 'react-router';
 
@@ -24,6 +25,8 @@ class Home extends React.Component {
       }
 
       componentDidMount() {
+        cookie.save("map", "0-0", { path: '/' });
+
         let count  = 0;
         console.log("인터벌 도는지 테스트 합니다");
     let inter =  setInterval(function(){
