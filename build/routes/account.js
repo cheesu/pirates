@@ -170,12 +170,50 @@ router.get('/mountItem/:itemID', function (req, res) {
 
       _item2.default.find({ id: itemid }).exec(function (err, item) {
         var itemInfo = eval(item[0]);
+
+        var str = userInfo.str;
+        var dex = userInfo.dex;
+        var int = userInfo.int;
+
+        // 이전 장착무기에 상승옵션이 있다면 다시 그만큼 스탯 빼주기
+        try {
+          if (itemInfo.kind == "w" && userInfo.mount.w.option != undefined) {
+            if (userInfo.mount.w.option.option == "upStr") {
+              str = str - userInfo.mount.w.option.max;
+            } else if (userInfo.mount.w.option.option == "upDex") {
+              dex = dex - userInfo.mount.w.option.max;
+            } else if (userInfo.mount.w.option.option == "upInt") {
+              int = int - userInfo.mount.w.option.max;
+            }
+          }
+        } catch (e) {
+          console.log("무기 해제 옵션 하향 오류");
+          console.log(e);
+        }
+
         if (itemInfo.kind == "w") {
           userInfo.mount.w = itemInfo;
         } else if (itemInfo.kind == "d") {
           userInfo.mount.d = itemInfo;
         }
-        _account2.default.update({ username: userInfo.username }, { $set: { mount: userInfo.mount } }, function (err, output) {
+
+        // 장착할 무기에 상승옵션이 있다면 스탯 적용한다.
+        try {
+          if (itemInfo.option != undefined) {
+            if (itemInfo.option.option == "upStr") {
+              str = str + itemInfo.option.max;
+            } else if (itemInfo.option.option == "upDex") {
+              dex = dex + itemInfo.option.max;
+            } else if (itemInfo.option.option == "upInt") {
+              int = int + itemInfo.option.max;
+            }
+          }
+        } catch (e) {
+          console.log("무기 장착 옵션 상승 오류");
+          console.log(e);
+        }
+
+        _account2.default.update({ username: userInfo.username }, { $set: { mount: userInfo.mount, str: str, dex: dex, int: int } }, function (err, output) {
           res.json(item);
         });
       });
@@ -270,6 +308,146 @@ router.get('/useScroll/:itemID', function (req, res) {
       });
     } else {
       res.json({ msg: "없는 아이템 입니다." });
+    }
+  });
+});
+
+/* 무기 옵션 부여 */
+
+router.get('/changeOption/', function (req, res) {
+  _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+    if (err) throw err;
+    var userInfo = eval(accounts[0]);
+    var owCount = 0;
+    try {
+      owCount = userInfo.itemCount.ow2;
+    } catch (e) {
+      owCount = 0;
+    }
+
+    if (userInfo.mount.w.type != 'private') {
+      res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
+      return false;
+    } else if (userInfo.gold < 20000) {
+      res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
+      return false;
+    } else if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < 1) {
+      res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
+      return false;
+    } else {
+      userInfo.itemCount.ow2 = owCount - 1;
+      userInfo.gold = userInfo.gold - 20000;
+      _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, gold: userInfo.gold } }, function (err, output) {});
+
+      _item2.default.find({ id: 'ow1' }).exec(function (err, item) {
+        var itemInfo = eval(item[0]);
+
+        var option1 = {
+          "per": 100,
+          "option": "upStr",
+          "max": 10,
+          "optionName": "거인의 힘",
+          "msg": "몸에서 힘이 솟구칩니다."
+        };
+
+        var option2 = {
+          "per": 100,
+          "option": "upDex",
+          "max": 10,
+          "optionName": "늑대의 민첩",
+          "msg": "몸이 한결 가벼워집니다."
+        };
+
+        var option3 = {
+          "per": 100,
+          "option": "upInt",
+          "max": 10,
+          "optionName": "명문대생의 지혜",
+          "msg": "머리가 맑아집니다."
+        };
+
+        var optionList = [option1, option2, option3];
+
+        var enVal = Math.floor(Math.random() * optionList.length); // 강화수치
+
+
+        // 착용무기
+        _item2.default.find({ id: userInfo.mount.w.id }).exec(function (err, itemW) {
+          var itemWInfo = eval(itemW[0]);
+          itemWInfo.option = optionList[enVal];
+
+          var changeOptionCount = 0;
+          try {
+            changeOptionCount = itemWInfo.changeOptionCount * 1;
+            if (itemWInfo.changeOptionCount == "NaN") {
+              changeOptionCount = 0;
+            }
+          } catch (e) {
+            changeOptionCount = 0;
+          }
+
+          changeOptionCount = changeOptionCount + 1;
+          // 강화 업데이트
+          _item2.default.update({ id: userInfo.mount.w.id }, { $set: { option: itemWInfo.option, changeOptionCount: changeOptionCount } }, function (err, output) {
+            var resultMsg = req.session.loginInfo.username + "님의 [" + itemWInfo.name + "]에 " + optionList[enVal].optionName + " 부여에 성공 하였습니다";
+            res.json({ msg: resultMsg, result: true });
+          });
+        });
+      });
+    }
+  });
+});
+
+/*무기 강화*/
+router.get('/enhancement/', function (req, res) {
+  _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+    if (err) throw err;
+    var userInfo = eval(accounts[0]);
+    var owCount = 0;
+    try {
+      owCount = userInfo.itemCount.ow1;
+    } catch (e) {
+      owCount = 0;
+    }
+
+    if (userInfo.mount.w.type != 'private') {
+      res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
+      return false;
+    } else if (userInfo.gold < 20000) {
+      res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
+      return false;
+    } else if (userInfo.item.indexOf('ow1') == -1 || userInfo.itemCount.ow1 == undefined || userInfo.itemCount.ow1 < 1) {
+      res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
+      return false;
+    } else {
+      userInfo.itemCount.ow1 = owCount - 1;
+      userInfo.gold = userInfo.gold - 20000;
+      _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, gold: userInfo.gold } }, function (err, output) {});
+
+      _item2.default.find({ id: 'ow1' }).exec(function (err, item) {
+        var itemInfo = eval(item[0]);
+        var enVal = Math.floor(Math.random() * itemInfo.max); // 강화수치
+
+        // 착용무기
+        _item2.default.find({ id: userInfo.mount.w.id }).exec(function (err, itemW) {
+          var itemWInfo = eval(itemW[0]);
+          itemWInfo.min = itemWInfo.min + enVal;
+          var enhancementCount = 0;
+
+          try {
+            enhancementCount = itemWInfo.enhancementCount * 1;
+          } catch (e) {
+            enhancementCount = 0;
+          }
+
+          enhancementCount = enhancementCount + 1;
+          // 강화 업데이트
+          _item2.default.update({ id: userInfo.mount.w.id }, { $set: { min: itemWInfo.min, enhancementCount: enhancementCount } }, function (err, output) {
+            var resultMsg = req.session.loginInfo.username + "님의 [" + itemWInfo.name + "]이(가) +" + enVal + "강화에 성공 하였습니다. 총 강화횟수:" + enhancementCount + "번";
+            res.json({ msg: resultMsg, result: true });
+          });
+        });
+      });
     }
   });
 });
@@ -462,7 +640,7 @@ router.get('/saveMap/:mapName', function (req, res) {
 router.get('/search/:username', function (req, res) {
   // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
   var re = new RegExp('^' + req.params.username);
-  _account2.default.find({ username: { $regex: re } }, { _id: false, username: true, lv: true, job: true }).limit(10).sort({ username: 1 }).exec(function (err, accounts) {
+  _account2.default.find({ username: { $regex: re } }, { _id: false, username: true, lv: true, job: true, job2: true }).limit(10).sort({ username: 1 }).exec(function (err, accounts) {
     if (err) throw err;
     res.json(accounts);
   });

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {debounce} from 'throttle-debounce';
-import { Fight, Store, ChangeJob } from 'Components';
+import { Fight, Store, ChangeJob, Enhancement } from 'Components';
 import cookie from 'react-cookies'
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 class Controller extends React.Component {
@@ -19,6 +19,8 @@ class Controller extends React.Component {
               openStore:false,
               changeJob:false,
               openChangeJob:false,
+              enhancement:false,
+              openEnhancement:false
           };
 
           this.endTime = 99;
@@ -43,6 +45,7 @@ class Controller extends React.Component {
           this.toggleRest = this.toggleRest.bind(this);
           this.toggleOpenStore = this.toggleOpenStore.bind(this);
           this.toggleOpenChangeJob = this.toggleOpenChangeJob.bind(this);
+          this.toggleOpenEnhancement = this.toggleOpenEnhancement.bind(this);
 
 
           this.saveMap = this.saveMap.bind(this);
@@ -97,6 +100,11 @@ handleKeyPress(e) {
    }
 
 
+toggleOpenEnhancement(){
+    this.setState({
+        OpenEnhancement: !this.state.OpenEnhancement
+    });
+}
       toggleFight(){
           this.setState({
               fighting: !this.state.fighting
@@ -124,7 +132,7 @@ handleKeyPress(e) {
 
 
         this.getMapAxio();
-        this.props.socket.emit('addUser', this.props.username);
+        this.props.socket.emit('addUser', this.props.userInfo.job2+" ["+this.props.username+"]");
 
         this.props.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
         location.href="/login";
@@ -443,6 +451,16 @@ handleKeyPress(e) {
           });
         }
 
+        // 무기강화
+        if(mapArr[map[0]][map[1]]==12){
+          this.setState({
+            enhancement:true,
+          });
+        }else if(this.state.enhancement){
+          this.setState({
+            enhancement:false,
+          });
+        }
 
 
 
@@ -554,6 +572,9 @@ handleKeyPress(e) {
               <li><a onClick={this.toggleOpenChangeJob}  className="waves-effect waves-light btn red controller-btn attack-btn">전직</a></li>
       );
 
+      const enhancement = (
+              <li><a onClick={this.toggleOpenEnhancement}  className="waves-effect waves-light btn red controller-btn attack-btn">무기 강화</a></li>
+      );
 
         return (
           <div id="contrillerContainer" className="controller-container" onKeyPress={this.handleKeyPress} >
@@ -572,6 +593,9 @@ handleKeyPress(e) {
                     {this.state.prev ? prevMap : undefined }
                     {this.state.store ? store : undefined }
                     {this.state.changeJob ? changeJob : undefined }
+                    {this.state.enhancement ? enhancement : undefined }
+
+
                 </ul>
 
                 <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
@@ -595,6 +619,14 @@ handleKeyPress(e) {
                 <ReactCSSTransitionGroup transitionName="item-store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.openChangeJob ? <ChangeJob onClose={this.toggleOpenChangeJob}
+                                                  socket={this.props.socket}
+                                                  userInfo = {this.props.userInfo}
+                                                  /> : undefined }
+                </ReactCSSTransitionGroup>
+
+                <ReactCSSTransitionGroup transitionName="item-store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                     { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
+                     {this.state.OpenEnhancement ? <Enhancement onClose={this.toggleOpenEnhancement}
                                                   socket={this.props.socket}
                                                   userInfo = {this.props.userInfo}
                                                   /> : undefined }

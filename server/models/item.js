@@ -16,6 +16,8 @@ const Item = new Schema({
    heal:String,
    mapName:String,
    option:Object(),
+   enhancementCount:Number(),
+   changeOptionCount:Number(),
 });
 
 

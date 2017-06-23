@@ -1044,6 +1044,12 @@ ul.user-item-results {
   text-align: center;
 }
 
+.item-option-name
+{
+  color: #C802D0;
+  font-weight: bold;
+}
+
 /* item-store */
 .item-store-screen {
     position: fixed;

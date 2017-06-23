@@ -80,7 +80,7 @@ class Search extends React.Component {
             return data.map((user, i) => {
                 return (
                     <Link onClick={this.handleClose} to={`/wall/${user.username}`} key={i}>
-                        {user.username} - Lv:{user.lv} [{user.job}]
+                      {user.job2}  {user.username} - Lv:{user.lv} [{user.job}]
                     </Link>
                  );
             });

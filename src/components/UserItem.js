@@ -39,7 +39,16 @@ class UserItem extends React.Component {
           .then((response) => {
             this.props.getStatusRequest();
             let eqItem = response.data[0].name;
-             Materialize.toast(eqItem+"을(를) 장착 하였습니다.", 1000);
+
+            let itemMsg = "";
+
+            if(response.data[0].option != undefined){
+              itemMsg = response.data[0].option.msg;
+            }
+
+             Materialize.toast(eqItem+"을(를) 장착 하였습니다." +itemMsg, 1000);
+
+
           }).catch((error) => {
               console.log(error);
           });
@@ -116,6 +125,11 @@ class UserItem extends React.Component {
                );
             }
             else if(item.kind == "w"&&count!=0){
+              let optionName = "없음";
+              if(item.option != undefined){
+                optionName = item.option.optionName;
+              }
+
               return (
                     <li key={i}>
                       <div className="collapsible-header"><span className="badge">{this.props.userInfo.mount.w.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
@@ -123,6 +137,7 @@ class UserItem extends React.Component {
                         <p>등급 : {item.type}</p>
                         <p>데미지 : {item.min} ~ {item.max}+{item.min}</p>
                         <span>{item.msg}</span>
+                        <p>특수능력 : <span className="item-option-name"> {optionName} </span></p>
                         <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
                       </div>
                     </li>

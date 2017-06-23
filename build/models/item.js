@@ -25,7 +25,9 @@ var Item = new Schema({
   effectMSG: String,
   heal: String,
   mapName: String,
-  option: Object()
+  option: Object(),
+  enhancementCount: Number(),
+  changeOptionCount: Number()
 });
 
 exports.default = _mongoose2.default.model('item', Item);

@@ -7,27 +7,11 @@ class ChangeJob extends React.Component {
     constructor(props) {
         super(props);
 
-        let ma = false;
-        let as = false;
-        let sw = false;
-
-        if(this.props.userInfo.job=="검사"){
-          sw =  true;
-        }
-        if(this.props.userInfo.job=="마법사"){
-          ma =  true;
-        }
-        if(this.props.userInfo.job=="암살자"){
-          as =  true;
-        }
 
 
 
         this.state = {
             keyword: '',
-            ma:ma,
-            as:as,
-            sw:sw
         };
 
         this.handleClose = this.handleClose.bind(this);
