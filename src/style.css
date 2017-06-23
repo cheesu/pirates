@@ -254,42 +254,52 @@ a {
   10%
   {
     text-shadow: 0.3em 0.1em 0.3em #F0FF00;
+    color:#ff1d1d;
   }
   20%
   {
     text-shadow: 0.2em 0.2em 0.3em #00FFA0;
+    color:#1da0ff;
   }
   30%
   {
     text-shadow: 0.1em 0.3em 0.3em #D0D6FF;
+    color:#E0E0E0;
   }
   40%
   {
     text-shadow: 0em 0.2em 0.3em #00FFA0;
+    color:#0F0;
   }
   50%
   {
     text-shadow: -0.1em 0.1em 0.3em #FFA0A0;
+    color:#F0FF00;
   }
   60%
   {
     text-shadow: -0.2em 0em 0.3em #F0A000;
+    color:#1da0ff;
   }
   70%
   {
     text-shadow: -0.3em -0.1em 0.3em #00FFFF;
+    color:#FF00FF;
   }
   80%
   {
     text-shadow: -0.2em -0.2em 0.3em #FF00FF;
+    color:#FFA0A0;
   }
   90%
   {
     text-shadow: -0.1em -0.3em 0.3em #F0A0D0;
+    color:#00FFA0;
   }
   100%
   {
     text-shadow: 0.1em 0.1em 0.15em #079A00;
+    color:#ff1d1d;
   }
 }
 
