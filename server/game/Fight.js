@@ -357,7 +357,7 @@ var fight = function (io,info){
                 let passive = Math.floor(Math.random() * 1000)+1;
                 if(userInfo.dex > passive){
                   reDmg = 0;
-                  io.emit(info.ch+"fight", "[passive] 그림자 갈귀 "+userInfo.username+"님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
+                  io.emit(info.ch+"fight", "[passive] 그림자 살귀 "+userInfo.username+"님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
                 }
               }
 
@@ -365,7 +365,7 @@ var fight = function (io,info){
                 let passive = Math.floor(Math.random() * 1000)+1;
                 if(userInfo.dex > passive){
                   localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg*10;
-                  io.emit(info.ch+"fight", "[passive] 그림자 갈귀 "+userInfo.username+"님의 "+userInfo.mount.w.name+"가 적의 공격을 타고 흘러 반격합니다. ["+reDmg*10+"]");
+                  io.emit(info.ch+"fight", "[passive] 그림자 살귀 "+userInfo.username+"님의 "+userInfo.mount.w.name+"가 적의 공격을 타고 흘러 반격합니다. ["+reDmg*10+"]");
                 }
               }
 
@@ -706,7 +706,7 @@ function checkCritical(dex){
         max_mpUP += (userInfo.lv*10)*0.5;
         max_hpUP += (userInfo.lv*10)*0.7;
       }
-
+      console.log(userInfo.username +"레벨업");
       Account.update({username: userInfo.username},{$set:{lv:lvUp, str:strUP, int:intUP, dex:dexUP, max_hp:max_hpUP, max_mp:max_mpUP, mp:max_mpUP, hp:max_hpUP}}, function(err, output){
         if(err) console.log(err);
         io.emit("Gchat", "[LEVEL UP!!] ["+userInfo.username+"] 님께서 레벨업 하셨습니다");

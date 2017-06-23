@@ -249,6 +249,7 @@ io.sockets.on("connection", function (socket) {
   });
 
   socket.on('viewMap', function (msg, local) {
+
     for (var countY = 0; countY < msg.length; countY++) {
       for (var countX = 0; countX < msg[countY].length; countX++) {
         var val = msg[countY][countX];
@@ -266,9 +267,11 @@ io.sockets.on("connection", function (socket) {
           msg[countY][countX] = '♣';
         }
 
-        if (local[0] == countY && local[1] == countX) {
-          msg[countY][countX] = '★';
-        }
+        try {
+          if (local[0] == countY && local[1] == countX) {
+            msg[countY][countX] = '★';
+          }
+        } catch (e) {} finally {}
       }
     }
     socket.emit('viewMap', msg);

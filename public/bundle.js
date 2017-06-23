@@ -24316,6 +24316,46 @@ var UserItem = function (_React$Component) {
                 )
               )
             );
+          } else if (item.kind == "o" && count != 0) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uBCF4\uC720\uAC1C\uC218 ',
+                  count
+                ),
+                item.name
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uB4F1\uAE09 : ',
+                  item.type
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { className: 'waves-effect waves-light btn' },
+                    '\uC0AC\uC6A9\uBD88\uAC00'
+                  )
+                )
+              )
+            );
           }
         });
       };

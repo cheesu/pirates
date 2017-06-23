@@ -154,6 +154,19 @@ class UserItem extends React.Component {
                     </li>
                   );
 
+            }
+            else if(item.kind == "o"&&count!=0){
+              return (
+                    <li key={i}>
+                      <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
+                      <div className="collapsible-body item-msg">
+                        <p>등급 : {item.type}</p>
+                        <span>{item.msg}</span>
+                        <p><a   className="waves-effect waves-light btn">사용불가</a></p>
+                      </div>
+                    </li>
+                  );
+
                 }
 
 

@@ -239,6 +239,9 @@ io.sockets.on("connection", function(socket){
 
 
   socket.on('viewMap', function(msg, local){
+
+
+
     for(let countY = 0; countY < msg.length; countY++){
       for(let countX = 0; countX < msg[countY].length; countX++){
           let val = msg[countY][countX];
@@ -261,10 +264,17 @@ io.sockets.on("connection", function(socket){
             msg[countY][countX] = '♣';
           }
 
+          try {
+            if(local[0]==countY&&local[1]==countX){
+                msg[countY][countX] = '★';
+            }
+          } catch (e) {
 
-          if(local[0]==countY&&local[1]==countX){
-              msg[countY][countX] = '★';
+          } finally {
+
           }
+
+
       }
     }
     socket.emit('viewMap', msg);
