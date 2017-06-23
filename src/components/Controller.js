@@ -50,7 +50,7 @@ class Controller extends React.Component {
 
           this.mapName = this.props.userInfo.mapName;
           if(this.mapName==undefined){
-            this.mapName = "푸른해변";
+            this.mapName = "항구";
           }
 
         let cookieMapLocal =   cookie.load("map");
@@ -250,7 +250,7 @@ handleKeyPress(e) {
       // 체력
       checkDead(){
           this.props.socket.emit('private',"전투중 의식을 잃고 쓰러집니다.");
-          this.mapName="푸른해변";
+          this.mapName="항구";
           this.getMapAxio();
           this.mapLocal = [0,0];
           this.props.socket.emit('setLocalCh', "0-0");

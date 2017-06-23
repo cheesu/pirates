@@ -571,7 +571,7 @@ function checkCritical(dex){
 
     try {
       let dropPer =  Math.floor(Math.random() * 1000)+1;
-      if(dropPer < 2){
+      if(dropPer < 5){
         if (userInfo.item.indexOf('ow1') == -1) {
             userInfo.item.push('ow1');
         }
@@ -584,7 +584,7 @@ function checkCritical(dex){
         io.emit(userInfo.username+"fight", "[시스템]  몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
       }
 
-      if(dropPer < 5){
+      if(dropPer < 10){
         if (userInfo.item.indexOf('ow2') == -1) {
             userInfo.item.push('ow2');
         }
@@ -598,7 +598,7 @@ function checkCritical(dex){
       }
 
     } catch (e) {
-      console.log("보스 템드랍  오류");
+      console.log("일반몹 템드랍  오류");
         console.log(e);
     }
 
@@ -678,7 +678,7 @@ function checkCritical(dex){
       let max_hpUP = userInfo.max_hp;
       let jobBouns = 3;
 
-      if(userInfo.job!="검사"||userInfo.job!="마법사"||userInfo.job!="암살자"){
+      if(userInfo.job2!=undefined){
         jobBouns = 4;
       }
 

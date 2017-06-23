@@ -20457,7 +20457,7 @@ var Controller = function (_React$Component) {
 
     _this.mapName = _this.props.userInfo.mapName;
     if (_this.mapName == undefined) {
-      _this.mapName = "푸른해변";
+      _this.mapName = "항구";
     }
 
     var cookieMapLocal = _reactCookies2.default.load("map");
@@ -20660,7 +20660,7 @@ var Controller = function (_React$Component) {
     key: 'checkDead',
     value: function checkDead() {
       this.props.socket.emit('private', "전투중 의식을 잃고 쓰러집니다.");
-      this.mapName = "푸른해변";
+      this.mapName = "항구";
       this.getMapAxio();
       this.mapLocal = [0, 0];
       this.props.socket.emit('setLocalCh', "0-0");
