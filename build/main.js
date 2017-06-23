@@ -248,7 +248,7 @@ io.sockets.on("connection", function (socket) {
     socket.emit('callUserList', JSON.stringify(chatUserList));
   });
 
-  socket.on('viewMap', function (msg) {
+  socket.on('viewMap', function (msg, local) {
     for (var countY = 0; countY < msg.length; countY++) {
       for (var countX = 0; countX < msg[countY].length; countX++) {
         var val = msg[countY][countX];
@@ -256,8 +256,6 @@ io.sockets.on("connection", function (socket) {
           msg[countY][countX] = '□';
         } else if (val == -1) {
           msg[countY][countX] = '■';
-        } else if (val == 2) {
-          msg[countY][countX] = '★';
         } else if (val == 3) {
           msg[countY][countX] = '※';
         } else if (val == 4) {
@@ -266,6 +264,10 @@ io.sockets.on("connection", function (socket) {
           msg[countY][countX] = '♨';
         } else if (val == 11) {
           msg[countY][countX] = '♣';
+        }
+
+        if (local[0] == countY && local[1] == countX) {
+          msg[countY][countX] = '★';
         }
       }
     }

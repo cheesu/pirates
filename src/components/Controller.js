@@ -284,7 +284,7 @@ handleKeyPress(e) {
       //맵 보여주기
       viewLocalMap(){
           let map = this.state.map;
-          this.props.socket.emit('viewMap',map); // 요청
+          this.props.socket.emit('viewMap',map, this.mapLocal); // 요청
       }
 
 
@@ -302,6 +302,9 @@ handleKeyPress(e) {
 
           this.actionMove("down");
       }
+
+
+
 
       actionMove(dir){
         this.props.socket.emit('restEnd', this.props.username);
@@ -399,20 +402,6 @@ handleKeyPress(e) {
         }
 
 
-        if(!this.state.next&&!this.state.prev&&!this.state.store&&!this.state.changeJob){
-              mapArr[mapY][mapX] = 0;
-        }
-        else if(this.state.next){
-          mapArr[mapY][mapX] =3;
-        }
-        else if(this.state.prev){
-          mapArr[mapY][mapX] = 4;
-        }else if(this.state.store){
-          mapArr[mapY][mapX] = 9;
-        }else if(this.state.changeJob){
-          mapArr[mapY][mapX] = 11;
-        }
-
 
         // 다음맵으로 이동
         if(mapArr[map[0]][map[1]]==3){
@@ -448,7 +437,7 @@ handleKeyPress(e) {
           this.setState({
             changeJob:true,
           });
-        }else if(this.state.store){
+        }else if(this.state.changeJob){
           this.setState({
             changeJob:false,
           });
@@ -461,11 +450,8 @@ handleKeyPress(e) {
          mapY =map[0];
          mapX =map[1];
 
-        mapArr[mapY][mapX] = 2; // 이동 타겟 지점
         var socketChan = mapY+"-"+mapX;
-        this.setState({
-          map:mapArr
-        });
+
 
         var prevCh = this.socketCh;
         this.socketCh = socketChan;
@@ -476,7 +462,7 @@ handleKeyPress(e) {
         this.viewLocalMap();
         cookie.save("map", socketChan, { path: '/' });
 
-        d,moveTimerS,map,mapArr,mapY,mapX,mapYLimit,mapXLimit,dirText = null;
+        map,mapArr,mapY,mapX,mapYLimit,mapXLimit,dirText = null;
 
       }
 

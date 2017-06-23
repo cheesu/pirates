@@ -20700,7 +20700,7 @@ var Controller = function (_React$Component) {
     key: 'viewLocalMap',
     value: function viewLocalMap() {
       var map = this.state.map;
-      this.props.socket.emit('viewMap', map); // 요청
+      this.props.socket.emit('viewMap', map, this.mapLocal); // 요청
     }
 
     /*유저 이동 이벤트*/
@@ -20805,18 +20805,6 @@ var Controller = function (_React$Component) {
         }
       }
 
-      if (!this.state.next && !this.state.prev && !this.state.store && !this.state.changeJob) {
-        mapArr[mapY][mapX] = 0;
-      } else if (this.state.next) {
-        mapArr[mapY][mapX] = 3;
-      } else if (this.state.prev) {
-        mapArr[mapY][mapX] = 4;
-      } else if (this.state.store) {
-        mapArr[mapY][mapX] = 9;
-      } else if (this.state.changeJob) {
-        mapArr[mapY][mapX] = 11;
-      }
-
       // 다음맵으로 이동
       if (mapArr[map[0]][map[1]] == 3) {
         this.setState({
@@ -20849,7 +20837,7 @@ var Controller = function (_React$Component) {
         this.setState({
           changeJob: true
         });
-      } else if (this.state.store) {
+      } else if (this.state.changeJob) {
         this.setState({
           changeJob: false
         });
@@ -20858,11 +20846,7 @@ var Controller = function (_React$Component) {
       mapY = map[0];
       mapX = map[1];
 
-      mapArr[mapY][mapX] = 2; // 이동 타겟 지점
       var socketChan = mapY + "-" + mapX;
-      this.setState({
-        map: mapArr
-      });
 
       var prevCh = this.socketCh;
       this.socketCh = socketChan;
@@ -20873,7 +20857,7 @@ var Controller = function (_React$Component) {
       this.viewLocalMap();
       _reactCookies2.default.save("map", socketChan, { path: '/' });
 
-      d, moveTimerS, map, mapArr, mapY, mapX, mapYLimit, mapXLimit, dirText = null;
+      map, mapArr, mapY, mapX, mapYLimit, mapXLimit, dirText = null;
     }
 
     /*유저 이동 이벤트 끝*/
