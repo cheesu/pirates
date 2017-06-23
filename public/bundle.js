@@ -20734,9 +20734,6 @@ var Controller = function (_React$Component) {
         rest: false
       });
 
-      var d = new Date();
-      var moveTimerS = d.getSeconds();
-
       var map = this.mapLocal;
       var mapArr = this.state.map;
 
@@ -20744,7 +20741,7 @@ var Controller = function (_React$Component) {
       var mapX = map[1];
 
       var mapYLimit = mapArr.length;
-      var mapXLimit = mapArr[0].length;
+      var mapXLimit = mapArr[mapY].length;
       var dirText = "";
 
       if (dir == "up") {
@@ -23382,17 +23379,22 @@ var Store = function (_React$Component) {
     }
   }, {
     key: 'buyItem',
-    value: function buyItem(item) {
+    value: function buyItem(item, count) {
       var _this2 = this;
 
-      if (item.price > this.props.userInfo.gold) {
+      var selePer = 1;
+      if (count > 50) {
+        selePer = 0.9;
+      }
+
+      if (item.price * count * selePer > this.props.userInfo.gold) {
         alert("소지금이 부족해 구매 할 수 없습니다.");
         return false;
       }
 
-      var con_test = confirm(item.name + "을(를) 구매 하시겠습니까?");
+      var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
       if (con_test) {
-        _axios2.default.get('/api/account/buyItem/' + item.id).then(function (response) {
+        _axios2.default.post('/api/account/buyItem/', { name: item.id, count: count }).then(function (response) {
           _this2.props.getStatusRequest();
           alert(response.data.msg);
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
@@ -23520,8 +23522,20 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item), className: 'waves-effect waves-light btn' },
+                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
+                  ),
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this4.buyItem.bind(_this4, item, 10), className: 'waves-effect waves-light btn' },
+                    '10\uAC1C\uAD6C\uB9E4'
+                  ),
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this4.buyItem.bind(_this4, item, 50), className: 'waves-effect waves-light btn' },
+                    '50\uAC1C\uAD6C\uB9E4 [10% \uD560\uC778 ',
+                    item.price * 50 * 0.9,
+                    '\uACE8\uB4DC]'
                   )
                 )
               )
@@ -23582,7 +23596,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item), className: 'waves-effect waves-light btn' },
+                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -23644,7 +23658,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item), className: 'waves-effect waves-light btn' },
+                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -23693,8 +23707,17 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item), className: 'waves-effect waves-light btn' },
+                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this4.buyItem.bind(_this4, item, 10), className: 'waves-effect waves-light btn' },
+                    '10\uC7A5 \uAD6C\uB9E4'
                   )
                 )
               )

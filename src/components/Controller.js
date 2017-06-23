@@ -310,9 +310,6 @@ handleKeyPress(e) {
         });
 
 
-        var d = new Date();
-        var moveTimerS = d.getSeconds();
-
         var map = this.mapLocal;
         var mapArr = this.state.map;
 
@@ -320,7 +317,7 @@ handleKeyPress(e) {
         var mapX =map[1];
 
         var mapYLimit = mapArr.length;
-        var mapXLimit = mapArr[0].length;
+        var mapXLimit = mapArr[mapY].length;
         var dirText ="";
 
         if(dir=="up"){

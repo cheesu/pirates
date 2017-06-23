@@ -32,15 +32,21 @@ class Store extends React.Component {
 
   }
 
-  buyItem(item){
-    if(item.price> this.props.userInfo.gold){
+  buyItem(item, count){
+
+    let selePer = 1;
+    if(count>50){
+      selePer = 0.9;
+    }
+
+    if((item.price*count*selePer)> this.props.userInfo.gold){
       alert("소지금이 부족해 구매 할 수 없습니다.");
       return false;
     }
 
-    var con_test = confirm(item.name+"을(를) 구매 하시겠습니까?");
+    var con_test = confirm(item.name+"을(를) "+count+"개 구매 하시겠습니까?");
     if(con_test){
-      axios.get('/api/account/buyItem/' + item.id)
+      axios.post('/api/account/buyItem/', { name:item.id, count:count })
          .then((response) => {
            this.props.getStatusRequest();
            alert(response.data.msg);
@@ -112,7 +118,12 @@ class Store extends React.Component {
                   <div className="collapsible-body item-msg">
                     <p>등급 : {item.type} <span>가격 :{item.price} </span></p>
                     <span>{item.msg}</span>
-                    <p><a onClick={this.buyItem.bind(this,item)}  className="waves-effect waves-light btn">구매</a></p>
+                    <p>
+                        <a onClick={this.buyItem.bind(this,item,1)}  className="waves-effect waves-light btn">구매</a>
+                        <a onClick={this.buyItem.bind(this,item,10)}  className="waves-effect waves-light btn">10개구매</a>
+                        <a onClick={this.buyItem.bind(this,item,50)}  className="waves-effect waves-light btn">50개구매 [10% 할인 {item.price*50*0.9}골드]</a>
+
+                    </p>
                   </div>
                 </li>
                );
@@ -125,7 +136,7 @@ class Store extends React.Component {
                         <p>등급 : {item.type} <span>가격 :{item.price} </span></p>
                         <p>데미지 : {item.min} ~ {item.max}+{item.min}</p>
                         <span>{item.msg}</span>
-                        <p><a onClick={this.buyItem.bind(this,item)}  className="waves-effect waves-light btn">구매</a></p>
+                        <p><a onClick={this.buyItem.bind(this,item,1)}  className="waves-effect waves-light btn">구매</a></p>
                       </div>
                     </li>
                   );
@@ -138,7 +149,7 @@ class Store extends React.Component {
                         <p>등급 : {item.type} <span>가격 :{item.price} </span></p>
                         <p>방어력 : {item.min} ~ {item.max}+{item.min}</p>
                         <span>{item.msg}</span>
-                        <p><a onClick={this.buyItem.bind(this,item)}  className="waves-effect waves-light btn">구매</a></p>
+                        <p><a onClick={this.buyItem.bind(this,item,1)}  className="waves-effect waves-light btn">구매</a></p>
                       </div>
                     </li>
                   );
@@ -152,7 +163,8 @@ class Store extends React.Component {
                           <div className="collapsible-body item-msg">
                             <p>등급 : {item.type} <span>가격 :{item.price} </span></p>
                             <span>{item.msg}</span>
-                            <p><a onClick={this.buyItem.bind(this,item)}  className="waves-effect waves-light btn">구매</a></p>
+                            <p><a onClick={this.buyItem.bind(this,item,1)}  className="waves-effect waves-light btn">구매</a></p>
+                            <p><a onClick={this.buyItem.bind(this,item,10)}  className="waves-effect waves-light btn">10장 구매</a></p>
                           </div>
                         </li>
                       );

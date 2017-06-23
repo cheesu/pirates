@@ -333,9 +333,13 @@ router.get('/fightUseItem/:itemID', function (req, res) {
 });
 
 /*아이템 구매*/
-router.get('/buyItem/:itemID', function (req, res) {
+router.post('/buyItem/', function (req, res) {
   // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
-  var itemid = req.params.itemID;
+
+  console.log("바이 아이템");
+  console.log(req.body);
+  var itemid = req.body.name;
+  var buyCount = req.body.count;
   _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
     if (err) throw err;
     var userInfo = eval(accounts[0]);
@@ -345,10 +349,15 @@ router.get('/buyItem/:itemID', function (req, res) {
 
       var itemInfo = eval(item[0]);
 
-      if (itemInfo.price > userInfo.gold) {
+      var selePer = 1;
+
+      if (buyCount >= 50) {
+        selePer = 0.9;
+      }
+
+      if (itemInfo.price * buyCount * selePer > userInfo.gold) {
         res.json({ msg: "소지금이 부족합니다 스크립트 조작해서 살 생각 하지 마라" });
       } else {
-
         var haveCheck = userInfo.itemCount[itemInfo.id];
         if (haveCheck == undefined) {
           haveCheck = 0;
@@ -358,9 +367,9 @@ router.get('/buyItem/:itemID', function (req, res) {
           userInfo.item.push(itemInfo.id);
         }
 
-        userInfo.gold = userInfo.gold - itemInfo.price;
+        userInfo.gold = userInfo.gold - itemInfo.price * buyCount * selePer;
 
-        userInfo.itemCount[itemInfo.id] = haveCheck + 1;
+        userInfo.itemCount[itemInfo.id] = haveCheck + buyCount;
         _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, item: userInfo.item, gold: userInfo.gold } }, function (err, output) {
           res.json({ msg: "구매 완료 하였습니다." });
         });
