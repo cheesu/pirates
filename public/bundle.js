@@ -20574,7 +20574,8 @@ var Controller = function (_React$Component) {
       changeJob: false,
       openChangeJob: false,
       enhancement: false,
-      openEnhancement: false
+      openEnhancement: false,
+      mapMsg: []
     };
 
     _this.endTime = 99;
@@ -20729,7 +20730,8 @@ var Controller = function (_React$Component) {
           mapArr.push(mapY[count].split(","));
         }
         _this2.setState({
-          map: mapArr
+          map: mapArr,
+          mapMsg: response.data.mapInfo.msg
         });
         _this2.viewLocalMap();
         _this2.mapName = response.data.mapInfo.mapName;
@@ -20764,7 +20766,8 @@ var Controller = function (_React$Component) {
         _this3.setState({
           map: mapArr,
           prev: true,
-          next: false
+          next: false,
+          mapMsg: response.data.mapInfo.msg
         });
         _this3.socketCh = '0-0';
         _this3.mapLocal = [0, 0];
@@ -20794,7 +20797,8 @@ var Controller = function (_React$Component) {
         _this4.setState({
           map: mapArr,
           prev: false,
-          next: true
+          next: true,
+          mapMsg: response.data.mapInfo.msg
         });
         _this4.socketCh = mapY.length - 1 + '-' + (mapArr[mapArr.length - 1].length - 1);
         _this4.mapLocal = [mapY.length - 1, mapArr[mapArr.length - 1].length - 1];
@@ -20846,7 +20850,11 @@ var Controller = function (_React$Component) {
         console.log("몹이쩡");
         this.props.socket.emit('private', "[몬스터]" + data.appearMsg + " :[LV:" + data.lv + "]");
       } else {
-        this.props.socket.emit('private', "...스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
+
+        var msgArr = this.state.mapMsg;
+        var msgCount = Math.floor(Math.random() * msgArr.length);
+
+        this.props.socket.emit('private', "..." + msgArr[msgCount]);
       }
     }
 

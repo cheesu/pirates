@@ -16,7 +16,8 @@ var Map = new Schema({
     mapName: String,
     map: String,
     next: String,
-    prev: String
+    prev: String,
+    msg: Array()
 });
 
 exports.default = _mongoose2.default.model('map', Map);

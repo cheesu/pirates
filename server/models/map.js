@@ -7,6 +7,7 @@ const Map = new Schema({
     map: String,
     next: String,
     prev: String,
+    msg:Array(),
 });
 
 

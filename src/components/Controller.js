@@ -20,7 +20,8 @@ class Controller extends React.Component {
               changeJob:false,
               openChangeJob:false,
               enhancement:false,
-              openEnhancement:false
+              openEnhancement:false,
+              mapMsg:[]
           };
 
           this.endTime = 99;
@@ -176,7 +177,8 @@ toggleOpenEnhancement(){
                 mapArr.push(mapY[count].split(","));
               }
               this.setState({
-                map:mapArr
+                map:mapArr,
+                mapMsg:response.data.mapInfo.msg
               });
               this.viewLocalMap();
               this.mapName = response.data.mapInfo.mapName;
@@ -212,6 +214,7 @@ toggleOpenEnhancement(){
                map:mapArr,
                prev:true,
                next:false,
+               mapMsg:response.data.mapInfo.msg
              });
              this.socketCh = '0-0';
              this.mapLocal = [0,0];
@@ -240,6 +243,7 @@ toggleOpenEnhancement(){
                map:mapArr,
                prev:false,
                next:true,
+               mapMsg:response.data.mapInfo.msg
              });
              this.socketCh = (mapY.length-1)+'-'+(mapArr[mapArr.length-1].length-1);
              this.mapLocal = [mapY.length-1,mapArr[mapArr.length-1].length-1];
@@ -283,7 +287,11 @@ toggleOpenEnhancement(){
           console.log("몹이쩡");
           this.props.socket.emit('private', "[몬스터]"+data.appearMsg+" :[LV:"+ data.lv+"]");
         }else{
-          this.props.socket.emit('private', "...스산하니 무언가라도 당장 튀어 나올 것 같습니다.");
+
+          let msgArr = this.state.mapMsg;
+          let msgCount = Math.floor(Math.random() * msgArr.length);
+
+          this.props.socket.emit('private', "..."+msgArr[msgCount]);
         }
       }
 
