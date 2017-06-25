@@ -227,12 +227,23 @@ var useSkill = function(io,info){
                     }
                   }
 
-                  let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)+wAP)*skillInfo.dmg) - localMonsterList[monNum].dp;
-                  dmg = Math.round(dmg);
+ 
                   let targetCurrentHP=9999;
                   for(var count=0; count < skillInfo.hit; count++){
+                    let lvGap = (localMonsterList[monNum].lv - userInfo.lv)*2 ;
+                    if(lvGap < -10){
+                      lvGap = -10;
+                    }
+                    let lvBonus = userInfo.lv/(20+lvGap);
+                    let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*lvBonus)+wAP)*skillInfo.dmg) - localMonsterList[monNum].dp;
+                    dmg = Math.round(dmg);
                     let skillAttackMsg = "";
-                    var critical = checkCritical(userInfo.dex);
+
+                    if(lvGap < 0){
+                      lvGap = 0;
+                    }
+
+                    var critical = checkCritical(userInfo.dex-(lvGap*15));
                     let result="";
                     if(critical){
                       dmg = dmg*1.7;
@@ -334,11 +345,30 @@ var fight = function (io,info){
 
               let randomDP = Math.floor(Math.random() * dMaxDP) + dMinDP;
 
-              let reDmg =  localMonsterList[monNum].ap - randomDP
+              let lvGap = localMonsterList[monNum].lv - userInfo.lv;
+              if(lvGap < 0){
+                lvGap = 1;
+              }
+
+              lvGap = lvGap/10;
+
+
+              let reDmg =  localMonsterList[monNum].ap+ (localMonsterList[monNum].ap * lvGap) - randomDP
+
+              let critical = checkCritical(lvGap);
+              let result="";
+              if(critical){
+                reDmg = reDmg*1.7;
+                reDmg = Math.round(reDmg);
+              }
+
 
               if(reDmg < 0){
                 reDmg = 1;
               }
+
+              // 패시브 발동 확률(렙 격차 따라서 발동확률은 낮아진다.)
+              let passive = Math.floor(Math.random() * 1000)+lvGap;
 
               if(userInfo.job2=='깨달은 현자'&&fightInterval[userInfo.username+"skill"]){
                 reDmg = reDmg/2;
@@ -346,7 +376,7 @@ var fight = function (io,info){
               }
 
               if(userInfo.job2=='검의 달인'){
-                let passive = Math.floor(Math.random() * 1000)+1;
+
                 if(userInfo.str > passive){
                   reDmg = 0;
                   io.emit(info.ch+"fight", "[passive] 검의 달인 "+userInfo.username+"님의 "+userInfo.mount.w.name+"이 '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
@@ -354,7 +384,6 @@ var fight = function (io,info){
               }
 
               if(userInfo.job2=='그림자 살귀'){
-                let passive = Math.floor(Math.random() * 1000)+1;
                 if(userInfo.dex > passive){
                   reDmg = 0;
                   io.emit(info.ch+"fight", "[passive] 그림자 살귀 "+userInfo.username+"님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
@@ -362,7 +391,6 @@ var fight = function (io,info){
               }
 
               if(userInfo.job2=='그림자 살귀'){
-                let passive = Math.floor(Math.random() * 1000)+1;
                 if(userInfo.dex > passive){
                   localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg*10;
                   io.emit(info.ch+"fight", "[passive] 그림자 살귀 "+userInfo.username+"님의 "+userInfo.mount.w.name+"가 적의 공격을 타고 흘러 반격합니다. ["+reDmg*10+"]");
@@ -419,7 +447,14 @@ var fight = function (io,info){
 
               Account.update({username: userInfo.username},{$set:{hp:userHP}}, function(err, output){
                 if(err) console.log(err);
-                io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이["+reDmg+"]의 피해를 입었습니다.");
+
+                if(critical){
+                  io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+"강력한 일격!!!!!! "+userInfo.username+"님이["+reDmg+"]의 피해를 입었습니다.[CRITICAL!!!]");
+                }else{
+                  io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이["+reDmg+"]의 피해를 입었습니다.");
+                }
+
+
                 io.emit(userInfo.username+"userHP", userHP+"-"+userInfo.max_hp);
                 io.emit(userInfo.username+"currentUserHP", userHP+"-"+userInfo.max_hp);
 
@@ -489,14 +524,22 @@ var fight = function (io,info){
 
 
               console.log("무기 공격력"+wMinAP+"+"+randomAP+"="+wAP);
-
-              let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*0.3)+wAP - localMonsterList[monNum].dp ;
+              let lvGap = localMonsterList[monNum].lv - userInfo.lv;
+              if(lvGap < -4){
+                lvGap = -4;
+              }
+              let lvBonus = userInfo.lv/(20+lvGap);
+              let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str)*lvBonus)+wAP - localMonsterList[monNum].dp ;
               dmg = Math.round(dmg);
               if(dmg < 0){
                 dmg = 1;
               }
 
-              var critical = checkCritical(userInfo.dex);
+              if(lvGap < 1){
+                lvGap = 1;
+              }
+
+              var critical = checkCritical(userInfo.dex/lvGap);
               let result="";
               if(critical){
                 dmg = dmg*1.7;
