@@ -176,6 +176,9 @@ var useSkill = function(io,info){
               if(userInfo.job2 == "깨달은 현자"){
                 coolDown = coolDown*1.5;
               }
+              if(coolDown > 700){
+                coolDown = 700;
+              }
 
               // 스킬 캐스팅 인터벌
               fightInterval[userInfo.username+"skillInterval"] = setInterval(function(){
@@ -227,7 +230,7 @@ var useSkill = function(io,info){
                     }
                   }
 
- 
+
                   let targetCurrentHP=9999;
                   for(var count=0; count < skillInfo.hit; count++){
                     let lvGap = (localMonsterList[monNum].lv - userInfo.lv)*2 ;
@@ -368,7 +371,7 @@ var fight = function (io,info){
               }
 
               // 패시브 발동 확률(렙 격차 따라서 발동확률은 낮아진다.)
-              let passive = Math.floor(Math.random() * 1000)+lvGap;
+              let passive = Math.floor(Math.random() * 1000)+(lvGap*10);
 
               if(userInfo.job2=='깨달은 현자'&&fightInterval[userInfo.username+"skill"]){
                 reDmg = reDmg/2;
@@ -376,22 +379,34 @@ var fight = function (io,info){
               }
 
               if(userInfo.job2=='검의 달인'){
+                let passiveLimit = userInfo.str;
+                if(passiveLimit>500){
+                  passiveLimit = 500;
+                }
 
-                if(userInfo.str > passive){
+                if(passiveLimit > passive){
                   reDmg = 0;
                   io.emit(info.ch+"fight", "[passive] 검의 달인 "+userInfo.username+"님의 "+userInfo.mount.w.name+"이 '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
                 }
               }
 
               if(userInfo.job2=='그림자 살귀'){
-                if(userInfo.dex > passive){
+                let passiveLimit = userInfo.dex;
+                if(passiveLimit>500){
+                  passiveLimit = 500;
+                }
+                if(passiveLimit > passive){
                   reDmg = 0;
                   io.emit(info.ch+"fight", "[passive] 그림자 살귀 "+userInfo.username+"님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
                 }
               }
 
               if(userInfo.job2=='그림자 살귀'){
-                if(userInfo.dex > passive){
+                let passiveLimit = userInfo.dex;
+                if(passiveLimit>500){
+                  passiveLimit = 500;
+                }
+                if(passiveLimit > passive){
                   localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg*10;
                   io.emit(info.ch+"fight", "[passive] 그림자 살귀 "+userInfo.username+"님의 "+userInfo.mount.w.name+"가 적의 공격을 타고 흘러 반격합니다. ["+reDmg*10+"]");
                 }
@@ -482,6 +497,9 @@ var fight = function (io,info){
 
             // 유저 공격 속도
             let attackSpeed = 1800 - (userInfo.dex*3);
+            if(attackSpeed < 800){
+              attackSpeed = 800;
+            }
 
             // 유저가 공격
             fightInterval[userInfo.username+"userAttack"] = setInterval(function(){

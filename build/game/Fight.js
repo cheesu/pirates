@@ -184,6 +184,9 @@ var useSkill = function useSkill(io, info) {
         if (userInfo.job2 == "깨달은 현자") {
           coolDown = coolDown * 1.5;
         }
+        if (coolDown > 700) {
+          coolDown = 700;
+        }
 
         // 스킬 캐스팅 인터벌
         fightInterval[userInfo.username + "skillInterval"] = setInterval(function () {
@@ -366,7 +369,7 @@ var fight = function fight(io, info) {
         }
 
         // 패시브 발동 확률(렙 격차 따라서 발동확률은 낮아진다.)
-        var passive = Math.floor(Math.random() * 1000) + lvGap;
+        var passive = Math.floor(Math.random() * 1000) + lvGap * 10;
 
         if (userInfo.job2 == '깨달은 현자' && fightInterval[userInfo.username + "skill"]) {
           reDmg = reDmg / 2;
@@ -374,22 +377,34 @@ var fight = function fight(io, info) {
         }
 
         if (userInfo.job2 == '검의 달인') {
+          var passiveLimit = userInfo.str;
+          if (passiveLimit > 500) {
+            passiveLimit = 500;
+          }
 
-          if (userInfo.str > passive) {
+          if (passiveLimit > passive) {
             reDmg = 0;
             io.emit(info.ch + "fight", "[passive] 검의 달인 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이 '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
           }
         }
 
         if (userInfo.job2 == '그림자 살귀') {
-          if (userInfo.dex > passive) {
+          var _passiveLimit = userInfo.dex;
+          if (_passiveLimit > 500) {
+            _passiveLimit = 500;
+          }
+          if (_passiveLimit > passive) {
             reDmg = 0;
             io.emit(info.ch + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
           }
         }
 
         if (userInfo.job2 == '그림자 살귀') {
-          if (userInfo.dex > passive) {
+          var _passiveLimit2 = userInfo.dex;
+          if (_passiveLimit2 > 500) {
+            _passiveLimit2 = 500;
+          }
+          if (_passiveLimit2 > passive) {
             localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg * 10;
             io.emit(info.ch + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님의 " + userInfo.mount.w.name + "가 적의 공격을 타고 흘러 반격합니다. [" + reDmg * 10 + "]");
           }
@@ -467,6 +482,9 @@ var fight = function fight(io, info) {
 
       // 유저 공격 속도
       var attackSpeed = 1800 - userInfo.dex * 3;
+      if (attackSpeed < 800) {
+        attackSpeed = 800;
+      }
 
       // 유저가 공격
       fightInterval[userInfo.username + "userAttack"] = setInterval(function () {
