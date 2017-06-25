@@ -373,7 +373,7 @@ var fight = function fight(io, info) {
 
         if (userInfo.job2 == '깨달은 현자' && fightInterval[userInfo.username + "skill"]) {
           reDmg = reDmg / 2;
-          io.emit(info.ch + "fight", "[passive] 캐스팅중인 깨달은 현자  " + userInfo.username + "님의 " + userInfo.mount.w.name + "이 빛이나며 보호막이 생성됩니다. 주문보호의 영향으로 데미지가 감소합니다.");
+          io.emit(info.ch + "fight", "[passive] 캐스팅중인 깨달은 현자  " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 빛이나며 보호막이 생성됩니다. 주문보호의 영향으로 데미지가 감소합니다.");
         }
 
         if (userInfo.job2 == '검의 달인') {
@@ -384,7 +384,7 @@ var fight = function fight(io, info) {
 
           if (passiveLimit > passive) {
             reDmg = 0;
-            io.emit(info.ch + "fight", "[passive] 검의 달인 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이 '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
+            io.emit(info.ch + "fight", "[passive] 검의 달인 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
           }
         }
 
@@ -406,7 +406,7 @@ var fight = function fight(io, info) {
           }
           if (_passiveLimit2 > passive) {
             localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg * 10;
-            io.emit(info.ch + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님의 " + userInfo.mount.w.name + "가 적의 공격을 타고 흘러 반격합니다. [" + reDmg * 10 + "]");
+            io.emit(info.ch + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 적의 공격을 타고 흘러 반격합니다. [" + reDmg * 10 + "]");
           }
         }
 
