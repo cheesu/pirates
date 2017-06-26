@@ -426,7 +426,7 @@ router.get('/enhancement/', function (req, res) {
 
       _item2.default.find({ id: 'ow1' }).exec(function (err, item) {
         var itemInfo = eval(item[0]);
-        var enVal = Math.floor(Math.random() * itemInfo.max); // 강화수치
+        var enVal = Math.floor(Math.random() * itemInfo.max) + itemInfo.min; // 강화수치
 
         // 착용무기
         _item2.default.find({ id: userInfo.mount.w.id }).exec(function (err, itemW) {

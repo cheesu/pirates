@@ -464,7 +464,7 @@ router.get('/enhancement/', (req, res) => {
               Item.find({id: 'ow1'})
                   .exec((err, item) => {
                     let itemInfo = eval(item[0]);
-                    let enVal = Math.floor(Math.random() * itemInfo.max); // 강화수치
+                    let enVal = Math.floor(Math.random() * itemInfo.max)+itemInfo.min; // 강화수치
 
                     // 착용무기
                     Item.find({id: userInfo.mount.w.id})
