@@ -169,7 +169,7 @@ io.on('connection', (socket) => {
         console.log(chatUserList[count].socketID);
         console.log(chatUserList[count].userID);
         if(chatUserList[count].socketID==socket.id){
-          if(chatUserList[count].userID=='undefined [운영자]'){
+          if(chatUserList[count].userID=='운영자'){
             io.emit('NoticeChat', msg);
           }
         }
@@ -185,24 +185,25 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat', function(msg){
-      msg.replace( /섹스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-      msg.replace( /sex/gi, "전 여자랑 자볼일이 앞으로도 없는 개 찐따라라서  음담패설로 자위하는 쓰레기 찌끄레기 입니다.");
-      msg.replace( /세엑스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-      msg.replace( /아흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
-      msg.replace( /앗흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+      msg = msg.replace( /섹스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+      msg = msg.replace( /sex/gi, "전 여자랑 자볼일이 앞으로도 없는 개 찐따라라서  음담패설로 자위하는 쓰레기 찌끄레기 입니다.");
+      msg = msg.replace( /세엑스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+      msg = msg.replace( /아흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+      msg = msg.replace( /앗흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
 
       if(msg.indexOf('섹') != -1){
+          msg = msg.replace( /섹/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
         if(msg.indexOf('스') != -1){
-            msg.replace( /섹/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-            msg.replace( /스/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+
+            msg = msg.replace( /스/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
         }
       }
 
       if(msg.toLowerCase().indexOf('s') != -1){
         if(msg.toLowerCase().indexOf('e') != -1){
           if(msg.toLowerCase().indexOf('x') != -1){
-            msg.replace( /s/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-            msg.replace( /S/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+            msg = msg.replace( /s/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+            msg = msg.replace( /S/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
           }
         }
       }
@@ -237,28 +238,30 @@ io.on('connection', (socket) => {
 
     //귓말
     socket.on('whisper', function(wObj){
-      wObj.msg.replace( /섹스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-      wObj.msg.replace( /sex/gi, "전 여자랑 자볼일이 앞으로도 없는 개 찐따라라서  음담패설로 자위하는 쓰레기 찌끄레기 입니다.");
-      wObj.msg.replace( /세엑스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-      wObj.msg.replace( /아흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
-      wObj.msg.replace( /앗흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+      let msg = wObj.msg;
+      msg = msg.replace( /섹스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+      msg = msg.replace( /sex/gi, "전 여자랑 자볼일이 앞으로도 없는 개 찐따라라서  음담패설로 자위하는 쓰레기 찌끄레기 입니다.");
+      msg = msg.replace( /세엑스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+      msg = msg.replace( /아흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+      msg = msg.replace( /앗흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
 
       if(msg.indexOf('섹') != -1){
+          msg = msg.replace( /섹/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
         if(msg.indexOf('스') != -1){
-            msg.replace( /섹/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-            msg.replace( /스/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+
+            msg = msg.replace( /스/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
         }
       }
 
       if(msg.toLowerCase().indexOf('s') != -1){
         if(msg.toLowerCase().indexOf('e') != -1){
           if(msg.toLowerCase().indexOf('x') != -1){
-            msg.replace( /s/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-            msg.replace( /S/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+            msg = msg.replace( /s/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+            msg = msg.replace( /S/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
           }
         }
       }
-
+      wObj.msg = msg;
       console.log(wObj);
       let sedMsg = "[귓속말] "+ wObj.sendUser + ": "+wObj.msg;
       let sedMsg2 = "[귓속말] "+ wObj.target + ">>: "+wObj.msg;
@@ -268,6 +271,8 @@ io.on('connection', (socket) => {
 
 
     socket.on('attack', function(info){
+      console.log("어택 인포");
+      console.log(info);
       let result = fight(io,info);
     });
 
@@ -287,6 +292,35 @@ io.on('connection', (socket) => {
     });
 
 
+    // 초대
+    socket.on('invite', function(wObj){
+      let sedMsg = "[귓속말] "+ wObj.sendUser + ": "+wObj.msg;
+      let sedMsg2 = "[귓속말] "+ wObj.target + ">>: "+wObj.msg;
+      io.emit(wObj.target+"invite", wObj);
+      io.emit(wObj.sendUser, wObj.target+'님에게 파티 초대 요청을 하였습니다.');
+    });
+
+// 파티
+    socket.on('party', function(msg,partyArr){
+      for(var count = 0; count < partyArr.length; count++){
+          io.emit(partyArr[count], msg);
+      }
+
+    });
+
+
+// 파티 수락
+    socket.on('accept', function(sendUser,target){
+          io.emit(sendUser+'accept', target);
+    });
+
+    // 파티 멤버 셋팅
+    socket.on('setPartyMember', function(partyArr){
+      for(var count = 0; count < partyArr.length; count++){
+          io.emit(partyArr[count]+"setPartyMember", partyArr);
+        }
+    });
+
 
     socket.on('disconnect', () =>{
       let disUserSocketId =socket.id;
@@ -296,6 +330,7 @@ io.on('connection', (socket) => {
           let disUserName = chatUserList[count].userID;
           //알림
           io.emit('Gchat', disUserName+"님이 퇴장 하셨습니다.");
+          io.emit('disconnecParty', disUserName);
           console.log('Client disconnected : '+disUserName);
           // 리스트에서 삭제
           chatUserList.splice(count, 1);
@@ -388,10 +423,11 @@ io.sockets.on("connection", function(socket){
   });
 
   socket.on('getMap', function(mapName){
-
     socket.emit('getMap', map);
-
   });
 
+  socket.on('checkParty', function(data){
+    socket.emit('checkParty', data);
+  });
 
 });

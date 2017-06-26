@@ -20478,6 +20478,36 @@ var Chat = function (_React$Component) {
                         return false;
                   }
 
+                  if (this.state.msg.indexOf('/초대') == 0) {
+
+                        var _wMsg = this.state.msg.substring(4, this.state.msg.length); // 초대 제거
+
+                        var _targetUser = _wMsg.split(" "); // 타겟유저 아이디
+                        _targetUser = _targetUser[0];
+                        var _sendUser = this.props.username;
+                        _wMsg = _wMsg.substring(_targetUser.length, this.state.msg.length);
+
+                        var _wObj = new Object();
+                        _wObj.target = _targetUser;
+                        _wObj.sendUser = _sendUser;
+
+                        //let sendMG ="[All] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
+                        this.props.socket.emit('invite', _wObj); // 요청
+                        this.setState({
+                              msg: ''
+                        });
+                        return false;
+                  }
+
+                  if (this.state.msg.indexOf('/파티') == 0) {
+
+                        this.props.socket.emit('checkParty', ""); // 요청
+                        this.setState({
+                              msg: ''
+                        });
+                        return false;
+                  }
+
                   this.props.socket.emit('chat', this.state.socketCh + ":ch:" + sendMsgText); // 요청
                   this.setState({
                         msg: ''
@@ -20575,6 +20605,8 @@ var Controller = function (_React$Component) {
       openChangeJob: false,
       enhancement: false,
       openEnhancement: false,
+      party: false,
+      partyMember: [_this.props.username],
       mapMsg: []
     };
 
@@ -20684,7 +20716,7 @@ var Controller = function (_React$Component) {
       this.props.userItemRequest();
 
       this.getMapAxio();
-      this.props.socket.emit('addUser', this.props.userInfo.job2 + " [" + this.props.username + "]");
+      this.props.socket.emit('addUser', this.props.username);
 
       this.props.socket.on(this.props.username + "[중복접속]", function (data) {
         //몹 채팅
@@ -20703,11 +20735,85 @@ var Controller = function (_React$Component) {
         this.checkDead();
       }.bind(this));
 
+      // 초대 수락 받음
+      this.props.socket.on(this.props.username + "accept", function (data) {
+        if (!this.state.party) {
+          this.setState({
+            party: true
+          });
+        }
+
+        this.setState({
+          partyMember: this.state.partyMember.concat(data)
+        });
+        this.props.socket.emit("party", data + "님 께서 파티에 들어오셨습니다.", this.state.partyMember);
+        this.props.socket.emit("party", "현재 파티 멤버 - " + this.state.partyMember, this.state.partyMember);
+        this.props.socket.emit("setPartyMember", this.state.partyMember);
+      }.bind(this));
+
+      // 파티 멤버 셋팅
+      this.props.socket.on(this.props.username + "setPartyMember", function (data) {
+        //귓말
+        if (this.state.partyMember != data) {
+          this.setState({
+            partyMember: data
+          });
+        }
+      }.bind(this));
+
+      // 파티 초대 받음
+      this.props.socket.on(this.props.username + "invite", function (data) {
+        if (this.state.party) {
+          this.props.socket.emit("party", data.target + "님은 이미 파티중입니다.", [data.sendUser]);
+        } else if (this.state.fighting) {
+          this.props.socket.emit("party", data.target + "님은 전투중 입니다. 전투중엔 초대 요청을 받을 수 없습니다.", [data.sendUser]);
+        } else {
+          var con_test = confirm(data.sendUser + "님이 파티 요청을 하였습니다. 수락 하시겠습니까? ");
+          if (con_test) {
+            this.props.socket.emit("party", data.target + "님 께서 요청을 수락 하였습니다.", [data.sendUser]);
+            this.props.socket.emit("accept", data.sendUser, data.target);
+            this.setState({
+              party: true
+            });
+          } else {
+            this.props.socket.emit("party", data.target + "님 께서 요청을 거절 하였습니다.", [data.sendUser]);
+          }
+        }
+      }.bind(this));
+
+      // 파티 멤버 셋팅
+      this.props.socket.on("checkParty", function (data) {
+        //귓말
+        this.props.socket.emit("private", "현재 파티 멤버 - " + this.state.partyMember, this.state.partyMember);
+      }.bind(this));
+
       var toggleRest = this.toggleRest.bind(this);
       this.props.socket.on("restEnd", function (data) {
         //몹 채팅
         toggleRest(false);
       });
+
+      // 파티 멤버 탈퇴
+      this.props.socket.on("disconnecParty", function (disconnetUser) {
+        //귓말
+        console.log(this.state.partyMember);
+        if (this.state.partyMember.indexOf(disconnetUser) != -1) {
+          this.props.socket.emit("party", disconnetUser + "님 께서 파티를 떠났습니다..", this.state.partyMember);
+          console.log(this.state.partyMember);
+          console.log(this.state.partyMember);
+          console.log(this.state.partyMember.indexOf(disconnetUser));
+          this.state.partyMember.splice(this.state.partyMember.indexOf(disconnetUser), 1);
+          this.setState({
+            partyMember: this.state.partyMember
+          });
+
+          if (this.state.partyMember.length == 1) {
+            this.setState({
+              party: false
+            });
+          }
+        }
+      }.bind(this));
     }
   }, {
     key: 'toggleRest',
@@ -21064,11 +21170,16 @@ var Controller = function (_React$Component) {
       var attackInfo = new Object();
       attackInfo.userName = this.props.username;
       attackInfo.ch = this.mapName + "-" + this.socketCh;
+      attackInfo.mapName = this.mapName;
       attackInfo.target = this.state.monster.name;
       attackInfo.userMaxHP = this.props.userInfo.max_hp;
       attackInfo.userHP = this.props.userInfo.hp;
       attackInfo.fighting = false;
+      attackInfo.party = this.state.party;
+      attackInfo.partyMember = this.state.partyMember;
       this.attackInfo = attackInfo;
+
+      console.log(this.attackInfo);
       this.toggleFight();
       this.setLocalMonster(null);
     }
@@ -22021,6 +22132,10 @@ var FightController = function (_React$Component) {
             skillObj.skillname = skill;
             skillObj.username = this.props.attackInfo.userName;
             skillObj.ch = this.props.attackInfo.ch;
+            skillObj.party = this.props.attackInfo.party;
+            skillObj.partyMember = this.props.attackInfo.partyMember;
+            skillObj.mapName = this.props.attackInfo.mapName;
+
             this.props.socket.emit('useSkill', skillObj);
         }
     }, {

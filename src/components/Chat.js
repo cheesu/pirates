@@ -110,6 +110,36 @@ class Chat extends React.Component {
         return false;
       }
 
+      if(this.state.msg.indexOf('/초대')==0){
+
+        let wMsg =   this.state.msg.substring(4,this.state.msg.length); // 초대 제거
+
+        let targetUser =   wMsg.split(" "); // 타겟유저 아이디
+        targetUser = targetUser[0];
+        let sendUser = this.props.username;
+         wMsg = wMsg.substring(targetUser.length,this.state.msg.length);
+
+        let wObj = new Object();
+        wObj.target = targetUser;
+        wObj.sendUser = sendUser;
+
+        //let sendMG ="[All] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
+        this.props.socket.emit('invite', wObj); // 요청
+        this.setState({
+            msg: ''
+        });
+        return false;
+      }
+
+      if(this.state.msg.indexOf('/파티')==0){
+
+        this.props.socket.emit('checkParty', ""); // 요청
+        this.setState({
+            msg: ''
+        });
+        return false;
+      }
+
 
 
       this.props.socket.emit('chat', this.state.socketCh+":ch:"+sendMsgText); // 요청

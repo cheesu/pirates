@@ -102,6 +102,10 @@ class FightController extends React.Component {
         skillObj.skillname=skill;
         skillObj.username = this.props.attackInfo.userName;
         skillObj.ch = this.props.attackInfo.ch;
+        skillObj.party = this.props.attackInfo.party;
+        skillObj.partyMember = this.props.attackInfo.partyMember;
+        skillObj.mapName = this.props.attackInfo.mapName;
+
         this.props.socket.emit('useSkill',skillObj);
       }
 

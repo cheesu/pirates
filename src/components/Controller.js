@@ -21,6 +21,8 @@ class Controller extends React.Component {
               openChangeJob:false,
               enhancement:false,
               openEnhancement:false,
+              party:false,
+              partyMember:[this.props.username],
               mapMsg:[]
           };
 
@@ -133,7 +135,7 @@ toggleOpenEnhancement(){
 
 
         this.getMapAxio();
-        this.props.socket.emit('addUser', this.props.userInfo.job2+" ["+this.props.username+"]");
+        this.props.socket.emit('addUser', this.props.username);
 
         this.props.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
         location.href="/login";
@@ -152,10 +154,84 @@ toggleOpenEnhancement(){
         }.bind(this));
 
 
+        // 초대 수락 받음
+        this.props.socket.on(this.props.username+"accept", function(data){
+          if(!this.state.party){
+            this.setState({
+              party: true
+            });
+          }
+
+        this.setState({
+          partyMember: this.state.partyMember.concat(data)
+        });
+        this.props.socket.emit("party", data+"님 께서 파티에 들어오셨습니다.",this.state.partyMember);
+        this.props.socket.emit("party", "현재 파티 멤버 - "+this.state.partyMember,this.state.partyMember);
+        this.props.socket.emit("setPartyMember", this.state.partyMember);
+        }.bind(this));
+
+        // 파티 멤버 셋팅
+        this.props.socket.on(this.props.username+"setPartyMember", function(data){ //귓말
+          if(this.state.partyMember != data){
+            this.setState({
+              partyMember: data
+            });
+          }
+        }.bind(this));
+
+        // 파티 초대 받음
+        this.props.socket.on(this.props.username+"invite", function(data){
+          if(this.state.party){
+            this.props.socket.emit("party", data.target+"님은 이미 파티중입니다.",[data.sendUser]);
+          }
+          else if(this.state.fighting){
+            this.props.socket.emit("party", data.target+"님은 전투중 입니다. 전투중엔 초대 요청을 받을 수 없습니다.",[data.sendUser]);
+          }else{
+            var con_test = confirm(data.sendUser+"님이 파티 요청을 하였습니다. 수락 하시겠습니까? ");
+            if(con_test){
+              this.props.socket.emit("party", data.target+"님 께서 요청을 수락 하였습니다.",[data.sendUser]);
+              this.props.socket.emit("accept", data.sendUser,data.target);
+              this.setState({
+                party: true
+              });
+            }else{
+              this.props.socket.emit("party", data.target+"님 께서 요청을 거절 하였습니다.",[data.sendUser]);
+            }
+          }
+
+        }.bind(this));
+
+        // 파티 멤버 셋팅
+        this.props.socket.on("checkParty", function(data){ //귓말
+          this.props.socket.emit("private", "현재 파티 멤버 - "+this.state.partyMember,this.state.partyMember);
+        }.bind(this));
+
         let toggleRest = this.toggleRest.bind(this);
         this.props.socket.on("restEnd", function(data){ //몹 채팅
           toggleRest(false);
         });
+
+        // 파티 멤버 탈퇴
+        this.props.socket.on("disconnecParty", function(disconnetUser){ //귓말
+        console.log(this.state.partyMember);
+            if(this.state.partyMember.indexOf(disconnetUser)!= -1){
+              this.props.socket.emit("party", disconnetUser+"님 께서 파티를 떠났습니다..",this.state.partyMember);
+              console.log(this.state.partyMember);
+              console.log(this.state.partyMember);
+              console.log(this.state.partyMember.indexOf(disconnetUser));
+              this.state.partyMember.splice(this.state.partyMember.indexOf(disconnetUser),1);
+              this.setState({
+                partyMember: this.state.partyMember
+              });
+
+              if(this.state.partyMember.length == 1){
+                this.setState({
+                  party: false
+                });
+              }
+            }
+        }.bind(this));
+
 
       }
 
@@ -522,11 +598,16 @@ toggleOpenEnhancement(){
           let attackInfo = new Object();
           attackInfo.userName = this.props.username;
           attackInfo.ch = this.mapName+"-"+this.socketCh;
+          attackInfo.mapName = this.mapName;
           attackInfo.target = this.state.monster.name;
           attackInfo.userMaxHP = this.props.userInfo.max_hp
           attackInfo.userHP = this.props.userInfo.hp;
           attackInfo.fighting = false;
+          attackInfo.party = this.state.party;
+          attackInfo.partyMember = this.state.partyMember;
           this.attackInfo = attackInfo;
+
+          console.log(this.attackInfo);
           this.toggleFight();
           this.setLocalMonster(null);
       }

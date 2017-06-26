@@ -61,6 +61,7 @@ function loadMonsterList() {
         monObj.dieMsg = monsters[monCount].dieMsg;
         monObj.exp = monsters[monCount].exp;
         monObj.gold = monsters[monCount].gold;
+        monObj.Aggravation = [];
         monObj.area = monsters[monCount].mapName + "-" + monLocalArr[localCount];
 
         if (!initServer) {
@@ -270,6 +271,35 @@ var useSkill = function useSkill(io, info) {
                 targetCurrentHP = 0;
               }
 
+              /*어그로 */
+              var aggro = localMonsterList[monNum].Aggravation; // 어그로
+              if (aggro.length == 0) {
+                // 선빵 친놈 등록
+                var _aggroObj = {};
+                _aggroObj.name = userInfo.username;
+                _aggroObj.dmg = dmg;
+                localMonsterList[monNum].Aggravation.push(_aggroObj);
+              } else {
+
+                var checkAggro = false;
+                // 이미 치고 있을떄 뎀지 누적
+                for (var aggrocount = 0; aggrocount < aggro.length; aggrocount++) {
+                  if (aggro[aggrocount].name == userInfo.username) {
+                    localMonsterList[monNum].Aggravation[aggrocount].dmg = localMonsterList[monNum].Aggravation[aggrocount].dmg + dmg;
+                    checkAggro = true;
+                  }
+                }
+
+                // 딴놈이 치고 있을떄 들어옴
+                if (!checkAggro) {
+                  var _aggroObj2 = {};
+                  _aggroObj2.name = userInfo.username;
+                  _aggroObj2.dmg = dmg;
+                  localMonsterList[monNum].Aggravation.push(_aggroObj2);
+                }
+              }
+              /*어그로 끝*/
+
               //  let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
               io.emit(info.ch + "fight", skillAttackMsg);
               //  io.emit(info.ch+"fight", monHPMsg);
@@ -316,6 +346,7 @@ var fightUseItem = function fightUseItem(io, info) {
 
 var fight = function fight(io, info) {
   console.log("전투 시작");
+  console.log(info);
   _account2.default.find({ username: info.userName }).exec(function (err, account) {
     if (err) throw err;
     var userInfo = account;
@@ -554,6 +585,34 @@ var fight = function fight(io, info) {
           localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
         }
 
+        var aggro = localMonsterList[monNum].Aggravation; // 어그로
+
+        if (aggro.length == 0) {
+          // 선빵 친놈 등록
+          var _aggroObj = {};
+          _aggroObj.name = userInfo.username;
+          _aggroObj.dmg = dmg;
+          localMonsterList[monNum].Aggravation.push(_aggroObj);
+        } else {
+
+          var checkAggro = false;
+          // 이미 치고 있을떄 뎀지 누적
+          for (var aggrocount = 0; aggrocount < aggro.length; aggrocount++) {
+            if (aggro[aggrocount].name == userInfo.username) {
+              localMonsterList[monNum].Aggravation[aggrocount].dmg = localMonsterList[monNum].Aggravation[aggrocount].dmg + dmg;
+              checkAggro = true;
+            }
+          }
+
+          // 딴놈이 치고 있을떄 들어옴
+          if (!checkAggro) {
+            var _aggroObj3 = {};
+            _aggroObj3.name = userInfo.username;
+            _aggroObj3.dmg = dmg;
+            localMonsterList[monNum].Aggravation.push(_aggroObj3);
+          }
+        }
+
         var targetCurrentHP = localMonsterList[monNum].hp;
         if (localMonsterList[monNum].hp < 0) {
           targetCurrentHP = 0;
@@ -592,6 +651,7 @@ function checkCritical(dex) {
 
 //경험치 획득 &
 function expLevelup(userInfo, io, monNum, info, kind) {
+
   // 경험치 계산
   var upExp = localMonsterList[monNum].exp;
   var random = Math.floor(Math.random() * 100) + 1;
@@ -601,6 +661,16 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   if (gap > 5) {
     upExp = Math.round(upExp / 3);
     getGold = Math.round(getGold / 3);
+  }
+
+  var partyExp = 0;
+  var partyGold = 0;
+
+  if (info.party) {
+    upExp = Math.round(upExp / 100 * 80);
+    partyExp = Math.round(upExp / 100 * 20);
+    getGold = Math.round(getGold / 100 * 80);
+    partyGold = Math.round(upExp / 100 * 20);
   }
 
   var totalExp = userInfo.exp + upExp;
@@ -689,6 +759,8 @@ function expLevelup(userInfo, io, monNum, info, kind) {
     console.log(e);
   }
   // 경험치 업데이트
+
+
   _account2.default.update({ username: userInfo.username }, { $set: { exp: totalExp, gold: setGold, item: userInfo.item, itemCount: userInfo.itemCount } }, function (err, output) {
     if (err) console.log(err);
     io.emit(userInfo.username, "[시스템] " + localMonsterList[monNum].name + "을 쓰러뜨려 경험치 " + upExp + "과 " + getGold + "골드를 획득 하였습니다.");
@@ -696,6 +768,29 @@ function expLevelup(userInfo, io, monNum, info, kind) {
     io.emit(userInfo.username + "전투", "endFight");
     io.emit(userInfo.username + "endFight", "");
   });
+
+  /*파티 경험치 돈 분배*/
+
+  if (info.party == true) {
+    for (var memberCount = 0; memberCount < info.partyMember.length; memberCount++) {
+      _account2.default.findOne({ username: info.partyMember[memberCount] }, function (err, partyAccount) {
+        if (err) throw err;
+
+        var partyMember = eval(partyAccount);
+        // 같은 맵에 있으면 분배
+        if (partyMember.mapName == info.mapName) {
+          var totalPartyExp = partyMember.exp + partyExp;
+          var totalPartyGold = partyMember.gold + partyGold;
+          _account2.default.update({ username: partyMember.username }, { $set: { exp: totalPartyExp, gold: totalPartyGold } }, function (err, output) {
+            if (err) console.log(err);
+            io.emit(partyMember.username, "[파티] " + localMonsterList[monNum].name + "을 쓰러뜨려 파티 경험치 " + partyExp + "과 " + partyGold + "골드를 획득 하였습니다.");
+          });
+        }
+      });
+    }
+  }
+
+  /*파티 경험치 돈 분배 끝*/
 
   var addLV = Math.floor(userInfo.lv / 10);
   if (addLV == 0) {
