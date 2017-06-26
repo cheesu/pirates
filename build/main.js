@@ -160,28 +160,30 @@ io.on('connection', function (socket) {
 
   socket.on('Gchat', function (msg) {
 
-    msg.replace(/섹스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-    msg.replace(/sex/gi, "전 여자랑 자볼일이 앞으로도 없는 개 찐따라라서  음담패설로 자위하는 쓰레기 찌끄레기 입니다.");
-    msg.replace(/세엑스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-    msg.replace(/아흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
-    msg.replace(/앗흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+    msg = msg.replace(/섹스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+    msg = msg.replace(/sex/gi, "전 여자랑 자볼일이 앞으로도 없는 개 찐따라라서  음담패설로 자위하는 쓰레기 찌끄레기 입니다.");
+    msg = msg.replace(/세엑스/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+    msg = msg.replace(/아흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+    msg = msg.replace(/앗흥/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
 
     if (msg.indexOf('섹') != -1) {
-      msg.replace(/섹/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+      msg = msg.replace(/섹/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
       if (msg.indexOf('스') != -1) {
 
-        msg.replace(/스/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
+        msg = msg.replace(/스/gi, "실제로 여자 신음소리 한번도 못들어본 찐따 입니다..");
       }
     }
 
     if (msg.toLowerCase().indexOf('s') != -1) {
       if (msg.toLowerCase().indexOf('e') != -1) {
         if (msg.toLowerCase().indexOf('x') != -1) {
-          msg.replace(/s/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
-          msg.replace(/S/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+          msg = msg.replace(/s/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
+          msg = msg.replace(/S/gi, "저는 여자 손도 못잡아본 찐따 입니다. 음담패설로 자위하는 쓰레기 입니다.");
         }
       }
     }
+
+    console.log(msg);
 
     io.emit('Gchat', msg);
   });
