@@ -245,7 +245,7 @@ var useSkill = function useSkill(io, info) {
                 lvGap = -10;
               }
               var lvBonus = userInfo.lv / (20 + lvGap);
-              var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str) * lvBonus + wAP) * skillInfo.dmg - localMonsterList[monNum].dp;
+              var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
               dmg = Math.round(dmg);
               var skillAttackMsg = "";
 
@@ -562,7 +562,7 @@ var fight = function fight(io, info) {
           lvGap = -4;
         }
         var lvBonus = userInfo.lv / (20 + lvGap);
-        var dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str) * lvBonus + wAP - localMonsterList[monNum].dp;
+        var dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus - localMonsterList[monNum].dp;
         dmg = Math.round(dmg);
         if (dmg < 0) {
           dmg = 1;
