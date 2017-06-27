@@ -296,8 +296,14 @@ io.on('connection', (socket) => {
     socket.on('invite', function(wObj){
       let sedMsg = "[귓속말] "+ wObj.sendUser + ": "+wObj.msg;
       let sedMsg2 = "[귓속말] "+ wObj.target + ">>: "+wObj.msg;
-      io.emit(wObj.target+"invite", wObj);
-      io.emit(wObj.sendUser, wObj.target+'님에게 파티 초대 요청을 하였습니다.');
+
+      if(wObj.sendUser == wObj.target ){
+        io.emit(wObj.sendUser, wObj.target+'오빠는 같이 파티맺을 친구도 없는 찐따구나?.');
+      }
+      else{
+        io.emit(wObj.target+"invite", wObj);
+        io.emit(wObj.sendUser, wObj.target+'님에게 파티 초대 요청을 하였습니다.');
+      }
     });
 
 // 파티

@@ -387,12 +387,30 @@ var fight = function fight(io, info) {
         lvGap = lvGap / 10;
 
         var reDmg = localMonsterList[monNum].ap + localMonsterList[monNum].ap * lvGap - randomDP;
+        var bossCri = 0;
+        if (localMonsterList[monNum].type == "boss") {
+          bossCri = 80;
+        }
 
-        var critical = checkCritical(lvGap);
+        var critical = checkCritical(lvGap + bossCri);
         var result = "";
         if (critical) {
           reDmg = reDmg * 1.7;
           reDmg = Math.round(reDmg);
+        }
+
+        if (localMonsterList[monNum].name == "아나히타") {
+          if (localMonsterList[monNum].hp < 10000000 && localMonsterList[monNum].hp > 5000000) {
+            reDmg = reDmg * 2;
+            io.emit(info.ch + "fight", "[피격] '이.. 이 어리석은 인간들이!!!!! ' 아나히타의 분노가 모두를 업압 합니다.");
+          }
+        }
+
+        if (localMonsterList[monNum].name == "성기사 정찰대 대장") {
+          if (localMonsterList[monNum].hp < 1500000 && localMonsterList[monNum].hp > 800000) {
+            reDmg = reDmg * 1.3;
+            io.emit(info.ch + "fight", "[피격] '지옥으로 떨어져라 버리지들아!' 성기사 정찰대 대장의 눈이 붉게 변합니다.");
+          }
         }
 
         if (reDmg < 0) {
@@ -623,6 +641,13 @@ var fight = function fight(io, info) {
         //  io.emit(info.ch+"fight", monHPMsg);
         io.emit(info.ch + "monsterHP", targetCurrentHP + "-" + localMonsterList[monNum].maxHP);
 
+        if (localMonsterList[monNum].name == "성기사 정찰대 대장") {
+          if (localMonsterList[monNum].hp < 600000) {
+            localMonsterList[monNum].dp = localMonsterList[monNum].dp + 50;
+            io.emit(info.ch + "fight", "[피격] '그분께서 나를 지키신다!!' 흰 빛이 성기사 정찰대 대장의 주변을 감쌉니다. 성기사 정찰대 대장의 방어력이 [50] 상승합니다.");
+          }
+        }
+
         // 몬스터 처치
         if (localMonsterList[monNum].hp <= 0) {
           fightInterval[userInfo.username + "fighting"] = false; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
@@ -652,10 +677,25 @@ function checkCritical(dex) {
 //경험치 획득 &
 function expLevelup(userInfo, io, monNum, info, kind) {
 
+  //어그로 기여도 계산
+  var aggro = localMonsterList[monNum].Aggravation;
+  var myDmg = 0;
+  for (var aggroCount = 0; aggroCount < aggro.length; aggroCount++) {
+    if (aggro[aggroCount].name == userInfo.username) {
+      myDmg = aggro[aggroCount].dmg;
+    }
+  }
+
+  if (myDmg < 1) {
+    myDmg = 1;
+  }
+
+  var aggroPer = myDmg / localMonsterList[monNum].maxHP * 100;
+
   // 경험치 계산
-  var upExp = localMonsterList[monNum].exp;
+  var upExp = localMonsterList[monNum].exp * aggroPer / 100;
   var random = Math.floor(Math.random() * 100) + 1;
-  var getGold = localMonsterList[monNum].gold + random;
+  var getGold = (localMonsterList[monNum].gold + random) * aggroPer / 100;
 
   var gap = userInfo.lv - localMonsterList[monNum].lv;
   if (gap > 5) {
@@ -667,10 +707,10 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   var partyGold = 0;
 
   if (info.party) {
-    upExp = Math.round(upExp / 100 * 80);
-    partyExp = Math.round(upExp / 100 * 20);
-    getGold = Math.round(getGold / 100 * 80);
-    partyGold = Math.round(upExp / 100 * 20);
+    upExp = Math.round(upExp / 100 * 70);
+    partyExp = Math.round(localMonsterList[monNum].exp / 100 * 30);
+    getGold = Math.round(getGold / 100 * 70);
+    partyGold = Math.round((localMonsterList[monNum].gold + random / 100) * 30);
   }
 
   var totalExp = userInfo.exp + upExp;
