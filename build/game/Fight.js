@@ -690,12 +690,16 @@ function expLevelup(userInfo, io, monNum, info, kind) {
     myDmg = 1;
   }
 
+  if (myDmg > localMonsterList[monNum].maxHP) {
+    myDmg = localMonsterList[monNum].maxHP;
+  }
+
   var aggroPer = myDmg / localMonsterList[monNum].maxHP * 100;
 
   // 경험치 계산
-  var upExp = localMonsterList[monNum].exp * aggroPer / 100;
+  var upExp = Math.round(localMonsterList[monNum].exp * aggroPer / 100);
   var random = Math.floor(Math.random() * 100) + 1;
-  var getGold = (localMonsterList[monNum].gold + random) * aggroPer / 100;
+  var getGold = Math.round((localMonsterList[monNum].gold + random) * aggroPer / 100);
 
   var gap = userInfo.lv - localMonsterList[monNum].lv;
   if (gap > 5) {

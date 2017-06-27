@@ -719,13 +719,17 @@ function checkCritical(dex){
       myDmg = 1;
     }
 
+    if(myDmg > localMonsterList[monNum].maxHP){
+      myDmg = localMonsterList[monNum].maxHP;
+    }
+
     let aggroPer = (myDmg/localMonsterList[monNum].maxHP)*100;
 
 
     // 경험치 계산
-    let upExp =  (localMonsterList[monNum].exp*aggroPer)/100;
+    let upExp =  Math.round((localMonsterList[monNum].exp*aggroPer)/100);
     let random = Math.floor(Math.random() * 100) + 1;
-    let getGold = ((localMonsterList[monNum].gold+random)*aggroPer)/100;
+    let getGold = Math.round(((localMonsterList[monNum].gold+random)*aggroPer)/100);
 
     let gap = userInfo.lv - localMonsterList[monNum].lv;
     if(gap > 5){
