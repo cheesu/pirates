@@ -23516,14 +23516,12 @@ var RightMenu = function (_React$Component) {
             var currentLVExp = this.logB(currentLV, 20) * 1000 * currentLV * currentLV / 6 * addLV;
             //  let nextLVExp = ((this.logB(nextLV, 20)*1000)*nextLV*nextLV/6)*addNextLV;
             var currentTotalExp = this.props.status.exp;
-
-            var upExp = nextLVExp - currentLVExp;
-            var nowExp = currentTotalExp - currentLVExp;
-            var expPercent = nowExp / upExp * 100;
+            //let upExp = nextLVExp - currentLVExp;
+            //let nowExp = currentTotalExp - currentLVExp;
+            //let expPercent = nowExp / upExp * 100;
             currentLVExp = Math.floor(currentLVExp);
-            expPercent = expPercent.toFixed(2);
+            //expPercent = expPercent.toFixed(2);
             this.setState({
-                expPer: expPercent,
                 nextLVExp: currentLVExp
             });
         }
