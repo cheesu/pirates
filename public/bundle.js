@@ -21607,7 +21607,7 @@ var Enhancement = function (_React$Component) {
         }
     }, {
         key: 'requestChangeOption',
-        value: function requestChangeOption(userInfo) {
+        value: function requestChangeOption(userInfo, grade) {
             var _this2 = this;
 
             if (this.props.userInfo.mount.w.type != 'private') {
@@ -21615,19 +21615,25 @@ var Enhancement = function (_React$Component) {
                 return false;
             }
 
-            if (this.props.userInfo.gold < 20000) {
-                alert("소지금이 부족합니다. 옵션부여에 2만골드가 소모됩니다.");
+            var price = 20000;
+
+            if (grade == 5) {
+                price = 120000;
+            }
+
+            if (this.props.userInfo.gold < price) {
+                alert("소지금이 부족합니다. 옵션부여에 " + price + "골드가 소모됩니다.");
                 return false;
             }
 
-            if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < 1) {
+            if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < grade) {
                 alert("[욕망의 돌]이 없습니다. 무기 강화를 위해 [욕망의 돌]이  필요 합니다.");
                 return false;
             }
 
-            var con_test = confirm("욕망의돌 1개와 2만골드를 사용해 " + this.props.userInfo.mount.w.name + "을(를) 옵션을 부여 하시겠습니까?");
+            var con_test = confirm("욕망의돌 " + grade + "개와 " + price + "골드를 사용해 " + this.props.userInfo.mount.w.name + "에 옵션을 부여 하시겠습니까?");
             if (con_test) {
-                _axios2.default.get('/api/account/changeOption/').then(function (response) {
+                _axios2.default.get('/api/account/changeOption/' + grade).then(function (response) {
                     if (!response.data.result) {
                         alert(response.data.msg);
                         _this2.props.socket.emit('Gchat', "[강화] " + userInfo.job2 + response.data.msg);
@@ -21832,7 +21838,54 @@ var Enhancement = function (_React$Component) {
                                     null,
                                     _react2.default.createElement(
                                         'a',
-                                        { onClick: this.requestChangeOption.bind(this, this.props.userInfo), className: 'waves-effect waves-light btn' },
+                                        { onClick: this.requestChangeOption.bind(this, this.props.userInfo, 1), className: 'waves-effect waves-light btn' },
+                                        '\uC635\uC158\uBD80\uC5EC'
+                                    )
+                                )
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'collapsible-header' },
+                                _react2.default.createElement(
+                                    'span',
+                                    { className: 'badge' },
+                                    '\uC695\uB9DD\uC758\uB3CC5\uAC1C \uC18C\uBAA8'
+                                ),
+                                '\uBB34\uAE30\uC5D0 \uACE0\uAE09 \uC635\uC158\uC744 \uBD80\uC5EC \uD55C\uB2E4.'
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'collapsible-body item-msg' },
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    '"\uBB34\uAE30\uC5D0 \uD2B9\uC218\uC635\uC158\uC774 \uB79C\uB364\uD558\uAC8C \uBD80\uC5EC \uB429\uB2C8\uB2E4."'
+                                ),
+                                _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    '\uD2B9\uC218\uC635\uC158\uC740 1\uAC00\uC9C0\uB9CC \uC801\uC6A9 \uB429\uB2C8\uB2E4.'
+                                ),
+                                _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    '\uC695\uB9DD\uC758\uB3CC 5\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                                ),
+                                _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    '12\uB9CC\uACE8\uB4DC\uAC00 \uC18C\uBE44\uB429\uB2C8\uB2E4.'
+                                ),
+                                _react2.default.createElement(
+                                    'p',
+                                    null,
+                                    _react2.default.createElement(
+                                        'a',
+                                        { onClick: this.requestChangeOption.bind(this, this.props.userInfo, 5), className: 'waves-effect waves-light btn' },
                                         '\uC635\uC158\uBD80\uC5EC'
                                     )
                                 )
@@ -23461,17 +23514,17 @@ var RightMenu = function (_React$Component) {
             }
 
             var currentLVExp = this.logB(currentLV, 20) * 1000 * currentLV * currentLV / 6 * addLV;
-            var nextLVExp = this.logB(nextLV, 20) * 1000 * nextLV * nextLV / 6 * addNextLV;
+            //  let nextLVExp = ((this.logB(nextLV, 20)*1000)*nextLV*nextLV/6)*addNextLV;
             var currentTotalExp = this.props.status.exp;
 
             var upExp = nextLVExp - currentLVExp;
             var nowExp = currentTotalExp - currentLVExp;
             var expPercent = nowExp / upExp * 100;
-
+            currentLVExp = Math.floor(currentLVExp);
             expPercent = expPercent.toFixed(2);
             this.setState({
                 expPer: expPercent,
-                nextLVExp: nextLVExp
+                nextLVExp: currentLVExp
             });
         }
     }, {

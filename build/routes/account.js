@@ -314,7 +314,9 @@ router.get('/useScroll/:itemID', function (req, res) {
 
 /* 무기 옵션 부여 */
 
-router.get('/changeOption/', function (req, res) {
+router.get('/changeOption/:grade', function (req, res) {
+  var grade = req.params.grade;
+
   _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
     if (err) throw err;
     var userInfo = eval(accounts[0]);
@@ -325,18 +327,26 @@ router.get('/changeOption/', function (req, res) {
       owCount = 0;
     }
 
+    var price = 20000;
+
+    if (grade == 5) {
+      console.log("그레이드 업");
+      console.log(grade);
+      price = 120000;
+    }
+
     if (userInfo.mount.w.type != 'private') {
       res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
       return false;
-    } else if (userInfo.gold < 20000) {
+    } else if (userInfo.gold < price) {
       res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
       return false;
-    } else if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < 1) {
+    } else if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < grade) {
       res.json({ msg: userInfo.username + "님이 스크립트 조작하다 서버에서 필터링 되었습니다.", result: false });
       return false;
     } else {
-      userInfo.itemCount.ow2 = owCount - 1;
-      userInfo.gold = userInfo.gold - 20000;
+      userInfo.itemCount.ow2 = owCount - grade;
+      userInfo.gold = userInfo.gold - price;
       _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, gold: userInfo.gold } }, function (err, output) {});
 
       _item2.default.find({ id: 'ow1' }).exec(function (err, item) {
@@ -368,20 +378,90 @@ router.get('/changeOption/', function (req, res) {
 
         var optionList = [option1, option2, option3];
 
-        var enVal = Math.floor(Math.random() * optionList.length); // 강화수치
+        var highOption1 = {
+          "per": 100,
+          "option": "upStr",
+          "max": 30,
+          "optionName": "오우거의 힘",
+          "msg": "몸에서 힘이 솟구칩니다."
+        };
 
+        var highOption2 = {
+          "per": 100,
+          "option": "upDex",
+          "max": 30,
+          "optionName": "암살자의 민첩",
+          "msg": "몸이 한결 가벼워집니다."
+        };
+
+        var highOption3 = {
+          "per": 100,
+          "option": "upInt",
+          "max": 30,
+          "optionName": "현자의 지혜",
+          "msg": "머리가 맑아집니다."
+        };
+
+        // 히든옵
+
+        var _highOption1 = {
+          "per": 100,
+          "option": "upStr",
+          "max": 50,
+          "optionName": "학살자의 힘",
+          "msg": "몸에서 힘이 솟구칩니다."
+        };
+
+        var _highOption2 = {
+          "per": 100,
+          "option": "upDex",
+          "max": 50,
+          "optionName": "킬링머신의 민첩",
+          "msg": "몸이 한결 가벼워집니다."
+        };
+
+        var _highOption3 = {
+          "per": 100,
+          "option": "upInt",
+          "max": 50,
+          "optionName": "사기꾼의 지혜",
+          "msg": "머리가 엄청나게 맑아집니다."
+        };
+
+        var highOptionList = [highOption1, highOption2, highOption3];
+
+        var _highOptionList = [_highOption1, _highOption2, _highOption3];
+
+        var enVal = Math.floor(Math.random() * optionList.length);
+        var highEnVal = Math.floor(Math.random() * highOptionList.length);
+        var _highEnVal = Math.floor(Math.random() * _highOptionList.length);
 
         // 착용무기
         _item2.default.find({ id: userInfo.mount.w.id }).exec(function (err, itemW) {
           var itemWInfo = eval(itemW[0]);
-          itemWInfo.option = optionList[enVal];
+
+          if (grade == 1) {
+            console.log("그레이드 1");
+            itemWInfo.option = optionList[enVal];
+          } else if (grade == 5) {
+            console.log("그레이드 2");
+            itemWInfo.option = highOptionList[highEnVal];
+            var hiddenOption = Math.floor(Math.random() * 100) + 1;
+
+            if (hiddenOption > 50 && hiddenOption < 61) {
+              itemWInfo.option = _highOptionList[_highEnVal];
+            }
+          } else {
+            res.json({ msg: userInfo.username + "님의 쓸데없는 호기심과 욕심에 욕망의돌과 골드가 증발 하였습니다.", result: false });
+            return false;
+          }
 
           var changeOptionCount = 0;
           try {
-            changeOptionCount = itemWInfo.changeOptionCount * 1;
-            if (itemWInfo.changeOptionCount == "NaN") {
+            if (itemWInfo.changeOptionCount == undefined) {
               changeOptionCount = 0;
             }
+            changeOptionCount = itemWInfo.changeOptionCount * 1;
           } catch (e) {
             changeOptionCount = 0;
           }
@@ -389,7 +469,7 @@ router.get('/changeOption/', function (req, res) {
           changeOptionCount = changeOptionCount + 1;
           // 강화 업데이트
           _item2.default.update({ id: userInfo.mount.w.id }, { $set: { option: itemWInfo.option, changeOptionCount: changeOptionCount } }, function (err, output) {
-            var resultMsg = req.session.loginInfo.username + "님의 [" + itemWInfo.name + "]에 " + optionList[enVal].optionName + " 부여에 성공 하였습니다";
+            var resultMsg = req.session.loginInfo.username + "님의 [" + itemWInfo.name + "]에 " + itemWInfo.option.optionName + " 부여에 성공 하였습니다";
             res.json({ msg: resultMsg, result: true });
           });
         });

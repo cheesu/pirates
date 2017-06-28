@@ -30,26 +30,33 @@ class Enhancement extends React.Component {
 
   }
 
-  requestChangeOption(userInfo){
+  requestChangeOption(userInfo, grade){
     if(this.props.userInfo.mount.w.type != 'private'){
       alert("개인전용 무기를 착용한 상태에서만 옵션을 부여 할 수 있습니다. 개인무기는 레벨 15를 달성후 운영자에게 요청하시면 얻을 수 있습니다.");
       return false;
     }
 
-    if(this.props.userInfo.gold < 20000){
-      alert("소지금이 부족합니다. 옵션부여에 2만골드가 소모됩니다.");
+
+    let price = 20000;
+
+    if(grade==5){
+      price = 120000;
+    }
+
+    if(this.props.userInfo.gold < price){
+      alert("소지금이 부족합니다. 옵션부여에 "+price+"골드가 소모됩니다.");
       return false;
     }
 
-    if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < 1) {
+    if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < grade) {
       alert("[욕망의 돌]이 없습니다. 무기 강화를 위해 [욕망의 돌]이  필요 합니다.");
       return false;
     }
 
 
-    var con_test = confirm("욕망의돌 1개와 2만골드를 사용해 "+ this.props.userInfo.mount.w.name+"을(를) 옵션을 부여 하시겠습니까?");
+    var con_test = confirm("욕망의돌 "+grade+"개와 "+price+"골드를 사용해 "+ this.props.userInfo.mount.w.name+"에 옵션을 부여 하시겠습니까?");
     if(con_test){
-      axios.get('/api/account/changeOption/')
+      axios.get('/api/account/changeOption/'+ grade)
          .then((response) => {
             if(!response.data.result){
               alert(response.data.msg);
@@ -160,9 +167,22 @@ class Enhancement extends React.Component {
                         <p>특수옵션은 1가지만 적용 됩니다.</p>
                         <p>욕망의돌 1개가 소모됩니다.</p>
                         <p>2만골드가 소비됩니다.</p>
-                        <p><a onClick={this.requestChangeOption.bind(this,this.props.userInfo)}  className="waves-effect waves-light btn">옵션부여</a></p>
+                        <p><a onClick={this.requestChangeOption.bind(this,this.props.userInfo, 1)}  className="waves-effect waves-light btn">옵션부여</a></p>
                       </div>
                     </li>
+
+                    <li>
+                      <div className="collapsible-header"><span className="badge">욕망의돌5개 소모</span>무기에 고급 옵션을 부여 한다.</div>
+                      <div className="collapsible-body item-msg">
+                        <span>"무기에 특수옵션이 랜덤하게 부여 됩니다."</span>
+                        <p>특수옵션은 1가지만 적용 됩니다.</p>
+                        <p>욕망의돌 5개가 소모됩니다.</p>
+                        <p>12만골드가 소비됩니다.</p>
+                        <p><a onClick={this.requestChangeOption.bind(this,this.props.userInfo,5)}  className="waves-effect waves-light btn">옵션부여</a></p>
+                      </div>
+                    </li>
+
+
                   </ul>
 
               </div>
