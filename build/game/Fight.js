@@ -717,8 +717,8 @@ function expLevelup(userInfo, io, monNum, info, kind) {
     partyGold = Math.round((localMonsterList[monNum].gold + random / 100) * 30);
   }
 
-  var totalExp = userInfo.exp + upExp;
-  var setGold = userInfo.gold + getGold;
+  var totalExp = Math.round(userInfo.exp + upExp);
+  var setGold = Math.round(userInfo.gold + getGold);
 
   try {
     var dropPer = Math.floor(Math.random() * 1000) + 1;

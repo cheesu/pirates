@@ -748,8 +748,9 @@ function checkCritical(dex){
     }
 
 
-    let totalExp = userInfo.exp + upExp;
-    let setGold = userInfo.gold + getGold;
+    let totalExp = Math.round(userInfo.exp + upExp);
+    let setGold = Math.round(userInfo.gold + getGold);
+
 
     try {
       let dropPer =  Math.floor(Math.random() * 1000)+1;
