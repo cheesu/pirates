@@ -270,19 +270,25 @@ var useSkill = function useSkill(io, info) {
 
               /***공깍***/
               else {
-                  for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
-                    if (localMonsterList[monNum].sp[spCount].type == skillInfo.sp.type) {
+                  for (var _spCount = 0; _spCount < localMonsterList[monNum].sp.length; _spCount++) {
+                    console.log("걸려있는 특수 스킬");
+                    console.log(localMonsterList[monNum].sp);
+                    if (localMonsterList[monNum].sp[_spCount].type == skillInfo.sp.type) {
+                      console.log("중복에 걸림");
                       io.emit(userInfo.username + "[skill]", "이미 동일한 스킬이 걸려 있습니다.");
                       return false;
                     }
                   }
+
+                  console.log("소드브레이크 발동");
                   var spIndex = localMonsterList[monNum].sp.length;
                   localMonsterList[monNum].sp.push(skillInfo.sp);
 
                   setTimeout(function () {
+                    console.log("디버프 효과 종료");
                     // Code here
                     localMonsterList[monNum].sp.splice(spIndex, 1);
-                    io.emit(info.ch + "fight", skillInfo.name + "의 효과가 끝났습니다.");
+                    io.emit(info.ch + "fight", "[skill]" + skillInfo.name + "의 효과가 끝났습니다.");
                   }, 1000 * skillInfo.sp.time);
                 }
               /***공깍 끝***/
