@@ -297,19 +297,27 @@ var useSkill = function useSkill(io, info) {
               fightInterval[userInfo.username + "skill"] = false;
               return false;
             }
-
             /*특수 스킬 끝*/
 
+            var lvGap = (localMonsterList[monNum].lv - userInfo.lv) * 2;
+            if (lvGap < -10) {
+              lvGap = -10;
+            }
+            var lvBonus = userInfo.lv / (20 + lvGap);
+            var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
+
             var targetCurrentHP = 9999;
+            var criCount = 0;
+            // hit 연타 시작
             for (var count = 0; count < skillInfo.hit; count++) {
 
-              var lvGap = (localMonsterList[monNum].lv - userInfo.lv) * 2;
-              if (lvGap < -10) {
-                lvGap = -10;
+              if (userInfo.job == "암살자" && criCount < userInfo.lv / 15) {} else if (userInfo.job == "암살자" && criCount > userInfo.lv / 15) {
+                userInfo.dex = 0;
               }
-              var lvBonus = userInfo.lv / (20 + lvGap);
 
-              var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
+              if (userInfo.job != "암살자") {
+                dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
+              }
 
               /*특수스킬 방깍*/
               for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
@@ -329,6 +337,7 @@ var useSkill = function useSkill(io, info) {
               var critical = checkCritical(userInfo.dex - lvGap * 15);
               var result = "";
               if (critical) {
+                criCount++;
                 dmg = dmg * 1.7;
                 dmg = Math.round(dmg);
                 _skillAttackMsg = "[skill]" + skillInfo.attackMsg + "[" + dmg + "]-[Critical!!!!]";

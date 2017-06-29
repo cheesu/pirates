@@ -290,20 +290,31 @@ var useSkill = function(io,info){
                     fightInterval[userInfo.username+"skill"] = false;
                     return false;
                   }
-
-
                   /*특수 스킬 끝*/
 
+
+                  let lvGap = (localMonsterList[monNum].lv - userInfo.lv)*2 ;
+                  if(lvGap < -10){
+                    lvGap = -10;
+                  }
+                  let lvBonus = userInfo.lv/(20+lvGap);
+                  let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - localMonsterList[monNum].dp;
+
                   let targetCurrentHP=9999;
+                  let criCount = 0;
+                  // hit 연타 시작
                   for(var count=0; count < skillInfo.hit; count++){
 
-                    let lvGap = (localMonsterList[monNum].lv - userInfo.lv)*2 ;
-                    if(lvGap < -10){
-                      lvGap = -10;
-                    }
-                    let lvBonus = userInfo.lv/(20+lvGap);
+                  if(userInfo.job=="암살자"&& criCount < (userInfo.lv/15)){
 
-                    let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - localMonsterList[monNum].dp;
+                  }
+                  else if(userInfo.job=="암살자"&& criCount > (userInfo.lv/15)){
+                    userInfo.dex = 0;
+                  }
+
+                  if(userInfo.job!="암살자"){
+                    dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - localMonsterList[monNum].dp;
+                  }
 
                     /*특수스킬 방깍*/
                     for(var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
@@ -323,6 +334,7 @@ var useSkill = function(io,info){
                     var critical = checkCritical(userInfo.dex-(lvGap*15));
                     let result="";
                     if(critical){
+                      criCount++;
                       dmg = dmg*1.7;
                       dmg = Math.round(dmg);
                       skillAttackMsg =  "[skill]"+skillInfo.attackMsg+"["+dmg+"]-[Critical!!!!]"
