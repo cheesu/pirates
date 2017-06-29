@@ -323,7 +323,7 @@ var useSkill = function useSkill(io, info) {
               for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
                 if (localMonsterList[monNum].sp[spCount].type == "downDp") {
                   var skillVal = localMonsterList[monNum].sp[spCount].val;
-                  dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp / skillVal * 100;
+                  dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp * ((100 - skillVal) / 100);
                 }
               }
 
@@ -501,7 +501,7 @@ var fight = function fight(io, info) {
         for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
           if (localMonsterList[monNum].sp[spCount].type == "downAp") {
             var skillVal = localMonsterList[monNum].sp[spCount].val;
-            reDmg = Math.floor(reDmg / skillVal * 100);
+            reDmg = Math.floor(reDmg * ((100 - skillVal) / 100));
           }
         }
 
@@ -678,7 +678,7 @@ var fight = function fight(io, info) {
         for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
           if (localMonsterList[monNum].sp[spCount].type == "downDp") {
             var skillVal = localMonsterList[monNum].sp[spCount].val;
-            dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus - localMonsterList[monNum].dp / skillVal * 100;
+            dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus - localMonsterList[monNum].dp * ((100 - skillVal) / 100);
           }
         }
 
@@ -814,9 +814,9 @@ function expLevelup(userInfo, io, monNum, info, kind) {
 
   if (info.party) {
     upExp = Math.round(upExp / 100 * 70);
-    partyExp = Math.round(localMonsterList[monNum].exp / 100 * 30);
+    partyExp = Math.round(localMonsterList[monNum].exp * ((100 - 30) / 100));
     getGold = Math.round(getGold / 100 * 70);
-    partyGold = Math.round((localMonsterList[monNum].gold + random) / 100 * 30);
+    partyGold = Math.round((localMonsterList[monNum].gold + random) * ((100 - 30) / 100));
   }
 
   var totalExp = Math.round(userInfo.exp + upExp);
