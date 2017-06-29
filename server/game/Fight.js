@@ -42,7 +42,8 @@ function loadMonsterList(){
               monObj.dieMsg = monsters[monCount].dieMsg;
               monObj.exp = monsters[monCount].exp;
               monObj.gold = monsters[monCount].gold;
-              monObj.Aggravation = [];
+              monObj.sp = []; // 디버프 담아놓는 그릇
+              monObj.Aggravation = []; // 기여도 담아놓는 그릇
               monObj.area= monsters[monCount].mapName+"-"+monLocalArr[localCount];
 
 
@@ -234,6 +235,47 @@ var useSkill = function(io,info){
 
                   let targetCurrentHP=9999;
                   for(var count=0; count < skillInfo.hit; count++){
+
+                    /*특수 스킬 */
+                    if(skillInfo.sp!=undefined){
+
+                      /***힐***/
+                      if(skillInfo.sp.type=='heal'){
+                        for(var memberCount = 0; memberCount < info.partyMember.length; memberCount++){
+                            // 같은 맵에 있으면 분배
+                            if(partyMember.mapName == info.mapName){
+                              fightInterval[info.partyMember[memberCount]+"HP"] = fightInterval[info.partyMember[memberCount]+"HP"]+info.upData;
+                              io.emit(info.partyMember[memberCount]+"userHP", fightInterval[info.partyMember[memberCount]+"HP"]+"-"+info.maxHP);
+                              io.emit(info.partyMember[memberCount]+"fight", "[skill] "+userInfo.username+"님이 사랑의 힐을 주었습니다. 체력이 회복 됩니다.");
+                            }
+                        }
+                      }
+                      /***힐 끝***/
+
+                      /***공깍***/
+                      else{
+                        for(var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
+                          if(localMonsterList[monNum].sp[spCount].type==skillInfo.sp.type){
+                            io.emit(userInfo.username+"[skill]", "이미 동일한 스킬이 걸려 있습니다.");
+                            return false;
+                          }
+                        }
+                        localMonsterList[monNum].sp.push(skillInfo.sp);
+                      }
+                      /***공깍 끝***/
+
+
+
+                      let skillAttackMsg =  "[skill]"+skillInfo.attackMsg;
+                      io.emit(info.ch+"fight", skillAttackMsg);
+                      return false;
+                    }
+
+
+                    /*특수 스킬 끝*/
+
+
+
                     let lvGap = (localMonsterList[monNum].lv - userInfo.lv)*2 ;
                     if(lvGap < -10){
                       lvGap = -10;
@@ -744,7 +786,7 @@ function checkCritical(dex){
       upExp = Math.round((upExp/100)*70);
       partyExp = Math.round((localMonsterList[monNum].exp/100)*30);
       getGold = Math.round((getGold/100)*70);
-      partyGold = Math.round((localMonsterList[monNum].gold+random/100)*30);
+      partyGold = Math.round(((localMonsterList[monNum].gold+random)/100)*30);
     }
 
 
