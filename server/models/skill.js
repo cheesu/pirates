@@ -13,6 +13,7 @@ const Skill = new Schema({
     dmg:Number(),
     coolTime:Number(),
     txt:String,
+    sp:Object(),
 });
 
 

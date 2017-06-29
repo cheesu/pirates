@@ -22,7 +22,8 @@ var Skill = new Schema({
     attackMsg: String,
     dmg: Number(),
     coolTime: Number(),
-    txt: String
+    txt: String,
+    sp: Object()
 });
 
 exports.default = _mongoose2.default.model('skill', Skill);

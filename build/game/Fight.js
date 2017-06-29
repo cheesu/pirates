@@ -239,52 +239,88 @@ var useSkill = function useSkill(io, info) {
               }
             }
 
+            /*특수 스킬 */
+            if (skillInfo.sp != undefined) {
+              /***힐***/
+              if (skillInfo.sp.type == 'heal') {
+                var memberCount;
+
+                (function () {
+                  var healUp = (userInfo.int + wAP) * skillInfo.sp.val;
+                  for (memberCount = 0; memberCount < info.partyMember.length; memberCount++) {
+                    // 같은 맵에 있으면 분배
+                    _account2.default.findOne({ username: info.partyMember[memberCount] }, function (err, partyAccount) {
+                      if (err) throw err;
+                      var partyMember = eval(partyAccount);
+                      if (partyMember.mapName == info.mapName) {
+
+                        if (fightInterval[partyMember.username + "HP"] + healUp > partyMember.max_hp) {
+                          healUp = partyMember.max_hp - fightInterval[partyMember.username + "HP"];
+                        }
+
+                        fightInterval[partyMember.username + "HP"] = fightInterval[partyMember.username + "HP"] + healUp;
+                        io.emit(partyMember.username + "userHP", fightInterval[partyMember.username + "HP"] + "-" + partyMember.max_hp);
+                        io.emit(partyMember.username + "fight", "[skill] " + userInfo.username + "님이 사랑의 힐을 주었습니다. 체력이 [" + healUp + "] 회복 됩니다.");
+                      }
+                    });
+                  }
+                })();
+              }
+              /***힐 끝***/
+
+              /***공깍***/
+              else {
+                  for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
+                    if (localMonsterList[monNum].sp[spCount].type == skillInfo.sp.type) {
+                      io.emit(userInfo.username + "[skill]", "이미 동일한 스킬이 걸려 있습니다.");
+                      return false;
+                    }
+                  }
+                  var spIndex = localMonsterList[monNum].sp.length;
+                  localMonsterList[monNum].sp.push(skillInfo.sp);
+
+                  setTimeout(function () {
+                    // Code here
+                    localMonsterList[monNum].sp.splice(spIndex, 1);
+                    io.emit(info.ch + "fight", skillInfo.name + "의 효과가 끝났습니다.");
+                  }, 1000 * skillInfo.sp.time);
+                }
+              /***공깍 끝***/
+
+              var skillAttackMsg = "[skill]" + skillInfo.attackMsg;
+              io.emit(info.ch + "fight", skillAttackMsg);
+
+              io.emit(userInfo.username + "[SkillEnd]", "");
+              clearInterval(fightInterval[userInfo.username + "skillInterval"]);
+              fightInterval[userInfo.username + "CastingCount"] = null;
+              fightInterval[userInfo.username + "skillInterval"] = null;
+              fightInterval[userInfo.username + "skill"] = false;
+              return false;
+            }
+
+            /*특수 스킬 끝*/
+
             var targetCurrentHP = 9999;
             for (var count = 0; count < skillInfo.hit; count++) {
-
-              /*특수 스킬 */
-              if (skillInfo.sp != undefined) {
-
-                /***힐***/
-                if (skillInfo.sp.type == 'heal') {
-                  for (var memberCount = 0; memberCount < info.partyMember.length; memberCount++) {
-                    // 같은 맵에 있으면 분배
-                    if (partyMember.mapName == info.mapName) {
-                      fightInterval[info.partyMember[memberCount] + "HP"] = fightInterval[info.partyMember[memberCount] + "HP"] + info.upData;
-                      io.emit(info.partyMember[memberCount] + "userHP", fightInterval[info.partyMember[memberCount] + "HP"] + "-" + info.maxHP);
-                      io.emit(info.partyMember[memberCount] + "fight", "[skill] " + userInfo.username + "님이 사랑의 힐을 주었습니다. 체력이 회복 됩니다.");
-                    }
-                  }
-                }
-                /***힐 끝***/
-
-                /***공깍***/
-                else {
-                    for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
-                      if (localMonsterList[monNum].sp[spCount].type == skillInfo.sp.type) {
-                        io.emit(userInfo.username + "[skill]", "이미 동일한 스킬이 걸려 있습니다.");
-                        return false;
-                      }
-                    }
-                    localMonsterList[monNum].sp.push(skillInfo.sp);
-                  }
-                /***공깍 끝***/
-
-                var _skillAttackMsg = "[skill]" + skillInfo.attackMsg;
-                io.emit(info.ch + "fight", _skillAttackMsg);
-                return false;
-              }
-
-              /*특수 스킬 끝*/
 
               var lvGap = (localMonsterList[monNum].lv - userInfo.lv) * 2;
               if (lvGap < -10) {
                 lvGap = -10;
               }
               var lvBonus = userInfo.lv / (20 + lvGap);
+
               var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
+
+              /*특수스킬 방깍*/
+              for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
+                if (localMonsterList[monNum].sp[spCount].type == "downDp") {
+                  var skillVal = localMonsterList[monNum].sp[spCount].val;
+                  dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp / skillVal * 100;
+                }
+              }
+
               dmg = Math.round(dmg);
-              var skillAttackMsg = "";
+              var _skillAttackMsg = "";
 
               if (lvGap < 0) {
                 lvGap = 0;
@@ -295,11 +331,11 @@ var useSkill = function useSkill(io, info) {
               if (critical) {
                 dmg = dmg * 1.7;
                 dmg = Math.round(dmg);
-                skillAttackMsg = "[skill]" + skillInfo.attackMsg + "[" + dmg + "]-[Critical!!!!]";
+                _skillAttackMsg = "[skill]" + skillInfo.attackMsg + "[" + dmg + "]-[Critical!!!!]";
                 localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
                 io.emit(userInfo.username + "[Cri]", "");
               } else {
-                skillAttackMsg = "[skill]" + skillInfo.attackMsg + "[" + dmg + "]";
+                _skillAttackMsg = "[skill]" + skillInfo.attackMsg + "[" + dmg + "]";
                 localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
               }
 
@@ -338,7 +374,7 @@ var useSkill = function useSkill(io, info) {
               /*어그로 끝*/
 
               //  let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
-              io.emit(info.ch + "fight", skillAttackMsg);
+              io.emit(info.ch + "fight", _skillAttackMsg);
               //  io.emit(info.ch+"fight", monHPMsg);
             }
 
@@ -356,6 +392,7 @@ var useSkill = function useSkill(io, info) {
               expLevelup(userInfo, io, monNum, info, "스킬"); // 렙업인지 경치만 획득인지 계산한다
             }
 
+            io.emit(userInfo.username + "[SkillEnd]", "");
             clearInterval(fightInterval[userInfo.username + "skillInterval"]);
             fightInterval[userInfo.username + "CastingCount"] = null;
             fightInterval[userInfo.username + "skillInterval"] = null;
@@ -447,6 +484,14 @@ var fight = function fight(io, info) {
           if (localMonsterList[monNum].hp < 1500000 && localMonsterList[monNum].hp > 800000) {
             reDmg = reDmg * 1.3;
             io.emit(info.ch + "fight", "[피격] '지옥으로 떨어져라 버리지들아!' 성기사 정찰대 대장의 눈이 붉게 변합니다.");
+          }
+        }
+
+        /*특수스킬 공깍*/
+        for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
+          if (localMonsterList[monNum].sp[spCount].type == "downAp") {
+            var skillVal = localMonsterList[monNum].sp[spCount].val;
+            reDmg = Math.floor(reDmg / skillVal * 100);
           }
         }
 
@@ -618,7 +663,17 @@ var fight = function fight(io, info) {
         }
         var lvBonus = userInfo.lv / (20 + lvGap);
         var dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus - localMonsterList[monNum].dp;
+
+        /*특수스킬 방깍*/
+        for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
+          if (localMonsterList[monNum].sp[spCount].type == "downDp") {
+            var skillVal = localMonsterList[monNum].sp[spCount].val;
+            dmg = userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus - localMonsterList[monNum].dp / skillVal * 100;
+          }
+        }
+
         dmg = Math.round(dmg);
+
         if (dmg < 0) {
           dmg = 1;
         }
@@ -841,6 +896,12 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   }
   // 경험치 업데이트
 
+  /****경험치 이벤트****/
+  if (userInfo.lv < 40) {
+    totalExp = totalExp * 2;
+  }
+
+  /****경험치 이벤트****/
 
   _account2.default.update({ username: userInfo.username }, { $set: { exp: totalExp, gold: setGold, item: userInfo.item, itemCount: userInfo.itemCount } }, function (err, output) {
     if (err) console.log(err);
@@ -862,6 +923,13 @@ function expLevelup(userInfo, io, monNum, info, kind) {
         if (partyMember.mapName == info.mapName) {
           var totalPartyExp = partyMember.exp + partyExp;
           var totalPartyGold = partyMember.gold + partyGold;
+
+          /****경험치 이벤트****/
+          if (partyMember.lv < 40) {
+            totalPartyExp = totalPartyExp * 2;
+          }
+          /****경험치 이벤트****/
+
           _account2.default.update({ username: partyMember.username }, { $set: { exp: totalPartyExp, gold: totalPartyGold } }, function (err, output) {
             if (err) console.log(err);
             io.emit(partyMember.username, "[파티] " + localMonsterList[monNum].name + "을 쓰러뜨려 파티 경험치 " + partyExp + "과 " + partyGold + "골드를 획득 하였습니다.");
