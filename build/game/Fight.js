@@ -310,9 +310,9 @@ var useSkill = function useSkill(io, info) {
             var criCount = 0;
             // hit 연타 시작
             for (var count = 0; count < skillInfo.hit; count++) {
-
+              var criOver = true;
               if (userInfo.job == "암살자" && criCount < userInfo.lv / 15) {} else if (userInfo.job == "암살자" && criCount > userInfo.lv / 15) {
-                userInfo.dex = 0;
+                criOver = false;
               }
 
               if (userInfo.job != "암살자") {
@@ -336,7 +336,7 @@ var useSkill = function useSkill(io, info) {
 
               var critical = checkCritical(userInfo.dex - lvGap * 15);
               var result = "";
-              if (critical) {
+              if (critical && criOver) {
                 criCount++;
                 dmg = dmg * 1.7;
                 dmg = Math.round(dmg);
@@ -402,6 +402,7 @@ var useSkill = function useSkill(io, info) {
             }
 
             io.emit(userInfo.username + "[SkillEnd]", "");
+            criCount = 0;
             clearInterval(fightInterval[userInfo.username + "skillInterval"]);
             fightInterval[userInfo.username + "CastingCount"] = null;
             fightInterval[userInfo.username + "skillInterval"] = null;
