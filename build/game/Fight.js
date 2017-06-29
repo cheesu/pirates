@@ -912,12 +912,6 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   }
   // 경험치 업데이트
 
-  /****경험치 이벤트****/
-  if (userInfo.lv < 40) {
-    totalExp = totalExp * 2;
-  }
-
-  /****경험치 이벤트****/
 
   _account2.default.update({ username: userInfo.username }, { $set: { exp: totalExp, gold: setGold, item: userInfo.item, itemCount: userInfo.itemCount } }, function (err, output) {
     if (err) console.log(err);
@@ -940,12 +934,6 @@ function expLevelup(userInfo, io, monNum, info, kind) {
           var totalPartyExp = partyMember.exp + partyExp;
           var totalPartyGold = partyMember.gold + partyGold;
 
-          /****경험치 이벤트****/
-          if (partyMember.lv < 40) {
-            totalPartyExp = totalPartyExp * 2;
-          }
-          /****경험치 이벤트****/
-
           _account2.default.update({ username: partyMember.username }, { $set: { exp: totalPartyExp, gold: totalPartyGold } }, function (err, output) {
             if (err) console.log(err);
             io.emit(partyMember.username, "[파티] " + localMonsterList[monNum].name + "을 쓰러뜨려 파티 경험치 " + partyExp + "과 " + partyGold + "골드를 획득 하였습니다.");
@@ -961,6 +949,11 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   if (addLV == 0) {
     addLV = 1;
   }
+  console.log("버그 확인");
+  console.log(totalExp);
+  console.log(userInfo.lv);
+  console.log(addLV);
+  console.log(logB(userInfo.lv, 20) * 1000 * userInfo.lv * userInfo.lv / 6 * addLV);
 
   // 레벨업 판단
   if (logB(userInfo.lv, 20) * 1000 * userInfo.lv * userInfo.lv / 6 * addLV < totalExp) {

@@ -850,6 +850,7 @@ function checkCritical(dex){
     let random = Math.floor(Math.random() * 100) + 1;
     let getGold = Math.round(((localMonsterList[monNum].gold+random)*aggroPer)/100);
 
+
     let gap = userInfo.lv - localMonsterList[monNum].lv;
     if(gap > 5){
       upExp = Math.round(upExp/3);
@@ -958,12 +959,7 @@ function checkCritical(dex){
     }
     // 경험치 업데이트
 
-    /****경험치 이벤트****/
-    if(userInfo.lv < 40){
-      totalExp = totalExp*2;
-    }
 
-    /****경험치 이벤트****/
 
     Account.update({username: userInfo.username},{$set:{exp:totalExp, gold:setGold, item:userInfo.item, itemCount:userInfo.itemCount}}, function(err, output){
       if(err) console.log(err);
@@ -987,11 +983,6 @@ function checkCritical(dex){
               let totalPartyExp = partyMember.exp + partyExp;
               let totalPartyGold = partyMember.gold + partyGold;
 
-              /****경험치 이벤트****/
-              if(partyMember.lv < 40){
-                totalPartyExp = totalPartyExp*2;
-              }
-              /****경험치 이벤트****/
 
               Account.update({username: partyMember.username},{$set:{exp:totalPartyExp, gold:totalPartyGold}}, function(err, output){
                 if(err) console.log(err);
@@ -1016,6 +1007,11 @@ function checkCritical(dex){
     if(addLV==0){
       addLV = 1;
     }
+    console.log("버그 확인");
+    console.log(totalExp);
+    console.log(userInfo.lv);
+    console.log(addLV);
+    console.log(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV);
 
     // 레벨업 판단
     if(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV < totalExp){
