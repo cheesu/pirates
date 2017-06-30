@@ -366,8 +366,10 @@ toggleOpenEnhancement(){
 
           let msgArr = this.state.mapMsg;
           let msgCount = Math.floor(Math.random() * msgArr.length);
-
-          this.props.socket.emit('private', "..."+msgArr[msgCount]);
+            let random = Math.floor(Math.random() * 100) + 1;
+            if(random > 8){
+                this.props.socket.emit('private', "..."+msgArr[msgCount]);
+            }
         }
       }
 

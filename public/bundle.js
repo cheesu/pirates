@@ -20959,8 +20959,10 @@ var Controller = function (_React$Component) {
 
         var msgArr = this.state.mapMsg;
         var msgCount = Math.floor(Math.random() * msgArr.length);
-
-        this.props.socket.emit('private', "..." + msgArr[msgCount]);
+        var random = Math.floor(Math.random() * 100) + 1;
+        if (random > 8) {
+          this.props.socket.emit('private', "..." + msgArr[msgCount]);
+        }
       }
     }
 
