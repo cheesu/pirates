@@ -5,9 +5,7 @@ html ,body{
 
 body {
     background-color: #000;
-
 }
-
 
 .shine, .chrome {
   font-size: 1em;
@@ -435,7 +433,7 @@ ul.search-results {
 /* right-menu */
 .right-menu-screen {
     position: fixed;
-    overflow-y: none;
+    overflow-y: auto;
     left: 0px;
     top: 0px;
     height:100%;

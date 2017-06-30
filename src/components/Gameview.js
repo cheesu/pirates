@@ -1,6 +1,7 @@
 import React from 'react';
 import { CurrentUser } from 'Components';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import cookie from 'react-cookies'
 class Gameview extends React.Component {
 
   constructor(props, context) {
@@ -117,6 +118,28 @@ class Gameview extends React.Component {
               </ul>
             </div>
             {this.state.chat.map(function(chat,i){
+
+              let mode =   cookie.load("mode");
+
+              if(mode=="comp"){
+
+                if(chat.indexOf('[monsterDieMsg]')==0){
+                  let _text = chat;
+                  _text = _text.substr(15,_text.length);
+                  return <p className="bla-bla-class" key={i}>{_text}</p>
+                }else if(chat.indexOf('[몬스터]')==0){
+                  let _text = chat;
+                  _text = _text.substr(5,_text.length);
+                  return (<p className="bla-bla-class" key={i}> {_text}</p>);
+                }else if(chat.indexOf('[line098098098]')==0){
+                  return <p className="bla-bla-class chat-line" key={i}></p>
+                }
+                else{
+                    return <p className="bla-bla-class" key={i}>{chat}</p>
+                }
+              }
+
+
               if(chat.indexOf('[휴식]')==0){
                 return <p className="bla-bla-class chat-green" key={i}>{chat}</p>
               }

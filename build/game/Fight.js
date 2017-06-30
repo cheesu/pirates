@@ -452,8 +452,25 @@ var fight = function fight(io, info) {
       fightInterval[userInfo.username + "fighting"] = true; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
       fightInterval[userInfo.username + "HP"] = userInfo.hp;
 
-      // 몬스터가 공격
+      // 몬스터가 공격 인터벌 시작
       fightInterval[userInfo.username + "monsterAttack"] = setInterval(function () {
+
+        //어그로 기여도 계산
+
+        if (localMonsterList[monNum].Aggravation.length != 0) {
+          var aggro = localMonsterList[monNum].Aggravation;
+          var maxDmg = 0;
+          var maxCount = 0;
+          for (var aggroCount = 0; aggroCount < aggro.length; aggroCount++) {
+            if (aggro[aggroCount].dmg > maxDmg) {
+              maxDmg = aggro[aggroCount].dmg;
+              maxCount = aggroCount;
+            }
+          }
+          if (aggro[maxCount].name != userInfo.username) {
+            return false;
+          }
+        }
 
         // 방어구 최소방어
         var dMinDP = userInfo.mount.d.min;
@@ -468,6 +485,9 @@ var fight = function fight(io, info) {
         }
 
         var randomDP = Math.floor(Math.random() * dMaxDP) + dMinDP;
+
+        var dpBo = userInfo.lv / 2;
+        randomDP = randomDP + dpBo / 100 * dpBo;
 
         var lvGap = localMonsterList[monNum].lv - userInfo.lv;
         if (lvGap < 0) {
@@ -556,6 +576,12 @@ var fight = function fight(io, info) {
             io.emit(info.ch + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 적의 공격을 타고 흘러 반격합니다. [" + reDmg * 10 + "]");
           }
         }
+
+        if (userInfo.job == '검사') {
+          var _reDmg = _reDmg * 0.85;
+        }
+
+        reDmg = Math.floor(reDmg);
 
         var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
         fightInterval[userInfo.username + "HP"] -= reDmg;

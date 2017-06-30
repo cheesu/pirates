@@ -5,6 +5,7 @@ import { getStatusRequest  } from 'Actions/authentication';
 import { skillRequest  } from 'Actions/skill';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import {UserItem } from 'Components';
+import cookie from 'react-cookies'
 class RightMenu extends React.Component {
     constructor(props) {
         super(props);
@@ -20,6 +21,8 @@ class RightMenu extends React.Component {
         this.handleRightMenu = this.handleRightMenu.bind(this);
         this.toggleUserItem = this.toggleUserItem.bind(this);
         this.onAllClose = this.onAllClose.bind(this);
+        this.compMode = this.compMode.bind(this);
+        this.normalMode = this.normalMode.bind(this);
 
         this.calcExp = this.calcExp.bind(this);
 
@@ -53,6 +56,16 @@ class RightMenu extends React.Component {
       this.calcExp();
        $('.collapsible').collapsible();
   }
+
+
+normalMode(){
+  cookie.save("mode", "normal", { path: '/' });
+}
+
+compMode(){
+  console.log("회사모드 설정")
+  cookie.save("mode", "comp", { path: '/' });
+}
 
 calcExp(){
   let currentLV = this.props.status.lv;
@@ -124,7 +137,12 @@ logB(x, base) {
                 <div className="container">
                     <br></br>
                     <br></br><br></br>
+                      <ul>
+                          <li><a onClick={this.compMode}  ><i className="material-icons btn  waves-effect waves-light">회사모드</i></a></li>
+                          <li><a onClick={this.normalMode}><i className="material-icons btn  waves-effect waves-light">일반모드</i></a></li>
+                      </ul>
                     <div className="user-info">
+
                       <ul className="right-menu-results">
                           <li> ID: <span>{this.props.status.currentUser}</span></li>
                           <li> LV: <span>{this.props.status.lv}</span></li>
