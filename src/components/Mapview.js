@@ -1,6 +1,7 @@
 import React from 'react';
 import { CurrentUser } from 'Components';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import cookie from 'react-cookies'
 class Mapview extends React.Component {
 
   constructor(props, context) {
@@ -39,7 +40,16 @@ class Mapview extends React.Component {
         return (
           <div id="mapViewContainer" className="map-view">
             {this.state.map.map(function(map,i){
+              let mode =   cookie.load("mode");
+
+              if(mode=="comp"){
+                return <p className="map-view-p" key={i}>{map}</p>
+              }
+              else{
                 return <p className="map-view-p chrome" key={i}>{map}</p>
+              }
+
+
             })}
             <div>☆: 나의위치, □:갈 수 있는길, ■:못감, ♨:상점 ,※:다음맵</div>
           </div>

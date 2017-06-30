@@ -1,6 +1,7 @@
 import React from 'react';
 import { CurrentUser } from 'Components';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import cookie from 'react-cookies'
 class HPview extends React.Component {
 
   constructor(props, context) {
@@ -92,8 +93,11 @@ class HPview extends React.Component {
       viewTargetHP(data);
       });
       this.socket.on(this.props.attackInfo.userName+'[Cri]', function(data){ //몬스터 체력
-      console.log("크리티컬!!!");
-      this.vibrationComp();
+      let mode =   cookie.load("mode");
+      if(mode!="comp"){
+        this.vibrationComp();
+      }
+
     }.bind(this));
 
     }
