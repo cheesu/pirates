@@ -135,11 +135,9 @@ toggleOpenEnhancement(){
 
 
         this.getMapAxio();
-        this.props.socket.emit('addUser', this.props.username);
 
-        this.props.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
-        location.href="/login";
-        });
+
+
 
 
         // 몬스터 셋팅
@@ -367,7 +365,7 @@ toggleOpenEnhancement(){
           let msgArr = this.state.mapMsg;
           let msgCount = Math.floor(Math.random() * msgArr.length);
             let random = Math.floor(Math.random() * 100) + 1;
-            if(random > 8){
+            if(random < 8){
                 this.props.socket.emit('private', "..."+msgArr[msgCount]);
             }
         }
@@ -696,22 +694,27 @@ toggleOpenEnhancement(){
                                                   userInfo = {this.props.userInfo}
                                                   socket={this.props.socket}
                                                   monster={this.state.monster}
+                                                  getStatusRequest = {this.props.getStatusRequest}
+                                                  userItemRequest = {this.props.userItemRequest}
+                                                  userItems = {this.props.userItems}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 
                 <ReactCSSTransitionGroup transitionName="item-store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.openStore ? <Store onClose={this.toggleOpenStore}
-                                                  socket={this.props.socket}
                                                   userInfo = {this.props.userInfo}
+                                                  userItemRequest = {this.props.userItemRequest}
+                                                  getStatusRequest = {this.props.getStatusRequest}
+                                                  userItems = {this.props.userItems}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 
                 <ReactCSSTransitionGroup transitionName="item-store" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                      { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                      {this.state.openChangeJob ? <ChangeJob onClose={this.toggleOpenChangeJob}
-                                                  socket={this.props.socket}
                                                   userInfo = {this.props.userInfo}
+                                                  getStatusRequest = {this.props.getStatusRequest}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Header } from 'Components';
+import { Header, Home } from 'Components';
 import { getStatusRequest, logoutRequest  } from 'Actions/authentication';
 import { searchRequest} from 'Actions/search';
 import { connect } from 'react-redux';
@@ -83,8 +83,12 @@ class App extends React.Component {
               {isAuth ? undefined : <Header isLoggedIn={this.props.status.isLoggedIn}
                                               onLogout={this.handleLogout}
                                               onSearch={this.handleSearch}
-                                              usernames={this.props.searchResults}/>}
+                                              usernames={this.props.searchResults}
+                                              status={this.props.status}
+                                              getStatusRequest={this.props.getStatusRequest}/>
+                                            }
 
+                                              <Home />
             </div>
         );
     }

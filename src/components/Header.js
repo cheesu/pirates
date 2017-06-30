@@ -84,7 +84,8 @@ class Header extends React.Component {
              <ReactCSSTransitionGroup transitionName="right-menu" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                   { /* IMPLEMENT: SHOW SEARCH WHEN SEARCH STATUS IS TRUE */}
                   {this.state.rightMenu ? <RightMenu onClose={this.toggleRightMenu}
-                                                    onRightMenu={this.props.onRightMenu}
+                                                    status={this.props.status}
+                                                    getStatusRequest={this.props.getStatusRequest}
                                                /> : undefined }
              </ReactCSSTransitionGroup>
            </div>

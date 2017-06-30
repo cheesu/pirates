@@ -1,7 +1,5 @@
 import React from 'react';
-import { browserHistory, Link } from 'react-router';
 import { connect } from 'react-redux';
-import { getStatusRequest  } from 'Actions/authentication';
 import { skillRequest  } from 'Actions/skill';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import {UserItem } from 'Components';
@@ -18,7 +16,6 @@ class RightMenu extends React.Component {
         };
 
         this.handleClose = this.handleClose.bind(this);
-        this.handleRightMenu = this.handleRightMenu.bind(this);
         this.toggleUserItem = this.toggleUserItem.bind(this);
         this.onAllClose = this.onAllClose.bind(this);
         this.compMode = this.compMode.bind(this);
@@ -26,7 +23,6 @@ class RightMenu extends React.Component {
 
         this.calcExp = this.calcExp.bind(this);
 
-      var userName = this.props.status.currentUser;
     }
 
     onAllClose(){
@@ -35,14 +31,9 @@ class RightMenu extends React.Component {
     }
 
     handleClose() {
-        this.handleRightMenu('');
         this.props.onClose();
     }
 
-
-    handleRightMenu(keyword) {
-        // TO BE IMPLEMENTED
-    }
 
     toggleUserItem(){
       this.setState({
@@ -175,6 +166,7 @@ logB(x, base) {
                      {this.state.userItem ? <UserItem onClose={this.toggleUserItem}
                                                       onAllClose={this.onAllClose}
                                                       userInfo = {this.props.status}
+                                                      getStatusRequest={this.props.getStatusRequest}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
             </div>
@@ -200,7 +192,6 @@ RightMenu.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        status: state.authentication.status,
         skills: state.skill.skills,
     };
 };
@@ -208,9 +199,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getStatusRequest: () => {
-            return dispatch(getStatusRequest());
-        },
         skillRequest: (userInfo) => {
             return dispatch(skillRequest(userInfo));
         }

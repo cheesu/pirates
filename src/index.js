@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import { App, Home, Login, Register, Game, Wall } from 'Containers';
+import { App, Home, Login, Register, Game, Wall ,Teleport} from 'Containers';
 // Redux
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
@@ -18,7 +18,7 @@ ReactDOM.render(<Provider store={store}>
                      <div>
                        <Route  path="/" component={App}/>
                        <div>
-                          <Route exact path="/home" component={Home}/>
+                          <Route exact path="/Teleport" component={Teleport}/>
                           <Route exact path="/login" component={Login}/>
                           <Route exact path="/register" component={Register}/>
                           <Route exact path="/game" component={Game}/>

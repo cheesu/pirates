@@ -16,7 +16,7 @@ class Store extends React.Component {
 
         this.handleClose = this.handleClose.bind(this);
         this.countItem = this.countItem.bind(this);
-          this.props.userItemRequest();
+        //  this.props.userItemRequest();
           this.props.getStoreItemRequest();
 
     }
@@ -49,6 +49,7 @@ class Store extends React.Component {
       axios.post('/api/account/buyItem/', { name:item.id, count:count })
          .then((response) => {
            this.props.getStatusRequest();
+           this.props.userItemRequest();
            alert(response.data.msg);
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
          }).catch((error) => {
@@ -63,6 +64,7 @@ class Store extends React.Component {
       axios.get('/api/account/sellItem/' + item.id)
          .then((response) => {
            this.props.getStatusRequest();
+           this.props.userItemRequest();
            alert(response.data.msg);
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
          }).catch((error) => {
@@ -269,8 +271,7 @@ Store.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        items: state.item.storeItems,
-        userItems: state.item.items,
+        items: state.item.storeItems
     };
 };
 
@@ -279,13 +280,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getStoreItemRequest: () => {
             return dispatch(getStoreItemRequest());
-        },
-        getStatusRequest: () => {
-            return dispatch(getStatusRequest());
-        },
-        userItemRequest: () => {
-            return dispatch(userItemRequest());
-        },
+        }
     };
 };
 

@@ -15,8 +15,9 @@ import UserItem from './UserItem';
 import Store from './Store';
 import ChangeJob from './ChangeJob';
 import Enhancement from './Enhancement';
+import Home from './Home';
 
 
 
 
-export { Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview,Fight, HPview, Fightview, FightController,UserItem,Store, ChangeJob, Enhancement};
+export {Home, Header, Authentication, Chat, Gameview, Search, RightMenu, CurrentUser, Controller,Mapview,Fight, HPview, Fightview, FightController,UserItem,Store, ChangeJob, Enhancement};

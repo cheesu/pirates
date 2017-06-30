@@ -49,8 +49,11 @@ class Fight extends React.Component {
               <FightController
                 socket={this.socket}
                 attackInfo = {this.props.attackInfo}
-                userInfo = {this.props.userInfo}
+                status = {this.props.userInfo}
                 onClose = {this.props.onClose}
+                getStatusRequest = {this.props.getStatusRequest}
+                userItemRequest = {this.props.userItemRequest}
+                userItems = {this.props.userItems}
                 />
             </div>
       );

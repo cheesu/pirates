@@ -2,8 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import {debounce} from 'throttle-debounce';
 import { connect } from 'react-redux';
-import { getStatusRequest  } from 'Actions/authentication';
-import { userItemRequest  } from 'Actions/item';
 import { skillRequest  } from 'Actions/skill';
 class FightController extends React.Component {
   constructor(props, context) {
@@ -24,8 +22,6 @@ class FightController extends React.Component {
 
 
       componentDidMount(){
-        //$("#fightControllerContainer").attr("tabIndex",0);
-        this.props.getStatusRequest();
         this.props.skillRequest(this.props.status);
 
           this.props.socket.emit('attack',this.props.attackInfo);
@@ -119,8 +115,8 @@ class FightController extends React.Component {
                   healInfo.upData =response.data.obj.upData;
                   healInfo.ch = this.props.attackInfo.ch;
                   healInfo.username = this.props.attackInfo.userName;
-                  healInfo.maxHP = this.props.userInfo.max_hp;
-                  healInfo.maxMP = this.props.userInfo.max_mp;
+                  healInfo.maxHP = this.props.status.max_hp;
+                  healInfo.maxMP = this.props.status.max_mp;
                   this.props.socket.emit('useItem',healInfo);
                   this.props.getStatusRequest();
                 }
@@ -167,7 +163,7 @@ class FightController extends React.Component {
 
       const itemMapDataToLinks = (data) => {
           return data.map((item, i) => {
-              if(item.kind == "p" && this.props.status.itemCount[item.id] != 0){
+              if(item.kind == "p" && this.props.status.itemCount[item.id] != 0 && this.props.status.itemCount[item.id]!=undefined){
                 return (
                   <a key={i} className='waves-effect waves-light btn item-btn' href="#!" onClick={this.useItem.bind(this,item.id)} data-name={item.name} >{item.name}- {this.props.status.itemCount[item.id]}개</a>
                 )
@@ -182,7 +178,7 @@ class FightController extends React.Component {
                 { /*    <li><a onClick={this.viewLocalMap}  ><i className="medium  material-icons controller-btn map-location waves-effect waves-light">my_location</i></a></li> */}
 
                   <li className="fight-btn-li">
-                       { itemMapDataToLinks(this.props.items.itemList) }
+                       { itemMapDataToLinks(this.props.userItems.itemList) }
                   </li>
 
                     <li className="fight-btn-li">
@@ -212,23 +208,15 @@ FightController.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-      status: state.authentication.status,
         skills: state.skill.skills,
-        items: state.item.items,
     };
 };
 
 
 const mapDispatchToProps = (dispatch) => {
     return {
-      getStatusRequest: () => {
-          return dispatch(getStatusRequest());
-      },
-        skillRequest: (userInfo) => {
-            return dispatch(skillRequest(userInfo));
-        },
-        userItemRequest: () => {
-            return dispatch(userItemRequest());
+        skillRequest: (status) => {
+            return dispatch(skillRequest(status));
         },
     };
 };

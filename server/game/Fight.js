@@ -44,6 +44,7 @@ function loadMonsterList(){
               monObj.gold = monsters[monCount].gold;
               monObj.sp = []; // 디버프 담아놓는 그릇
               monObj.Aggravation = []; // 기여도 담아놓는 그릇
+              monObj.AggravationTaget = []; // 기여도 담아놓는 그릇
               monObj.area= monsters[monCount].mapName+"-"+monLocalArr[localCount];
 
 
@@ -363,6 +364,11 @@ var useSkill = function(io,info){
                       let _aggroObj = {};
                       _aggroObj.name = userInfo.username;
                       _aggroObj.dmg = dmg;
+
+                      if(userInfo.job=='검사'){
+                        _aggroObj.dmg = _aggroObj.dmg *1.8;
+                      }
+
                       localMonsterList[monNum].Aggravation.push(_aggroObj);
                     }
                     else{
@@ -552,7 +558,7 @@ var fight = function (io,info){
               let passive = Math.floor(Math.random() * 1000)+(lvGap*10);
 
               if(userInfo.job2=='깨달은 현자'&&fightInterval[userInfo.username+"skill"]){
-                reDmg = reDmg/2;
+                reDmg = reDmg*0.8;
                 io.emit(info.ch+"fight", "[passive] 캐스팅중인 깨달은 현자  "+userInfo.username+"님의 "+userInfo.mount.w.name+"이(가) 빛이나며 보호막이 생성됩니다. 주문보호의 영향으로 데미지가 감소합니다.");
               }
 
@@ -569,9 +575,9 @@ var fight = function (io,info){
               }
 
               if(userInfo.job2=='그림자 살귀'){
-                let passiveLimit = userInfo.dex;
-                if(passiveLimit>500){
-                  passiveLimit = 500;
+                let passiveLimit = userInfo.dex/3;
+                if(passiveLimit>250){
+                  passiveLimit = 250;
                 }
                 if(passiveLimit > passive){
                   reDmg = 0;
@@ -1093,9 +1099,6 @@ if(userInfo.lv > 99){
         if(err) console.log(err);
         io.emit("Gchat", "[LEVEL UP!!] ["+userInfo.username+"] 님께서 레벨업 하셨습니다");
       });
-
-
-
     }
 
   }

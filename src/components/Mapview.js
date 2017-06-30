@@ -7,9 +7,7 @@ class Mapview extends React.Component {
   constructor(props, context) {
           super(props, context);
           this.state = {
-              search: false,
               map: ['test'],
-              socketCh:'0-0'
           };
           this.moveMapView = this.moveMapView.bind(this);
           this.socket = this.props.socket;
@@ -19,7 +17,6 @@ class Mapview extends React.Component {
     componentDidMount(){
       let moveMapView = this.moveMapView.bind(this);
       this.props.socket.on('viewMap', function(data){ //개인
-      //  addChat(data);
       moveMapView(data);
       });
 

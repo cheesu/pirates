@@ -1,10 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import { browserHistory, Link, Redirect } from 'react-router';
+import {Redirect } from 'react-router';
 
 import { connect } from 'react-redux';
 import { userItemRequest  } from 'Actions/item';
-import { getStatusRequest  } from 'Actions/authentication';
 class UserItem extends React.Component {
 
 
@@ -97,7 +96,7 @@ class UserItem extends React.Component {
 
     render() {
 
-      const goScroll = ( <Redirect to="/home"/> );
+      const goScroll = ( <Redirect to="/Teleport"/> );
 
       const mapDataToLinks = (data) => {
         if(data==undefined){
@@ -231,10 +230,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         userItemRequest: () => {
             return dispatch(userItemRequest());
-        },
-        getStatusRequest: () => {
-            return dispatch(getStatusRequest());
-        },
+        }
     };
 };
 

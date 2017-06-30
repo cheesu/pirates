@@ -11,10 +11,12 @@ class Game extends React.Component {
 
   constructor(props, context) {
           super(props, context);
-          //this.socket = io.connect('http://127.0.0.1:3303');
-        //  this.socket =io('http://localhost:4000/twon',{'forceNew': true});
+          this.state = {
+              monster:null,
+          };
+
           this.socket =io({'forceNew': true});
-        //  this.socket =io('http://localhost:4000/twon');
+          this.setLocalMonster = this.setLocalMonster.bind(this);
 
       }
 
@@ -25,6 +27,25 @@ class Game extends React.Component {
       }
 
       componentDidMount() {
+        if(this.props.status.currentUser==""){
+          this.props.history.push('/login');
+        }
+        else{
+          this.socket.emit('addUser', this.props.status.currentUser);
+          this.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
+          location.href="/login";
+          });
+        }
+
+
+
+        // 몬스터 셋팅
+
+        this.socket.on("setMonster", function(data){
+          this.setLocalMonster(data);
+        }.bind(this));
+
+
            // get cookie by name
            function getCookie(name) {
                var value = "; " + document.cookie;
@@ -64,6 +85,11 @@ class Game extends React.Component {
            );
        }
 
+       // 몹 설정
+   setLocalMonster(data){
+         this.monster=data;
+     }
+
     render() {
       const game = (
             <div className="view-container">
@@ -86,6 +112,7 @@ class Game extends React.Component {
                 userInfo = {this.props.status}
                 getStatusRequest = {this.props.getStatusRequest}
                 userItemRequest = {this.props.userItemRequest}
+                userItems = {this.props.userItems}
                 />
             </div>
       );
@@ -104,7 +131,7 @@ const mapStateToProps = (state) => {
     return {
         isLoggedIn: state.authentication.status.isLoggedIn,
         status: state.authentication.status,
-        items: state.item.items,
+        userItems: state.item.items,
     };
 };
 

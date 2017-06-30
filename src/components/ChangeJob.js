@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { browserHistory, Link } from 'react-router';
 import { connect } from 'react-redux';
-import { getStatusRequest  } from 'Actions/authentication';
 class ChangeJob extends React.Component {
     constructor(props) {
         super(props);
@@ -58,12 +56,10 @@ class ChangeJob extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
           let current = {
               user: this.props.userInfo,
-              ChangeJob: this.props.items,
 
           };
         let next = {
             user: nextProps.userInfo,
-            ChangeJob: nextProps.items,
         };
         let update = JSON.stringify(current) !== JSON.stringify(next);
           return update;
@@ -115,19 +111,5 @@ ChangeJob.defaultProps = {
     },
 };
 
-const mapStateToProps = (state) => {
-    return {
-        items: state.item.storeItems,
-        userItems: state.item.items,
-    };
-};
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getStatusRequest: () => {
-            return dispatch(getStatusRequest());
-        },
-    };
-};
-
-export default connect( mapStateToProps, mapDispatchToProps)(ChangeJob);
+export default ChangeJob;
