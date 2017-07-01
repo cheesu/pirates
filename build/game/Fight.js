@@ -867,9 +867,12 @@ function expLevelup(userInfo, io, monNum, info, kind) {
 
   if (info.party) {
     upExp = Math.round(upExp / 100 * 70);
-    partyExp = Math.round(localMonsterList[monNum].exp * ((100 - 30) / 100));
+    partyExp = Math.round(localMonsterList[monNum].exp / 100 * 40);
     getGold = Math.round(getGold / 100 * 70);
-    partyGold = Math.round((localMonsterList[monNum].gold + random) * ((100 - 30) / 100));
+    partyGold = Math.round((localMonsterList[monNum].gold + random) / 100 * 40);
+
+    partyExp = Math.round(partyExp / info.partyMember.length);
+    partyGold = Math.round(partyGold / info.partyMember.length);
   }
 
   var totalExp = Math.round(userInfo.exp + upExp);
