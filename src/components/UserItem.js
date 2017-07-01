@@ -37,15 +37,20 @@ class UserItem extends React.Component {
        axios.get('/api/account/mountItem/' + itemId)
           .then((response) => {
             this.props.getStatusRequest();
-            let eqItem = response.data[0].name;
 
-            let itemMsg = "";
+            console.log(response.data);
 
-            if(response.data[0].option != undefined){
-              itemMsg = response.data[0].option.msg;
+            if(response.data.result){
+              let eqItem = response.data.item.name;
+              let itemMsg = "";
+              if(response.data.item.option != undefined){
+                itemMsg = response.data.item.option.msg;
+              }
+               Materialize.toast(eqItem+"을(를) 장착 하였습니다." +itemMsg, 1000);
+            }else{
+              Materialize.toast(response.data.msg, 1000);
             }
 
-             Materialize.toast(eqItem+"을(를) 장착 하였습니다." +itemMsg, 1000);
 
 
           }).catch((error) => {

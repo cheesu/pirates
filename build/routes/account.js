@@ -169,53 +169,59 @@ router.get('/mountItem/:itemID', function (req, res) {
     if (userInfo.item.indexOf(itemid) != -1) {
 
       _item2.default.find({ id: itemid }).exec(function (err, item) {
+
         var itemInfo = eval(item[0]);
 
-        var str = userInfo.str;
-        var dex = userInfo.dex;
-        var int = userInfo.int;
+        if (itemInfo.job == "ALL" || itemInfo.job == "all" || itemInfo.job == userInfo.job) {
 
-        // 이전 장착무기에 상승옵션이 있다면 다시 그만큼 스탯 빼주기
-        try {
-          if (itemInfo.kind == "w" && userInfo.mount.w.option != undefined) {
-            if (userInfo.mount.w.option.option == "upStr") {
-              str = str - userInfo.mount.w.option.max;
-            } else if (userInfo.mount.w.option.option == "upDex") {
-              dex = dex - userInfo.mount.w.option.max;
-            } else if (userInfo.mount.w.option.option == "upInt") {
-              int = int - userInfo.mount.w.option.max;
+          var str = userInfo.str;
+          var dex = userInfo.dex;
+          var int = userInfo.int;
+
+          // 이전 장착무기에 상승옵션이 있다면 다시 그만큼 스탯 빼주기
+          try {
+            if (itemInfo.kind == "w" && userInfo.mount.w.option != undefined) {
+              if (userInfo.mount.w.option.option == "upStr") {
+                str = str - userInfo.mount.w.option.max;
+              } else if (userInfo.mount.w.option.option == "upDex") {
+                dex = dex - userInfo.mount.w.option.max;
+              } else if (userInfo.mount.w.option.option == "upInt") {
+                int = int - userInfo.mount.w.option.max;
+              }
             }
+          } catch (e) {
+            console.log("무기 해제 옵션 하향 오류");
+            console.log(e);
           }
-        } catch (e) {
-          console.log("무기 해제 옵션 하향 오류");
-          console.log(e);
-        }
 
-        if (itemInfo.kind == "w") {
-          userInfo.mount.w = itemInfo;
-        } else if (itemInfo.kind == "d") {
-          userInfo.mount.d = itemInfo;
-        }
+          if (itemInfo.kind == "w") {
+            userInfo.mount.w = itemInfo;
+          } else if (itemInfo.kind == "d") {
+            userInfo.mount.d = itemInfo;
+          }
 
-        // 장착할 무기에 상승옵션이 있다면 스탯 적용한다.
-        try {
-          if (itemInfo.option != undefined) {
-            if (itemInfo.option.option == "upStr") {
-              str = str + itemInfo.option.max;
-            } else if (itemInfo.option.option == "upDex") {
-              dex = dex + itemInfo.option.max;
-            } else if (itemInfo.option.option == "upInt") {
-              int = int + itemInfo.option.max;
+          // 장착할 무기에 상승옵션이 있다면 스탯 적용한다.
+          try {
+            if (itemInfo.option != undefined) {
+              if (itemInfo.option.option == "upStr") {
+                str = str + itemInfo.option.max;
+              } else if (itemInfo.option.option == "upDex") {
+                dex = dex + itemInfo.option.max;
+              } else if (itemInfo.option.option == "upInt") {
+                int = int + itemInfo.option.max;
+              }
             }
+          } catch (e) {
+            console.log("무기 장착 옵션 상승 오류");
+            console.log(e);
           }
-        } catch (e) {
-          console.log("무기 장착 옵션 상승 오류");
-          console.log(e);
-        }
 
-        _account2.default.update({ username: userInfo.username }, { $set: { mount: userInfo.mount, str: str, dex: dex, int: int } }, function (err, output) {
-          res.json(item);
-        });
+          _account2.default.update({ username: userInfo.username }, { $set: { mount: userInfo.mount, str: str, dex: dex, int: int } }, function (err, output) {
+            res.json({ result: true, item: item[0] });
+          });
+        } else {
+          res.json({ result: false, msg: "본인의 직업에 맞지 않는 옷 입니다." });
+        }
       });
     } else {
       res.json({ result: false });

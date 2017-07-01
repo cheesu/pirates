@@ -546,7 +546,7 @@ var fight = function fight(io, info) {
 
         if (userInfo.job2 == '깨달은 현자' && fightInterval[userInfo.username + "skill"]) {
           reDmg = reDmg * 0.8;
-          io.emit(info.ch + "fight", "[passive] 캐스팅중인 깨달은 현자  " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 빛이나며 보호막이 생성됩니다. 주문보호의 영향으로 데미지가 감소합니다.");
+          io.emit(userInfo.username + "fight", "[passive] 캐스팅중인 깨달은 현자  " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 빛이나며 보호막이 생성됩니다. 주문보호의 영향으로 데미지가 감소합니다.");
         }
 
         if (userInfo.job2 == '검의 달인') {
@@ -557,7 +557,7 @@ var fight = function fight(io, info) {
 
           if (passiveLimit > passive) {
             reDmg = 0;
-            io.emit(info.ch + "fight", "[passive] 검의 달인 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
+            io.emit(userInfo.username + "fight", "[passive] 검의 달인 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
           }
         }
 
@@ -568,7 +568,7 @@ var fight = function fight(io, info) {
           }
           if (_passiveLimit > passive) {
             reDmg = 0;
-            io.emit(info.ch + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
+            io.emit(userInfo.username + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님이 어둠속으로 몸을 숨겨 적의 공격을 회피 합니다.");
           }
         }
 
@@ -579,7 +579,7 @@ var fight = function fight(io, info) {
           }
           if (_passiveLimit2 > passive) {
             localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg * 10;
-            io.emit(info.ch + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 적의 공격을 타고 흘러 반격합니다. [" + reDmg * 10 + "]");
+            io.emit(userInfo.username + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 적의 공격을 타고 흘러 반격합니다. [" + reDmg * 10 + "]");
           }
         }
 
@@ -587,37 +587,52 @@ var fight = function fight(io, info) {
           var _reDmg = _reDmg * 0.85;
         }
 
-        reDmg = Math.floor(reDmg);
-
-        var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
-        fightInterval[userInfo.username + "HP"] -= reDmg;
-
         try {
           if (userInfo.mount.d.type == "unique") {
             var ud = userInfo.mount.d;
             var active = Math.floor(Math.random() * 100) + 1;
+            // 확률성 아이템
             if (active <= ud.option.per) {
-              if (ud.option.option == "heal") {
+              /*if(ud.option.option=="heal"){
                 userInfo.hp = userInfo.max_hp;
-                fightInterval[userInfo.username + "HP"] = userInfo.max_hp;
+                fightInterval[userInfo.username+"HP"] = userInfo.max_hp;
                 userHP = userInfo.max_hp;
-                io.emit(info.ch + "fight", "[item] " + ud.option.msg);
-              } else if (ud.option.option == "block") {
+                io.emit(userInfo.username+"fight", "[item] "+ud.option.msg);
+              }
+              else */
+              if (ud.option.option == "block") {
                 userInfo.hp += reDmg;
                 fightInterval[userInfo.username + "HP"] += reDmg;
                 userHP += reDmg;
                 reDmg = 0;
-                io.emit(info.ch + "fight", "[item] " + ud.option.msg);
+                io.emit(userInfo.username + "fight", "[item] " + ud.option.msg);
               } else if (ud.option.option == "counter") {
                 localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg * 10;
-                io.emit(info.ch + "fight", "[item] " + ud.option.msg + "[" + reDmg * 10 + "]");
+                io.emit(userInfo.username + "fight", "[item] " + ud.option.msg + "[" + reDmg * 10 + "]");
+              } else if (ud.option.option == "downDmg") {
+                reDmg = reDmg / 100 * val;
+                io.emit(userInfo.username + "fight", "[item] " + ud.option.msg);
               }
+            }
+
+            //고정 아이템
+            if (ud.option.option == "conversionMP") {
+              var conversionMP = reDmg / 100 * ud.option.per;
+              conversionMP = Math.floor(conversionMP);
+              fightInterval[userInfo.username + "MP"] = fightInterval[userInfo.username + "MP"] + conversionMP;
+              io.emit(userInfo.username + "userMP", fightInterval[userInfo.username + "MP"] + "-" + userInfo.max_mp);
+              io.emit(userInfo.username + "fight", "[item] " + ud.option.msg + "[" + conversionMP + "]");
             }
           }
         } catch (e) {
           console.log("유닉 방어구 발동 오류");
           console.log(e);
         }
+
+        reDmg = Math.floor(reDmg);
+
+        var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
+        fightInterval[userInfo.username + "HP"] -= reDmg;
 
         // 몬스터 처치후 발동되는 인터벌 막기위한 판단
         if (!fightInterval[userInfo.username + "fighting"]) {

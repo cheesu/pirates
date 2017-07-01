@@ -24880,15 +24880,19 @@ var UserItem = function (_React$Component) {
 
       _axios2.default.get('/api/account/mountItem/' + itemId).then(function (response) {
         _this2.props.getStatusRequest();
-        var eqItem = response.data[0].name;
 
-        var itemMsg = "";
+        console.log(response.data);
 
-        if (response.data[0].option != undefined) {
-          itemMsg = response.data[0].option.msg;
+        if (response.data.result) {
+          var eqItem = response.data.item.name;
+          var itemMsg = "";
+          if (response.data.item.option != undefined) {
+            itemMsg = response.data.item.option.msg;
+          }
+          Materialize.toast(eqItem + "을(를) 장착 하였습니다." + itemMsg, 1000);
+        } else {
+          Materialize.toast(response.data.msg, 1000);
         }
-
-        Materialize.toast(eqItem + "을(를) 장착 하였습니다." + itemMsg, 1000);
       }).catch(function (error) {
         console.log(error);
       });
