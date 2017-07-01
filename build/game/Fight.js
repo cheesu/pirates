@@ -468,7 +468,7 @@ var fight = function fight(io, info) {
           var maxDmg = 0;
           var maxCount = 0;
           for (var aggroCount = 0; aggroCount < aggro.length; aggroCount++) {
-            if (aggro[aggroCount].dmg > maxDmg) {
+            if (aggro[aggroCount].dmg > maxDmg && fightInterval[userInfo.username + "fighting"]) {
               maxDmg = aggro[aggroCount].dmg;
               maxCount = aggroCount;
             }

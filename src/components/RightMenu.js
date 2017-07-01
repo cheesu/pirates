@@ -59,10 +59,23 @@ compMode(){
 }
 
 calcExp(){
-  let currentLV = this.props.status.lv;
-  let nextLV = this.props.status.lv+1;
+  let currentLV = this.props.status.lv-1;
+  let nextLV = this.props.status.lv;
   let addLV = Math.floor(currentLV/10);
   let addNextLV = Math.floor(nextLV/10);
+
+
+  let over100 = 1;
+  let nextOver100 = 1;
+
+  if(currentLV > 99){
+    over100 = 2
+  }
+
+  if(nextLV > 99){
+    nextOver100 = 2
+  }
+
 
   if(addLV==0){
     addLV = 1;
@@ -71,16 +84,28 @@ calcExp(){
     addNextLV = 1;
   }
 
-  let currentLVExp = ((this.logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV;
+let currentLVExp = ((this.logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV*over100;
+  let nextLVExp = ((this.logB(nextLV, 20)*1000)*nextLV*nextLV/6)*addNextLV*nextOver100;
 //  let nextLVExp = ((this.logB(nextLV, 20)*1000)*nextLV*nextLV/6)*addNextLV;
-  let currentTotalExp = this.props.status.exp;
+
+
+  let currentTotalExp = this.props.status.exp - currentLVExp;
+
+
+
   //let upExp = nextLVExp - currentLVExp;
   //let nowExp = currentTotalExp - currentLVExp;
   //let expPercent = nowExp / upExp * 100;
-currentLVExp = Math.floor(currentLVExp);
+nextLVExp = Math.floor(nextLVExp);
+currentTotalExp = Math.floor(currentTotalExp);
+
+
+nextLVExp = nextLVExp -this.props.status.exp;
+
   //expPercent = expPercent.toFixed(2);
   this.setState({
-      nextLVExp:currentLVExp
+      nextLVExp:nextLVExp,
+      currentTotalExp:currentTotalExp
   });
 
 
@@ -145,7 +170,7 @@ logB(x, base) {
                           <li className="stat-li"> STR: <span>{this.props.status.str}</span></li>
                           <li className="stat-li"> DEX: <span>{this.props.status.dex}</span></li>
                           <li className="stat-li"> INT: <span>{this.props.status.int}</span></li>
-                          <li> EXP: <span>{this.props.status.exp}</span></li>
+                          <li> EXP: <span>{this.state.currentTotalExp}</span></li>
                           <li> NEXT EXP: <span>{this.state.nextLVExp}</span></li>
                           <li>  </li>
                       </ul>

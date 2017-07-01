@@ -23631,10 +23631,21 @@ var RightMenu = function (_React$Component) {
     }, {
         key: 'calcExp',
         value: function calcExp() {
-            var currentLV = this.props.status.lv;
-            var nextLV = this.props.status.lv + 1;
+            var currentLV = this.props.status.lv - 1;
+            var nextLV = this.props.status.lv;
             var addLV = Math.floor(currentLV / 10);
             var addNextLV = Math.floor(nextLV / 10);
+
+            var over100 = 1;
+            var nextOver100 = 1;
+
+            if (currentLV > 99) {
+                over100 = 2;
+            }
+
+            if (nextLV > 99) {
+                nextOver100 = 2;
+            }
 
             if (addLV == 0) {
                 addLV = 1;
@@ -23643,16 +23654,25 @@ var RightMenu = function (_React$Component) {
                 addNextLV = 1;
             }
 
-            var currentLVExp = this.logB(currentLV, 20) * 1000 * currentLV * currentLV / 6 * addLV;
+            var currentLVExp = this.logB(currentLV, 20) * 1000 * currentLV * currentLV / 6 * addLV * over100;
+            var nextLVExp = this.logB(nextLV, 20) * 1000 * nextLV * nextLV / 6 * addNextLV * nextOver100;
             //  let nextLVExp = ((this.logB(nextLV, 20)*1000)*nextLV*nextLV/6)*addNextLV;
-            var currentTotalExp = this.props.status.exp;
+
+
+            var currentTotalExp = this.props.status.exp - currentLVExp;
+
             //let upExp = nextLVExp - currentLVExp;
             //let nowExp = currentTotalExp - currentLVExp;
             //let expPercent = nowExp / upExp * 100;
-            currentLVExp = Math.floor(currentLVExp);
+            nextLVExp = Math.floor(nextLVExp);
+            currentTotalExp = Math.floor(currentTotalExp);
+
+            nextLVExp = nextLVExp - this.props.status.exp;
+
             //expPercent = expPercent.toFixed(2);
             this.setState({
-                nextLVExp: currentLVExp
+                nextLVExp: nextLVExp,
+                currentTotalExp: currentTotalExp
             });
         }
     }, {
@@ -23878,7 +23898,7 @@ var RightMenu = function (_React$Component) {
                                 _react2.default.createElement(
                                     'span',
                                     null,
-                                    this.props.status.exp
+                                    this.state.currentTotalExp
                                 )
                             ),
                             _react2.default.createElement(
