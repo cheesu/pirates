@@ -1007,7 +1007,7 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   var over100 = 1;
 
   if (userInfo.lv > 99) {
-    over100 = 20;
+    over100 = 2;
   }
 
   if (logB(userInfo.lv, 20) * 1000 * userInfo.lv * userInfo.lv / 6 * addLV * over100 < totalExp) {
