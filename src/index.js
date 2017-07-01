@@ -23,6 +23,7 @@ ReactDOM.render(<Provider store={store}>
                           <Route exact path="/register" component={Register}/>
                           <Route exact path="/game" component={Game}/>
                           <Route exact path="/wall" component={Wall}/>
+                          <Route exact path="/home" component={Home}/>
                        </div>
                      </div>
                    </Router>

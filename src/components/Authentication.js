@@ -108,7 +108,7 @@ class Authentication extends React.Component {
                 <div className="footer">
                     <div className="card-content">
                         <div className="right" >
-                        New Here? <Link to="/register">Create an account</Link>
+                        New Here? <Link to="/register">Create an account 이곳을 눌러 계정을 생성 하세요</Link>
                         </div>
                     </div>
                 </div>

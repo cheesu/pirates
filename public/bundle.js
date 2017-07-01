@@ -72,8 +72,8 @@
 
 var global    = __webpack_require__(6)
   , core      = __webpack_require__(43)
-  , hide      = __webpack_require__(23)
-  , redefine  = __webpack_require__(24)
+  , hide      = __webpack_require__(24)
+  , redefine  = __webpack_require__(25)
   , ctx       = __webpack_require__(44)
   , PROTOTYPE = 'prototype';
 
@@ -1043,6 +1043,111 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 /* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Enhancement = exports.ChangeJob = exports.Store = exports.UserItem = exports.FightController = exports.Fightview = exports.HPview = exports.Fight = exports.Mapview = exports.Controller = exports.CurrentUser = exports.RightMenu = exports.Search = exports.Gameview = exports.Chat = exports.Authentication = exports.Header = exports.HomeText = undefined;
+
+var _Header = __webpack_require__(278);
+
+var _Header2 = _interopRequireDefault(_Header);
+
+var _Authentication = __webpack_require__(267);
+
+var _Authentication2 = _interopRequireDefault(_Authentication);
+
+var _Chat = __webpack_require__(269);
+
+var _Chat2 = _interopRequireDefault(_Chat);
+
+var _Gameview = __webpack_require__(276);
+
+var _Gameview2 = _interopRequireDefault(_Gameview);
+
+var _Search = __webpack_require__(282);
+
+var _Search2 = _interopRequireDefault(_Search);
+
+var _RightMenu = __webpack_require__(281);
+
+var _RightMenu2 = _interopRequireDefault(_RightMenu);
+
+var _CurrentUser = __webpack_require__(271);
+
+var _CurrentUser2 = _interopRequireDefault(_CurrentUser);
+
+var _Controller = __webpack_require__(270);
+
+var _Controller2 = _interopRequireDefault(_Controller);
+
+var _Mapview = __webpack_require__(280);
+
+var _Mapview2 = _interopRequireDefault(_Mapview);
+
+var _Fight = __webpack_require__(273);
+
+var _Fight2 = _interopRequireDefault(_Fight);
+
+var _HPview = __webpack_require__(277);
+
+var _HPview2 = _interopRequireDefault(_HPview);
+
+var _Fightview = __webpack_require__(275);
+
+var _Fightview2 = _interopRequireDefault(_Fightview);
+
+var _FightController = __webpack_require__(274);
+
+var _FightController2 = _interopRequireDefault(_FightController);
+
+var _UserItem = __webpack_require__(284);
+
+var _UserItem2 = _interopRequireDefault(_UserItem);
+
+var _Store = __webpack_require__(283);
+
+var _Store2 = _interopRequireDefault(_Store);
+
+var _ChangeJob = __webpack_require__(268);
+
+var _ChangeJob2 = _interopRequireDefault(_ChangeJob);
+
+var _Enhancement = __webpack_require__(272);
+
+var _Enhancement2 = _interopRequireDefault(_Enhancement);
+
+var _HomeText = __webpack_require__(279);
+
+var _HomeText2 = _interopRequireDefault(_HomeText);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.HomeText = _HomeText2.default;
+exports.Header = _Header2.default;
+exports.Authentication = _Authentication2.default;
+exports.Chat = _Chat2.default;
+exports.Gameview = _Gameview2.default;
+exports.Search = _Search2.default;
+exports.RightMenu = _RightMenu2.default;
+exports.CurrentUser = _CurrentUser2.default;
+exports.Controller = _Controller2.default;
+exports.Mapview = _Mapview2.default;
+exports.Fight = _Fight2.default;
+exports.HPview = _HPview2.default;
+exports.Fightview = _Fightview2.default;
+exports.FightController = _FightController2.default;
+exports.UserItem = _UserItem2.default;
+exports.Store = _Store2.default;
+exports.ChangeJob = _ChangeJob2.default;
+exports.Enhancement = _Enhancement2.default;
+
+/***/ }),
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = function(it){
@@ -1051,7 +1156,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP         = __webpack_require__(13)
@@ -1064,11 +1169,11 @@ module.exports = __webpack_require__(12) ? function(object, key, value){
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global    = __webpack_require__(6)
-  , hide      = __webpack_require__(23)
+  , hide      = __webpack_require__(24)
   , has       = __webpack_require__(20)
   , SRC       = __webpack_require__(62)('src')
   , TO_STRING = 'toString'
@@ -1101,7 +1206,7 @@ __webpack_require__(43).inspectSource = function(it){
 });
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0)
@@ -1125,7 +1230,7 @@ module.exports = function(NAME, exec){
 };
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
@@ -1136,7 +1241,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1476,7 +1581,7 @@ module.exports = ReactComponentTreeHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1796,117 +1901,12 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(196).Buffer))
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Enhancement = exports.ChangeJob = exports.Store = exports.UserItem = exports.FightController = exports.Fightview = exports.HPview = exports.Fight = exports.Mapview = exports.Controller = exports.CurrentUser = exports.RightMenu = exports.Search = exports.Gameview = exports.Chat = exports.Authentication = exports.Header = exports.Home = undefined;
-
-var _Header = __webpack_require__(278);
-
-var _Header2 = _interopRequireDefault(_Header);
-
-var _Authentication = __webpack_require__(267);
-
-var _Authentication2 = _interopRequireDefault(_Authentication);
-
-var _Chat = __webpack_require__(269);
-
-var _Chat2 = _interopRequireDefault(_Chat);
-
-var _Gameview = __webpack_require__(276);
-
-var _Gameview2 = _interopRequireDefault(_Gameview);
-
-var _Search = __webpack_require__(282);
-
-var _Search2 = _interopRequireDefault(_Search);
-
-var _RightMenu = __webpack_require__(281);
-
-var _RightMenu2 = _interopRequireDefault(_RightMenu);
-
-var _CurrentUser = __webpack_require__(271);
-
-var _CurrentUser2 = _interopRequireDefault(_CurrentUser);
-
-var _Controller = __webpack_require__(270);
-
-var _Controller2 = _interopRequireDefault(_Controller);
-
-var _Mapview = __webpack_require__(280);
-
-var _Mapview2 = _interopRequireDefault(_Mapview);
-
-var _Fight = __webpack_require__(273);
-
-var _Fight2 = _interopRequireDefault(_Fight);
-
-var _HPview = __webpack_require__(277);
-
-var _HPview2 = _interopRequireDefault(_HPview);
-
-var _Fightview = __webpack_require__(275);
-
-var _Fightview2 = _interopRequireDefault(_Fightview);
-
-var _FightController = __webpack_require__(274);
-
-var _FightController2 = _interopRequireDefault(_FightController);
-
-var _UserItem = __webpack_require__(284);
-
-var _UserItem2 = _interopRequireDefault(_UserItem);
-
-var _Store = __webpack_require__(283);
-
-var _Store2 = _interopRequireDefault(_Store);
-
-var _ChangeJob = __webpack_require__(268);
-
-var _ChangeJob2 = _interopRequireDefault(_ChangeJob);
-
-var _Enhancement = __webpack_require__(272);
-
-var _Enhancement2 = _interopRequireDefault(_Enhancement);
-
-var _Home = __webpack_require__(279);
-
-var _Home2 = _interopRequireDefault(_Home);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.Home = _Home2.default;
-exports.Header = _Header2.default;
-exports.Authentication = _Authentication2.default;
-exports.Chat = _Chat2.default;
-exports.Gameview = _Gameview2.default;
-exports.Search = _Search2.default;
-exports.RightMenu = _RightMenu2.default;
-exports.CurrentUser = _CurrentUser2.default;
-exports.Controller = _Controller2.default;
-exports.Mapview = _Mapview2.default;
-exports.Fight = _Fight2.default;
-exports.HPview = _HPview2.default;
-exports.Fightview = _Fightview2.default;
-exports.FightController = _FightController2.default;
-exports.UserItem = _UserItem2.default;
-exports.Store = _Store2.default;
-exports.ChangeJob = _ChangeJob2.default;
-exports.Enhancement = _Enhancement2.default;
-
-/***/ }),
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pIE            = __webpack_require__(79)
   , createDesc     = __webpack_require__(50)
-  , toIObject      = __webpack_require__(26)
+  , toIObject      = __webpack_require__(27)
   , toPrimitive    = __webpack_require__(40)
   , has            = __webpack_require__(20)
   , IE8_DOM_DEFINE = __webpack_require__(176)
@@ -2437,7 +2437,7 @@ if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(22);
+var aFunction = __webpack_require__(23);
 module.exports = function(fn, that, length){
   aFunction(fn);
   if(that === undefined)return fn;
@@ -2529,7 +2529,7 @@ if(__webpack_require__(12)){
     , ctx                 = __webpack_require__(44)
     , anInstance          = __webpack_require__(54)
     , propertyDesc        = __webpack_require__(50)
-    , hide                = __webpack_require__(23)
+    , hide                = __webpack_require__(24)
     , redefineAll         = __webpack_require__(59)
     , toInteger           = __webpack_require__(51)
     , toLength            = __webpack_require__(16)
@@ -3770,7 +3770,7 @@ module.exports = Object.keys || function keys(O){
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var redefine = __webpack_require__(24);
+var redefine = __webpack_require__(25);
 module.exports = function(target, src, safe){
   for(var key in src)redefine(target, key, src[key], safe);
   return target;
@@ -4771,7 +4771,7 @@ function logout() {
 // 22.1.3.31 Array.prototype[@@unscopables]
 var UNSCOPABLES = __webpack_require__(10)('unscopables')
   , ArrayProto  = Array.prototype;
-if(ArrayProto[UNSCOPABLES] == undefined)__webpack_require__(23)(ArrayProto, UNSCOPABLES, {});
+if(ArrayProto[UNSCOPABLES] == undefined)__webpack_require__(24)(ArrayProto, UNSCOPABLES, {});
 module.exports = function(key){
   ArrayProto[UNSCOPABLES][key] = true;
 };
@@ -6093,7 +6093,7 @@ module.exports = g;
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(26)
+var toIObject = __webpack_require__(27)
   , toLength  = __webpack_require__(16)
   , toIndex   = __webpack_require__(61);
 module.exports = function(IS_INCLUDES){
@@ -6121,7 +6121,7 @@ module.exports = function(IS_INCLUDES){
 
 var global            = __webpack_require__(6)
   , $export           = __webpack_require__(0)
-  , redefine          = __webpack_require__(24)
+  , redefine          = __webpack_require__(25)
   , redefineAll       = __webpack_require__(59)
   , meta              = __webpack_require__(49)
   , forOf             = __webpack_require__(70)
@@ -6210,8 +6210,8 @@ module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
 
 "use strict";
 
-var hide     = __webpack_require__(23)
-  , redefine = __webpack_require__(24)
+var hide     = __webpack_require__(24)
+  , redefine = __webpack_require__(25)
   , fails    = __webpack_require__(7)
   , defined  = __webpack_require__(35)
   , wks      = __webpack_require__(10);
@@ -6351,7 +6351,7 @@ module.exports = function(key){
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(6)
-  , hide   = __webpack_require__(23)
+  , hide   = __webpack_require__(24)
   , uid    = __webpack_require__(62)
   , TYPED  = uid('typed_array')
   , VIEW   = uid('view')
@@ -7721,7 +7721,7 @@ module.exports = canDefineProperty;
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 var normalizeHeaderName = __webpack_require__(263);
 
 var DEFAULT_CONTENT_TYPE = {
@@ -8028,7 +8028,7 @@ var create         = __webpack_require__(56)
   , IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(23)(IteratorPrototype, __webpack_require__(10)('iterator'), function(){ return this; });
+__webpack_require__(24)(IteratorPrototype, __webpack_require__(10)('iterator'), function(){ return this; });
 
 module.exports = function(Constructor, NAME, next){
   Constructor.prototype = create(IteratorPrototype, {next: descriptor(1, next)});
@@ -8043,8 +8043,8 @@ module.exports = function(Constructor, NAME, next){
 
 var LIBRARY        = __webpack_require__(55)
   , $export        = __webpack_require__(0)
-  , redefine       = __webpack_require__(24)
-  , hide           = __webpack_require__(23)
+  , redefine       = __webpack_require__(25)
+  , hide           = __webpack_require__(24)
   , has            = __webpack_require__(20)
   , Iterators      = __webpack_require__(71)
   , $iterCreate    = __webpack_require__(119)
@@ -8254,7 +8254,7 @@ module.exports = function(key){
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
 var anObject  = __webpack_require__(5)
-  , aFunction = __webpack_require__(22)
+  , aFunction = __webpack_require__(23)
   , SPECIES   = __webpack_require__(10)('species');
 module.exports = function(O, D){
   var C = anObject(O).constructor, S;
@@ -8411,7 +8411,7 @@ var global         = __webpack_require__(6)
   , DESCRIPTORS    = __webpack_require__(12)
   , LIBRARY        = __webpack_require__(55)
   , $typed         = __webpack_require__(99)
-  , hide           = __webpack_require__(23)
+  , hide           = __webpack_require__(24)
   , redefineAll    = __webpack_require__(59)
   , fails          = __webpack_require__(7)
   , anInstance     = __webpack_require__(54)
@@ -8716,7 +8716,7 @@ module.exports = __webpack_require__(43).getIteratorMethod = function(it){
 var addToUnscopables = __webpack_require__(69)
   , step             = __webpack_require__(179)
   , Iterators        = __webpack_require__(71)
-  , toIObject        = __webpack_require__(26);
+  , toIObject        = __webpack_require__(27);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
@@ -11291,7 +11291,7 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 var settle = __webpack_require__(255);
 var buildURL = __webpack_require__(258);
 var parseHeaders = __webpack_require__(264);
@@ -11717,7 +11717,7 @@ module.exports = function(iter, ITERATOR){
 /* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var aFunction = __webpack_require__(22)
+var aFunction = __webpack_require__(23)
   , toObject  = __webpack_require__(18)
   , IObject   = __webpack_require__(78)
   , toLength  = __webpack_require__(16);
@@ -11752,7 +11752,7 @@ module.exports = function(that, callbackfn, aLen, memo, isRight){
 
 "use strict";
 
-var aFunction  = __webpack_require__(22)
+var aFunction  = __webpack_require__(23)
   , isObject   = __webpack_require__(9)
   , invoke     = __webpack_require__(93)
   , arraySlice = [].slice
@@ -12142,7 +12142,7 @@ module.exports = __webpack_require__(12) ? Object.defineProperties : function de
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(26)
+var toIObject = __webpack_require__(27)
   , gOPN      = __webpack_require__(57).f
   , toString  = {}.toString;
 
@@ -12167,7 +12167,7 @@ module.exports.f = function getOwnPropertyNames(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 var has          = __webpack_require__(20)
-  , toIObject    = __webpack_require__(26)
+  , toIObject    = __webpack_require__(27)
   , arrayIndexOf = __webpack_require__(89)(false)
   , IE_PROTO     = __webpack_require__(125)('IE_PROTO');
 
@@ -12189,7 +12189,7 @@ module.exports = function(object, names){
 /***/ (function(module, exports, __webpack_require__) {
 
 var getKeys   = __webpack_require__(58)
-  , toIObject = __webpack_require__(26)
+  , toIObject = __webpack_require__(27)
   , isEnum    = __webpack_require__(79).f;
 module.exports = function(isEntries){
   return function(it){
@@ -12342,7 +12342,7 @@ module.exports = __webpack_require__(90)('Set', function(get){
 "use strict";
 
 var each         = __webpack_require__(38)(0)
-  , redefine     = __webpack_require__(24)
+  , redefine     = __webpack_require__(25)
   , meta         = __webpack_require__(49)
   , assign       = __webpack_require__(181)
   , weak         = __webpack_require__(175)
@@ -18095,7 +18095,7 @@ module.exports = REACT_ELEMENT_TYPE;
 
 
 var ReactCurrentOwner = __webpack_require__(42);
-var ReactComponentTreeHook = __webpack_require__(27);
+var ReactComponentTreeHook = __webpack_require__(28);
 var ReactElement = __webpack_require__(66);
 
 var checkReactTypeSpec = __webpack_require__(630);
@@ -18897,7 +18897,8 @@ _reactDom2.default.render(_react2.default.createElement(
         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/login', component: _Containers.Login }),
         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/register', component: _Containers.Register }),
         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/game', component: _Containers.Game }),
-        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/wall', component: _Containers.Wall })
+        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/wall', component: _Containers.Wall }),
+        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/home', component: _Containers.Home })
       )
     )
   )
@@ -18971,7 +18972,7 @@ if(false) {
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 var bind = __webpack_require__(165);
 var Axios = __webpack_require__(251);
 var defaults = __webpack_require__(108);
@@ -19095,7 +19096,7 @@ module.exports = CancelToken;
 
 
 var defaults = __webpack_require__(108);
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 var InterceptorManager = __webpack_require__(252);
 var dispatchRequest = __webpack_require__(253);
 var isAbsoluteURL = __webpack_require__(261);
@@ -19186,7 +19187,7 @@ module.exports = Axios;
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -19245,7 +19246,7 @@ module.exports = InterceptorManager;
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 var transformData = __webpack_require__(256);
 var isCancel = __webpack_require__(163);
 var defaults = __webpack_require__(108);
@@ -19389,7 +19390,7 @@ module.exports = function settle(resolve, reject, response) {
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 
 /**
  * Transform the data for a request or a response
@@ -19459,7 +19460,7 @@ module.exports = btoa;
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -19555,7 +19556,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -19636,7 +19637,7 @@ module.exports = function isAbsoluteURL(url) {
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -19711,7 +19712,7 @@ module.exports = (
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -19730,7 +19731,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var utils = __webpack_require__(28);
+var utils = __webpack_require__(29);
 
 /**
  * Parse headers into an object
@@ -20034,7 +20035,7 @@ var Authentication = function (_React$Component) {
                             _react2.default.createElement(
                                 _reactRouterDom.Link,
                                 { to: '/register' },
-                                'Create an account'
+                                'Create an account \uC774\uACF3\uC744 \uB20C\uB7EC \uACC4\uC815\uC744 \uC0DD\uC131 \uD558\uC138\uC694'
                             )
                         )
                     )
@@ -20554,7 +20555,7 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _throttleDebounce = __webpack_require__(244);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _reactCookies = __webpack_require__(63);
 
@@ -21934,7 +21935,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = __webpack_require__(15);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22329,7 +22330,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _CSSTransitionGroup = __webpack_require__(65);
 
@@ -22536,7 +22537,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _CSSTransitionGroup = __webpack_require__(65);
 
@@ -22848,7 +22849,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _CSSTransitionGroup = __webpack_require__(65);
 
@@ -23163,7 +23164,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(87);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _CSSTransitionGroup = __webpack_require__(65);
 
@@ -23359,7 +23360,7 @@ exports.default = Header;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+              value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -23380,42 +23381,172 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Home = function (_React$Component) {
-    _inherits(Home, _React$Component);
+var HomeText = function (_React$Component) {
+              _inherits(HomeText, _React$Component);
 
-    function Home(props, context) {
-        _classCallCheck(this, Home);
+              function HomeText(props, context) {
+                            _classCallCheck(this, HomeText);
 
-        var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props, context));
+                            var _this = _possibleConstructorReturn(this, (HomeText.__proto__ || Object.getPrototypeOf(HomeText)).call(this, props, context));
 
-        _this.state = {
-            useScroll: ''
-        };
-        return _this;
-    }
+                            _this.state = {
+                                          useScroll: ''
+                            };
+                            return _this;
+              }
 
-    _createClass(Home, [{
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {}
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {}
-    }, {
-        key: 'render',
-        value: function render() {
+              _createClass(HomeText, [{
+                            key: 'componentWillUnmount',
+                            value: function componentWillUnmount() {}
+              }, {
+                            key: 'componentDidMount',
+                            value: function componentDidMount() {}
+              }, {
+                            key: 'render',
+                            value: function render() {
 
-            return _react2.default.createElement(
-                'div',
-                { className: 'wrapper ad-container' },
-                'home test'
-            );
-        }
-    }]);
+                                          return _react2.default.createElement(
+                                                        'div',
+                                                        { className: 'wrapper ad-container home-text' },
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      '\uCC98\uC74C \uC811\uC18D\uD558\uC2E0\uBD84\uC740 \uC5F4\uC1E0 \uC544\uC774\uCF58\uC744 \uD130\uCE58 \uD558\uC138\uC694'
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' ------------------------ '
+                                                        ),
+                                                        '\'\uD558\uC544... \uC5EC\uAE34 \uC5B4\uB514\uC9C0...\'',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\'\uB0A8\uB300\uB959\uC73C\uB85C \uAC00\uB358\uC911 \uD574\uC801\uB188\uB4E4\uC774 \uC2B5\uACA9\uD55C\uAC83 \uAE4C\uC9C4 \uAE30\uC5B5\uC774 \uB098\uB294\uB370....\'',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uC815\uC2E0\uC744 \uCC28\uB9AC\uACE0 \uB208\uC744 \uB5A0\uBCF4\uB2C8 \uD56D\uAD6C\uCC98\uB7FC \uBCF4\uC774\uB294 \uACF3',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uADFC\uBC29\uC758 \uD574\uBCC0\uAC00 \uAC19\uC544 \uBCF4\uC778\uB2E4.',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uBAB8\uC740 \uBAA8\uB450 \uC816\uC5B4 \uC788\uC5C8\uACE0 \uAC00\uC9C4\uAC74 \uC57D\uAC04\uC758 \uACE8\uB4DC\uBFD0',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uBE4C\uC5B4\uBA39\uC744 \uD574\uC801\uB188\uB4E4....',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uBD84\uBA85\uD788 \uAC80\uC740\uC218\uC5FC\uC778\uC9C0 \uD770\uBA38\uB9AC\uC778\uC9C0 \uD558\uB294 \uD574\uC801\uB2E8\uC774\uC5C8\uB2E4.',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uD574\uC801\uB188\uB4E4 \uBAA8\uC870\uB9AC \uBAB0\uC0B4\uC2DC\uCF1C\uBC84\uB9AC\uACE0 \uACE0\uD5A5\uC73C\uB85C \uB3CC\uC544\uAC00\uACA0\uC5B4..',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uADF8\uB9AC\uACE0 \uBE4C\uC5B4\uBA39\uC744 \uAD50\uD669\uCCAD\uB188\uB4E4\uB3C4!',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      '---\uAE30\uBCF8 \uB9E4\uB274\uC5BC---'
+                                                        ),
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uBC29\uD5A5\uD0A4\uB97C \uC774\uC6A9\uD558\uC5EC \uC6C0\uC9C1\uC77C \uC218 \uC788\uC2B5\uB2C8\uB2E4. '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uC0C1\uB2E8\uC758 \uB124\uBAA8\uBC15\uC2A4\uB294 \uC9C0\uB3C4 \uC785\uB2C8\uB2E4. \u2605\uC740 \uC790\uC2E0\uC758 \uC704\uCE58 \uC785\uB2C8\uB2E4. '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uBB34\uAE30\uAC15\uD654,\uC804\uC9C1,\uC0C1\uC810\uC758 \uC704\uCE58\uB85C \uC774\uB3D9\uD558\uBA74 \uC5B4\uD0DD\uBC84\uD2BC\uC774 \uBC14\uB01D\uB2C8\uB2E4'
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uD574\uB2F9 \uBC84\uD2BC\uC744 \uD130\uCE58\uD558\uC5EC \uC0C1\uC810\uC744 \uC774\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4 '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \u203B\uC774 \uADF8\uB824\uC9C4 \uC704\uCE58\uB85C \uAC00\uBA74 \uB2E4\uC74C\uB9F5\uC774\uB098 \uC774\uC804 \uB9F5\uC73C\uB85C \uC774\uB3D9 \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      '\uD734\uC2DD \uBC84\uD2BC\uC744 \uB204\uB974\uBA74 15\uCD08\uB9C8\uB2E4 \uCCB4\uB825\uACFC \uB9C8\uB825\uC774 \uD68C\uBCF5 \uB429\uB2C8\uB2E4.'
+                                                        ),
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uC5B4\uD0DD \uBC84\uD2BC\uC744 \uB204\uB974\uBA74 \uBAAC\uC2A4\uD130\uC640 \uC804\uD22C\uB97C \uD569\uB2C8\uB2E4. '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uB808\uBCA8\uC774 \uC62C\uB77C\uAC00\uBA74 \uC0C8\uB85C\uC6B4 \uAE30\uC220\uC774 \uC0DD\uAE41\uB2C8\uB2E4. '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uC804\uD22C\uC911 \uBB3C\uC57D\uC774\uB098 \uC2A4\uD0AC\uC744 \uC0AC\uC6A9 \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.  '
+                                                        ),
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uC0C1\uB2E8 \uAC8C\uC784\uD654\uBA74 \uC0C1\uB2E8\uC758 \u4E09 \uBAA8\uC591 \uBC84\uD2BC\uC744 \uD130\uCE58 \uD558\uBA74 '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      ' \uC790\uC2E0\uC758 \uCE90\uB9AD\uD130 \uC815\uBCF4\uB97C \uBCFC \uC218 \uC788\uC2B5\uB2C8\uB2E4 '
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      '\uCE90\uB9AD\uD130 \uC815\uBCF4\uCC3D\uC5D0\uC11C INVEN \uBC84\uD2BC\uC744 \uD130\uCE58 \uD558\uC5EC'
+                                                        ),
+                                                        _react2.default.createElement(
+                                                                      'p',
+                                                                      null,
+                                                                      '\uBB3C\uC57D\uC744 \uBA39\uAC70\uB098 \uC544\uC774\uD15C\uC744 \uC7A5\uCC29 \uD560\uC218 \uC788\uC2B5\uB2C8\uB2E4.'
+                                                        ),
+                                                        _react2.default.createElement('br', null),
+                                                        '------\uAE30\uBCF8 \uBA85\uB839\uC5B4------',
+                                                        _react2.default.createElement('br', null),
+                                                        '/\uCD08\uB300 \uC0C1\uB300\uC544\uC774\uB514',
+                                                        _react2.default.createElement('br', null),
+                                                        '\uC0C1\uB300\uBC29\uACFC \uD30C\uD2F0\uB97C \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '/\uC804\uCCB4 \uD560\uB9D0',
+                                                        _react2.default.createElement('br', null),
+                                                        '\uC6D4\uB4DC \uCC44\uD305\uC744 \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '/\uADD3 \uC0C1\uB300\uC544\uC774\uB514',
+                                                        _react2.default.createElement('br', null),
+                                                        '\uC0C1\uB300\uBC29\uC5D0\uAC8C \uADD3\uC18D\uB9D0\uC744 \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+                                                        _react2.default.createElement('br', null),
+                                                        _react2.default.createElement('br', null),
+                                                        '\uC77C\uBC18 \uCC44\uD305\uC740 \uD604\uC7AC \uAC19\uC740 \uC88C\uD45C\uC758 \uC788\uB294 \uC0AC\uB78C\uC5D0\uAC8C\uB9CC \uC804\uB2EC \uB429\uB2C8\uB2E4.'
+                                          );
+                            }
+              }]);
 
-    return Home;
+              return HomeText;
 }(_react2.default.Component);
 
-exports.default = Home;
+exports.default = HomeText;
 
 /***/ }),
 /* 280 */
@@ -23434,7 +23565,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _CSSTransitionGroup = __webpack_require__(65);
 
@@ -23551,7 +23682,7 @@ var _CSSTransitionGroup = __webpack_require__(65);
 
 var _CSSTransitionGroup2 = _interopRequireDefault(_CSSTransitionGroup);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _reactCookies = __webpack_require__(63);
 
@@ -25339,7 +25470,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(87);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _authentication = __webpack_require__(68);
 
@@ -25373,6 +25504,7 @@ var App = function (_React$Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
+            this.props.history.push('/home');
             // get cookie by name
             function getCookie(name) {
                 var value = "; " + document.cookie;
@@ -25444,8 +25576,7 @@ var App = function (_React$Component) {
                     onSearch: this.handleSearch,
                     usernames: this.props.searchResults,
                     status: this.props.status,
-                    getStatusRequest: this.props.getStatusRequest }),
-                _react2.default.createElement(_Components.Home, null)
+                    getStatusRequest: this.props.getStatusRequest })
             );
         }
     }]);
@@ -25495,7 +25626,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(21);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _authentication = __webpack_require__(68);
 
@@ -25669,7 +25800,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+      value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25679,6 +25810,8 @@ var _react = __webpack_require__(2);
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(21);
+
+var _Components = __webpack_require__(22);
 
 var _reactRouter = __webpack_require__(15);
 
@@ -25691,38 +25824,34 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Home = function (_React$Component) {
-    _inherits(Home, _React$Component);
+      _inherits(Home, _React$Component);
 
-    function Home(props, context) {
-        _classCallCheck(this, Home);
+      function Home(props, context) {
+            _classCallCheck(this, Home);
 
-        var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props, context));
+            var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props, context));
 
-        _this.state = {
-            useScroll: ''
-        };
-        return _this;
-    }
+            _this.state = {
+                  useScroll: ''
+            };
+            return _this;
+      }
 
-    _createClass(Home, [{
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {}
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {}
-    }, {
-        key: 'render',
-        value: function render() {
+      _createClass(Home, [{
+            key: 'componentWillUnmount',
+            value: function componentWillUnmount() {}
+      }, {
+            key: 'componentDidMount',
+            value: function componentDidMount() {}
+      }, {
+            key: 'render',
+            value: function render() {
 
-            return _react2.default.createElement(
-                'div',
-                { className: 'wrapper ad-container' },
-                'home test'
-            );
-        }
-    }]);
+                  return _react2.default.createElement(_Components.HomeText, null);
+            }
+      }]);
 
-    return Home;
+      return Home;
 }(_react2.default.Component);
 
 exports.default = Home;
@@ -25748,7 +25877,7 @@ var _reactAdsense = __webpack_require__(207);
 
 var _reactAdsense2 = _interopRequireDefault(_reactAdsense);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _reactRedux = __webpack_require__(21);
 
@@ -25852,7 +25981,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Components = __webpack_require__(29);
+var _Components = __webpack_require__(22);
 
 var _reactRedux = __webpack_require__(21);
 
@@ -26612,7 +26741,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 var getKeys   = __webpack_require__(58)
-  , toIObject = __webpack_require__(26);
+  , toIObject = __webpack_require__(27);
 module.exports = function(object, el){
   var O      = toIObject(object)
     , keys   = getKeys(O)
@@ -26630,7 +26759,7 @@ module.exports = function(object, el){
 
 var path      = __webpack_require__(304)
   , invoke    = __webpack_require__(93)
-  , aFunction = __webpack_require__(22);
+  , aFunction = __webpack_require__(23);
 module.exports = function(/* ...pargs */){
   var fn     = aFunction(this)
     , length = arguments.length
@@ -26874,7 +27003,7 @@ $export($export.S, 'Array', {isArray: __webpack_require__(118)});
 
 // 22.1.3.13 Array.prototype.join(separator)
 var $export   = __webpack_require__(0)
-  , toIObject = __webpack_require__(26)
+  , toIObject = __webpack_require__(27)
   , arrayJoin = [].join;
 
 // fallback for not array-like strings
@@ -26891,7 +27020,7 @@ $export($export.P + $export.F * (__webpack_require__(78) != Object || !__webpack
 "use strict";
 
 var $export       = __webpack_require__(0)
-  , toIObject     = __webpack_require__(26)
+  , toIObject     = __webpack_require__(27)
   , toInteger     = __webpack_require__(51)
   , toLength      = __webpack_require__(16)
   , $native       = [].lastIndexOf
@@ -27042,7 +27171,7 @@ $export($export.P + $export.F * !__webpack_require__(36)([].some, true), 'Array'
 "use strict";
 
 var $export   = __webpack_require__(0)
-  , aFunction = __webpack_require__(22)
+  , aFunction = __webpack_require__(23)
   , toObject  = __webpack_require__(18)
   , fails     = __webpack_require__(7)
   , $sort     = [].sort
@@ -27140,7 +27269,7 @@ $export($export.P + $export.F * __webpack_require__(7)(function(){
 var TO_PRIMITIVE = __webpack_require__(10)('toPrimitive')
   , proto        = Date.prototype;
 
-if(!(TO_PRIMITIVE in proto))__webpack_require__(23)(proto, TO_PRIMITIVE, __webpack_require__(300));
+if(!(TO_PRIMITIVE in proto))__webpack_require__(24)(proto, TO_PRIMITIVE, __webpack_require__(300));
 
 /***/ }),
 /* 331 */
@@ -27152,7 +27281,7 @@ var DateProto    = Date.prototype
   , $toString    = DateProto[TO_STRING]
   , getTime      = DateProto.getTime;
 if(new Date(NaN) + '' != INVALID_DATE){
-  __webpack_require__(24)(DateProto, TO_STRING, function toString(){
+  __webpack_require__(25)(DateProto, TO_STRING, function toString(){
     var value = getTime.call(this);
     return value === value ? $toString.call(this) : INVALID_DATE;
   });
@@ -27569,7 +27698,7 @@ if(!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')){
   }
   $Number.prototype = proto;
   proto.constructor = $Number;
-  __webpack_require__(24)(global, NUMBER, $Number);
+  __webpack_require__(25)(global, NUMBER, $Number);
 }
 
 /***/ }),
@@ -27863,7 +27992,7 @@ __webpack_require__(39)('freeze', function($freeze){
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-var toIObject                 = __webpack_require__(26)
+var toIObject                 = __webpack_require__(27)
   , $getOwnPropertyDescriptor = __webpack_require__(30).f;
 
 __webpack_require__(39)('getOwnPropertyDescriptor', function(){
@@ -28003,7 +28132,7 @@ var classof = __webpack_require__(77)
   , test    = {};
 test[__webpack_require__(10)('toStringTag')] = 'z';
 if(test + '' != '[object z]'){
-  __webpack_require__(24)(Object.prototype, 'toString', function toString(){
+  __webpack_require__(25)(Object.prototype, 'toString', function toString(){
     return '[object ' + classof(this) + ']';
   }, true);
 }
@@ -28038,7 +28167,7 @@ var LIBRARY            = __webpack_require__(55)
   , classof            = __webpack_require__(77)
   , $export            = __webpack_require__(0)
   , isObject           = __webpack_require__(9)
-  , aFunction          = __webpack_require__(22)
+  , aFunction          = __webpack_require__(23)
   , anInstance         = __webpack_require__(54)
   , forOf              = __webpack_require__(70)
   , speciesConstructor = __webpack_require__(126)
@@ -28337,7 +28466,7 @@ $export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(95)(function
 
 // 26.1.1 Reflect.apply(target, thisArgument, argumentsList)
 var $export   = __webpack_require__(0)
-  , aFunction = __webpack_require__(22)
+  , aFunction = __webpack_require__(23)
   , anObject  = __webpack_require__(5)
   , rApply    = (__webpack_require__(6).Reflect || {}).apply
   , fApply    = Function.apply;
@@ -28359,7 +28488,7 @@ $export($export.S + $export.F * !__webpack_require__(7)(function(){
 // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
 var $export    = __webpack_require__(0)
   , create     = __webpack_require__(56)
-  , aFunction  = __webpack_require__(22)
+  , aFunction  = __webpack_require__(23)
   , anObject   = __webpack_require__(5)
   , isObject   = __webpack_require__(9)
   , fails      = __webpack_require__(7)
@@ -28693,7 +28822,7 @@ if(__webpack_require__(12) && (!CORRECT_NEW || __webpack_require__(7)(function()
   for(var keys = gOPN(Base), i = 0; keys.length > i; )proxy(keys[i++]);
   proto.constructor = $RegExp;
   $RegExp.prototype = proto;
-  __webpack_require__(24)(global, 'RegExp', $RegExp);
+  __webpack_require__(25)(global, 'RegExp', $RegExp);
 }
 
 __webpack_require__(60)('RegExp');
@@ -28834,7 +28963,7 @@ var anObject    = __webpack_require__(5)
   , $toString   = /./[TO_STRING];
 
 var define = function(fn){
-  __webpack_require__(24)(RegExp.prototype, TO_STRING, fn, true);
+  __webpack_require__(25)(RegExp.prototype, TO_STRING, fn, true);
 };
 
 // 21.2.5.14 RegExp.prototype.toString()
@@ -28858,7 +28987,7 @@ if(__webpack_require__(7)(function(){ return $toString.call({source: 'a', flags:
 "use strict";
 
 // B.2.3.2 String.prototype.anchor(name)
-__webpack_require__(25)('anchor', function(createHTML){
+__webpack_require__(26)('anchor', function(createHTML){
   return function anchor(name){
     return createHTML(this, 'a', 'name', name);
   }
@@ -28871,7 +29000,7 @@ __webpack_require__(25)('anchor', function(createHTML){
 "use strict";
 
 // B.2.3.3 String.prototype.big()
-__webpack_require__(25)('big', function(createHTML){
+__webpack_require__(26)('big', function(createHTML){
   return function big(){
     return createHTML(this, 'big', '', '');
   }
@@ -28884,7 +29013,7 @@ __webpack_require__(25)('big', function(createHTML){
 "use strict";
 
 // B.2.3.4 String.prototype.blink()
-__webpack_require__(25)('blink', function(createHTML){
+__webpack_require__(26)('blink', function(createHTML){
   return function blink(){
     return createHTML(this, 'blink', '', '');
   }
@@ -28897,7 +29026,7 @@ __webpack_require__(25)('blink', function(createHTML){
 "use strict";
 
 // B.2.3.5 String.prototype.bold()
-__webpack_require__(25)('bold', function(createHTML){
+__webpack_require__(26)('bold', function(createHTML){
   return function bold(){
     return createHTML(this, 'b', '', '');
   }
@@ -28951,7 +29080,7 @@ $export($export.P + $export.F * __webpack_require__(114)(ENDS_WITH), 'String', {
 "use strict";
 
 // B.2.3.6 String.prototype.fixed()
-__webpack_require__(25)('fixed', function(createHTML){
+__webpack_require__(26)('fixed', function(createHTML){
   return function fixed(){
     return createHTML(this, 'tt', '', '');
   }
@@ -28964,7 +29093,7 @@ __webpack_require__(25)('fixed', function(createHTML){
 "use strict";
 
 // B.2.3.7 String.prototype.fontcolor(color)
-__webpack_require__(25)('fontcolor', function(createHTML){
+__webpack_require__(26)('fontcolor', function(createHTML){
   return function fontcolor(color){
     return createHTML(this, 'font', 'color', color);
   }
@@ -28977,7 +29106,7 @@ __webpack_require__(25)('fontcolor', function(createHTML){
 "use strict";
 
 // B.2.3.8 String.prototype.fontsize(size)
-__webpack_require__(25)('fontsize', function(createHTML){
+__webpack_require__(26)('fontsize', function(createHTML){
   return function fontsize(size){
     return createHTML(this, 'font', 'size', size);
   }
@@ -29036,7 +29165,7 @@ $export($export.P + $export.F * __webpack_require__(114)(INCLUDES), 'String', {
 "use strict";
 
 // B.2.3.9 String.prototype.italics()
-__webpack_require__(25)('italics', function(createHTML){
+__webpack_require__(26)('italics', function(createHTML){
   return function italics(){
     return createHTML(this, 'i', '', '');
   }
@@ -29072,7 +29201,7 @@ __webpack_require__(120)(String, 'String', function(iterated){
 "use strict";
 
 // B.2.3.10 String.prototype.link(url)
-__webpack_require__(25)('link', function(createHTML){
+__webpack_require__(26)('link', function(createHTML){
   return function link(url){
     return createHTML(this, 'a', 'href', url);
   }
@@ -29083,7 +29212,7 @@ __webpack_require__(25)('link', function(createHTML){
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export   = __webpack_require__(0)
-  , toIObject = __webpack_require__(26)
+  , toIObject = __webpack_require__(27)
   , toLength  = __webpack_require__(16);
 
 $export($export.S, 'String', {
@@ -29119,7 +29248,7 @@ $export($export.P, 'String', {
 "use strict";
 
 // B.2.3.11 String.prototype.small()
-__webpack_require__(25)('small', function(createHTML){
+__webpack_require__(26)('small', function(createHTML){
   return function small(){
     return createHTML(this, 'small', '', '');
   }
@@ -29156,7 +29285,7 @@ $export($export.P + $export.F * __webpack_require__(114)(STARTS_WITH), 'String',
 "use strict";
 
 // B.2.3.12 String.prototype.strike()
-__webpack_require__(25)('strike', function(createHTML){
+__webpack_require__(26)('strike', function(createHTML){
   return function strike(){
     return createHTML(this, 'strike', '', '');
   }
@@ -29169,7 +29298,7 @@ __webpack_require__(25)('strike', function(createHTML){
 "use strict";
 
 // B.2.3.13 String.prototype.sub()
-__webpack_require__(25)('sub', function(createHTML){
+__webpack_require__(26)('sub', function(createHTML){
   return function sub(){
     return createHTML(this, 'sub', '', '');
   }
@@ -29182,7 +29311,7 @@ __webpack_require__(25)('sub', function(createHTML){
 "use strict";
 
 // B.2.3.14 String.prototype.sup()
-__webpack_require__(25)('sup', function(createHTML){
+__webpack_require__(26)('sup', function(createHTML){
   return function sup(){
     return createHTML(this, 'sup', '', '');
   }
@@ -29212,7 +29341,7 @@ var global         = __webpack_require__(6)
   , has            = __webpack_require__(20)
   , DESCRIPTORS    = __webpack_require__(12)
   , $export        = __webpack_require__(0)
-  , redefine       = __webpack_require__(24)
+  , redefine       = __webpack_require__(25)
   , META           = __webpack_require__(49).KEY
   , $fails         = __webpack_require__(7)
   , shared         = __webpack_require__(98)
@@ -29225,7 +29354,7 @@ var global         = __webpack_require__(6)
   , enumKeys       = __webpack_require__(301)
   , isArray        = __webpack_require__(118)
   , anObject       = __webpack_require__(5)
-  , toIObject      = __webpack_require__(26)
+  , toIObject      = __webpack_require__(27)
   , toPrimitive    = __webpack_require__(40)
   , createDesc     = __webpack_require__(50)
   , _create        = __webpack_require__(56)
@@ -29434,7 +29563,7 @@ $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function(){
 });
 
 // 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(23)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(24)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
 setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
@@ -29751,7 +29880,7 @@ $export($export.S, 'Math', {
 
 var $export         = __webpack_require__(0)
   , toObject        = __webpack_require__(18)
-  , aFunction       = __webpack_require__(22)
+  , aFunction       = __webpack_require__(23)
   , $defineProperty = __webpack_require__(13);
 
 // B.2.2.2 Object.prototype.__defineGetter__(P, getter)
@@ -29769,7 +29898,7 @@ __webpack_require__(12) && $export($export.P + __webpack_require__(96), 'Object'
 
 var $export         = __webpack_require__(0)
   , toObject        = __webpack_require__(18)
-  , aFunction       = __webpack_require__(22)
+  , aFunction       = __webpack_require__(23)
   , $defineProperty = __webpack_require__(13);
 
 // B.2.2.3 Object.prototype.__defineSetter__(P, setter)
@@ -29800,7 +29929,7 @@ $export($export.S, 'Object', {
 // https://github.com/tc39/proposal-object-getownpropertydescriptors
 var $export        = __webpack_require__(0)
   , ownKeys        = __webpack_require__(186)
-  , toIObject      = __webpack_require__(26)
+  , toIObject      = __webpack_require__(27)
   , gOPD           = __webpack_require__(30)
   , createProperty = __webpack_require__(111);
 
@@ -29891,11 +30020,11 @@ var $export     = __webpack_require__(0)
   , core        = __webpack_require__(43)
   , microtask   = __webpack_require__(123)()
   , OBSERVABLE  = __webpack_require__(10)('observable')
-  , aFunction   = __webpack_require__(22)
+  , aFunction   = __webpack_require__(23)
   , anObject    = __webpack_require__(5)
   , anInstance  = __webpack_require__(54)
   , redefineAll = __webpack_require__(59)
-  , hide        = __webpack_require__(23)
+  , hide        = __webpack_require__(24)
   , forOf       = __webpack_require__(70)
   , RETURN      = forOf.RETURN;
 
@@ -30231,7 +30360,7 @@ metadata.exp({hasOwnMetadata: function hasOwnMetadata(metadataKey, target /*, ta
 
 var metadata                  = __webpack_require__(45)
   , anObject                  = __webpack_require__(5)
-  , aFunction                 = __webpack_require__(22)
+  , aFunction                 = __webpack_require__(23)
   , toMetaKey                 = metadata.key
   , ordinaryDefineOwnMetadata = metadata.set;
 
@@ -30390,9 +30519,9 @@ $export($export.S, 'System', {global: __webpack_require__(6)});
 /***/ (function(module, exports, __webpack_require__) {
 
 var $iterators    = __webpack_require__(135)
-  , redefine      = __webpack_require__(24)
+  , redefine      = __webpack_require__(25)
   , global        = __webpack_require__(6)
-  , hide          = __webpack_require__(23)
+  , hide          = __webpack_require__(24)
   , Iterators     = __webpack_require__(71)
   , wks           = __webpack_require__(10)
   , ITERATOR      = wks('iterator')
@@ -30987,7 +31116,7 @@ exports = module.exports = __webpack_require__(482)(undefined);
 
 
 // module
-exports.push([module.i, "\r\nhtml ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n.shine, .chrome {\r\n  font-size: 1em;\r\n  margin: 0 auto;\r\n  margin-bottom: 1em;\r\n}\r\n\r\n.shine {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n.chrome {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  background-image: -webkit-linear-gradient(-40deg, transparent 0%, transparent 40%, #fff 50%, transparent 60%, transparent 100%);\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 5s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n@-webkit-keyframes shine {\r\n  0%, 10% {\r\n    background-position: -100px;\r\n  }\r\n  20% {\r\n    background-position: top left;\r\n  }\r\n  90% {\r\n    background-position: top right;\r\n  }\r\n  100% {\r\n    background-position: 100px;\r\n  }\r\n}\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 20em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.game-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n.blocking-chat\r\n{\r\n  color: #BBB;\r\n}\r\n.mon-die-chat\r\n{\r\n  color: #A00909;\r\n}\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 1.5em;\r\n}\r\n\r\n.whisper-chat{\r\n  color:#B0FFFF;\r\n}\r\n\r\n.cri-chat\r\n{\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 20px;\r\n  color: rgba(255, 50, 52, 0.4);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n.chat-green{\r\n  color:#0F0;\r\n}\r\n\r\n.chat-map-effect-span\r\n{\r\n\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 16px;\r\n}\r\n\r\n.chat-map-effect{\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n    position: relative;\r\n    margin: 0;\r\n    color: #fff;\r\n    text-transform: uppercase;\r\n}\r\n\r\n\r\n\r\n.chat-setmonster{\r\n    color: #fff;\r\n}\r\n\r\n.chat-skill{\r\n  color:#E0E0E0;\r\n  font-weight: bold;\r\n  text-shadow: 0 0 0.5em #fefcc9,\r\n0.1em -0.1em 0.3em #feec85,\r\n  0.5em -0.4em 0.5em #ec760c,\r\n-0.4em -0.9em 0.9em #cd4606,\r\n0.2em -1.1em 1.3em #451b0e;\r\n}\r\n\r\n\r\n\r\n.chat-item\r\n{\r\n  color:#A0F0F0;\r\n}\r\n.chat-Shoot\r\n{\r\n  color:#ff1d1d;\r\n}\r\n.system-chat\r\n{\r\n  color:#1da0ff;\r\n  font-weight: bold;\r\n}\r\n\r\n.levelup-chat\r\n{\r\n  animation-duration: 1s;\r\n  animation-name: levelup;\r\n  animation-iteration-count: infinite;\r\n}\r\n\r\n@keyframes levelup {\r\n  10%\r\n  {\r\n    text-shadow: 0.3em 0.1em 0.3em #F0FF00;\r\n    color:#ff1d1d;\r\n  }\r\n  20%\r\n  {\r\n    text-shadow: 0.2em 0.2em 0.3em #00FFA0;\r\n    color:#1da0ff;\r\n  }\r\n  30%\r\n  {\r\n    text-shadow: 0.1em 0.3em 0.3em #D0D6FF;\r\n    color:#E0E0E0;\r\n  }\r\n  40%\r\n  {\r\n    text-shadow: 0em 0.2em 0.3em #00FFA0;\r\n    color:#0F0;\r\n  }\r\n  50%\r\n  {\r\n    text-shadow: -0.1em 0.1em 0.3em #FFA0A0;\r\n    color:#F0FF00;\r\n  }\r\n  60%\r\n  {\r\n    text-shadow: -0.2em 0em 0.3em #F0A000;\r\n    color:#1da0ff;\r\n  }\r\n  70%\r\n  {\r\n    text-shadow: -0.3em -0.1em 0.3em #00FFFF;\r\n    color:#FF00FF;\r\n  }\r\n  80%\r\n  {\r\n    text-shadow: -0.2em -0.2em 0.3em #FF00FF;\r\n    color:#FFA0A0;\r\n  }\r\n  90%\r\n  {\r\n    text-shadow: -0.1em -0.3em 0.3em #F0A0D0;\r\n    color:#00FFA0;\r\n  }\r\n  100%\r\n  {\r\n    text-shadow: 0.1em 0.1em 0.15em #079A00;\r\n    color:#ff1d1d;\r\n  }\r\n}\r\n\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: auto;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 1.2em;\r\n    margin-top: 0px;\r\n}\r\n\r\n.stat-li{\r\n  width: 30%;\r\n  display: inline-block;\r\n\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n.inven-btn\r\n{\r\n  width: 40%;\r\n  line-height: 20px;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n\r\n.collapsible-header\r\n{\r\n  color: #000;\r\n  font-weight: bold;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 20%;\r\n  width: 100%;\r\n  outline: none;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n.controller-btn.rest-btn{\r\n  right: 11rem;\r\n  top: 0rem;\r\n}\r\n\r\n\r\n/*mapview*/\r\n.map-view\r\n{\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n}\r\n.map-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n\r\n\r\n\r\n/* fight-container */\r\n\r\n.fight-container-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 1);\r\n    z-index: 99;\r\n}\r\n\r\n.fight-container-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.fight-container-screen .btn {\r\n    margin-top: 14px;\r\n    margin-left: 1em;\r\n    margin-right: 1em;\r\n    padding-left: 0.5em;\r\n    padding-right: 0.5em;\r\n}\r\n\r\n\r\n@-webkit-keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.fight-container-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-enter;\r\n    animation-name: fight-container-enter;\r\n}\r\n\r\n@-webkit-keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.fight-container-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-leave;\r\n    animation-name: fight-container-leave;\r\n}\r\n\r\n.fight-comp-wrapper\r\n{\r\n  height: 100%;\r\n}\r\n\r\n/*HP-veiw*/\r\n\r\n.HP-view\r\n{\r\n  background: #000;\r\n  height: 10%;\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n  z-index: 9;\r\n}\r\n.HP-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n.hp-bar\r\n{\r\n      letter-spacing: -3px;\r\n}\r\n\r\n\r\n.hp-vibration\r\n{\r\n  animation-duration: 0.5s;\r\n  animation-name: vibration;\r\n}\r\n@keyframes vibration {\r\n  0%    {margin-left: 5px; margin-top: 5px;}\r\n  10%    {margin-left: 0px; margin-top: 0px;}\r\n  20%    {margin-left: 5px; margin-top: 5px;}\r\n  30%    {margin-left: 0px; margin-top: 0px;}\r\n  40%    {margin-left: 5px; margin-top: 5px;}\r\n  50%    {margin-left: 0px; margin-top: 0px;}\r\n  60%    {margin-left: 5px; margin-top: 5px;}\r\n  70%    {margin-left: 0px; margin-top: 0px;}\r\n  80%    {margin-left: 0px; margin-top: 0px;}\r\n  90%    {margin-left: 5px; margin-top: 5px;}\r\n  100%    {margin-left: 0px; margin-top: 0px;}\r\n}\r\n\r\n.cri-no{\r\n  display: none;\r\n}\r\n\r\n\r\n.cri-span{\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\r\n}\r\n\r\n.cri-yes\r\n{\r\n  display: inline-block;\r\n  position: absolute;\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n  position: relative;\r\n  margin: 0;\r\n  color: #fff;\r\n  text-transform: uppercase;\r\n  animation-duration: 0.1s;\r\n  margin-top:50%;\r\n  animation-name: criEffect;\r\n}\r\n\r\n@keyframes criEffect {\r\n  0%    {\r\n    font-size: 1em;\r\n    transform: rotate(-90deg);\r\n  }\r\n  10%    {\r\n    font-size: 3em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  20%    {\r\n    font-size: 4em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  30%    {\r\n    font-size: 5em;\r\n    transform: rotate(-20deg);\r\n  }\r\n  40%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  50%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  60%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  70%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  80%    {\r\n    font-size: 5em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  90%    {\r\n    font-size: 4em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  100%    {\r\n    font-size: 3em;\r\n    transform: rotate(-90deg);\r\n  }\r\n\r\n}\r\n\r\n/*fight-view*/\r\n\r\n.fight-view\r\n{\r\n  color:#fff;\r\n  height: calc(90% - 12em);\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.fight-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n\r\n/*fight-controller*/\r\n\r\n\r\n.fight-controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 7em;\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.fight-btn-ul\r\n{\r\n  display: inline-block;\r\n  *display: inline;\r\n  zoom:1;\r\n}\r\n.fight-btn-li\r\n{\r\n  float: left;\r\n  margin-left: -1px;\r\n  z-index: 1;\r\n  width: 50%;\r\n  height: 8em;\r\n  text-align: left;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.fight-btn-li  > a{\r\n  float: left;\r\n}\r\n\r\n.skill-btn\r\n{\r\n  font-size: 0.6em;\r\n}\r\n\r\n\r\n\r\n/*user Item0*/\r\n/* user-item */\r\n.user-item-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 20%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.user-item-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.user-item-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.user-item-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.user-item-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.user-item-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.user-item-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n.user-inven-ul{\r\n  overflow: auto;\r\n  max-height: 20em;\r\n}\r\n\r\n\r\n.ad-container\r\n{\r\n  height: 100%;\r\n}\r\n\r\n@-webkit-keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n}\r\n\r\n.user-item-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-enter;\r\n    animation-name: user-item-enter;\r\n}\r\n\r\n@-webkit-keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.user-item-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-leave;\r\n    animation-name: user-item-leave;\r\n}\r\n\r\n\r\n.item-container\r\n{\r\n  margin-top: 53px;\r\n}\r\n\r\n.item-msg\r\n{\r\n  color: #000;\r\n  padding: 10px;\r\n}\r\n\r\n.tab-in-container\r\n{\r\n  max-height: 300px;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.use-scroll-msg\r\n{\r\n  font-size: 1em;\r\n  color: #FFF;\r\n  text-align: center;\r\n}\r\n\r\n.item-option-name\r\n{\r\n  color: #C802D0;\r\n  font-weight: bold;\r\n}\r\n\r\n/* item-store */\r\n.item-store-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 10%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.item-store-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.item-store-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.item-store-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.item-store-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.item-store-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.item-store-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        top: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        top: 20%;\r\n    }\r\n}\r\n\r\n.item-store-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-enter;\r\n    animation-name: item-store-enter;\r\n}\r\n\r\n@-webkit-keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.item-store-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-leave;\r\n    animation-name: item-store-leave;\r\n}\r\n\r\n@media only screen and (min-width: 300px){\r\n  html {\r\n    font-size: 13px;\r\n}\r\n}\r\n\r\n@media only screen and (min-width: 350px){\r\n  html {\r\n    font-size: 14px;\r\n}\r\n}\r\n\r\n@media only screen and (min-width: 400px){\r\n  html {\r\n    font-size: 15px;\r\n}\r\n}\r\n", ""]);
+exports.push([module.i, "\r\nhtml ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n.shine, .chrome {\r\n  font-size: 1em;\r\n  margin: 0 auto;\r\n  margin-bottom: 1em;\r\n}\r\n\r\n.shine {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n.chrome {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  background-image: -webkit-linear-gradient(-40deg, transparent 0%, transparent 40%, #fff 50%, transparent 60%, transparent 100%);\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 5s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n.home-text\r\n{\r\n  color: #FFF;\r\n  text-align: center;\r\n}\r\n\r\n@-webkit-keyframes shine {\r\n  0%, 10% {\r\n    background-position: -100px;\r\n  }\r\n  20% {\r\n    background-position: top left;\r\n  }\r\n  90% {\r\n    background-position: top right;\r\n  }\r\n  100% {\r\n    background-position: 100px;\r\n  }\r\n}\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 20em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.game-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n.blocking-chat\r\n{\r\n  color: #BBB;\r\n}\r\n.mon-die-chat\r\n{\r\n  color: #A00909;\r\n}\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 1.5em;\r\n}\r\n\r\n.whisper-chat{\r\n  color:#B0FFFF;\r\n}\r\n\r\n.cri-chat\r\n{\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 20px;\r\n  color: rgba(255, 50, 52, 0.4);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n.chat-green{\r\n  color:#0F0;\r\n}\r\n\r\n.chat-map-effect-span\r\n{\r\n\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 16px;\r\n}\r\n\r\n.chat-map-effect{\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n    position: relative;\r\n    margin: 0;\r\n    color: #fff;\r\n    text-transform: uppercase;\r\n}\r\n\r\n\r\n\r\n.chat-setmonster{\r\n    color: #fff;\r\n}\r\n\r\n.chat-skill{\r\n  color:#E0E0E0;\r\n  font-weight: bold;\r\n  text-shadow: 0 0 0.5em #fefcc9,\r\n0.1em -0.1em 0.3em #feec85,\r\n  0.5em -0.4em 0.5em #ec760c,\r\n-0.4em -0.9em 0.9em #cd4606,\r\n0.2em -1.1em 1.3em #451b0e;\r\n}\r\n\r\n\r\n\r\n.chat-item\r\n{\r\n  color:#A0F0F0;\r\n}\r\n.chat-Shoot\r\n{\r\n  color:#ff1d1d;\r\n}\r\n.system-chat\r\n{\r\n  color:#1da0ff;\r\n  font-weight: bold;\r\n}\r\n\r\n.levelup-chat\r\n{\r\n  animation-duration: 1s;\r\n  animation-name: levelup;\r\n  animation-iteration-count: infinite;\r\n}\r\n\r\n@keyframes levelup {\r\n  10%\r\n  {\r\n    text-shadow: 0.3em 0.1em 0.3em #F0FF00;\r\n    color:#ff1d1d;\r\n  }\r\n  20%\r\n  {\r\n    text-shadow: 0.2em 0.2em 0.3em #00FFA0;\r\n    color:#1da0ff;\r\n  }\r\n  30%\r\n  {\r\n    text-shadow: 0.1em 0.3em 0.3em #D0D6FF;\r\n    color:#E0E0E0;\r\n  }\r\n  40%\r\n  {\r\n    text-shadow: 0em 0.2em 0.3em #00FFA0;\r\n    color:#0F0;\r\n  }\r\n  50%\r\n  {\r\n    text-shadow: -0.1em 0.1em 0.3em #FFA0A0;\r\n    color:#F0FF00;\r\n  }\r\n  60%\r\n  {\r\n    text-shadow: -0.2em 0em 0.3em #F0A000;\r\n    color:#1da0ff;\r\n  }\r\n  70%\r\n  {\r\n    text-shadow: -0.3em -0.1em 0.3em #00FFFF;\r\n    color:#FF00FF;\r\n  }\r\n  80%\r\n  {\r\n    text-shadow: -0.2em -0.2em 0.3em #FF00FF;\r\n    color:#FFA0A0;\r\n  }\r\n  90%\r\n  {\r\n    text-shadow: -0.1em -0.3em 0.3em #F0A0D0;\r\n    color:#00FFA0;\r\n  }\r\n  100%\r\n  {\r\n    text-shadow: 0.1em 0.1em 0.15em #079A00;\r\n    color:#ff1d1d;\r\n  }\r\n}\r\n\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: auto;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 1.2em;\r\n    margin-top: 0px;\r\n}\r\n\r\n.stat-li{\r\n  width: 30%;\r\n  display: inline-block;\r\n\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n.inven-btn\r\n{\r\n  width: 40%;\r\n  line-height: 20px;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n\r\n.collapsible-header\r\n{\r\n  color: #000;\r\n  font-weight: bold;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 20%;\r\n  width: 100%;\r\n  outline: none;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n.controller-btn.rest-btn{\r\n  right: 11rem;\r\n  top: 0rem;\r\n}\r\n\r\n\r\n/*mapview*/\r\n.map-view\r\n{\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n}\r\n.map-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n\r\n\r\n\r\n/* fight-container */\r\n\r\n.fight-container-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 1);\r\n    z-index: 99;\r\n}\r\n\r\n.fight-container-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.fight-container-screen .btn {\r\n    margin-top: 14px;\r\n    margin-left: 1em;\r\n    margin-right: 1em;\r\n    padding-left: 0.5em;\r\n    padding-right: 0.5em;\r\n}\r\n\r\n\r\n@-webkit-keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.fight-container-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-enter;\r\n    animation-name: fight-container-enter;\r\n}\r\n\r\n@-webkit-keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.fight-container-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-leave;\r\n    animation-name: fight-container-leave;\r\n}\r\n\r\n.fight-comp-wrapper\r\n{\r\n  height: 100%;\r\n}\r\n\r\n/*HP-veiw*/\r\n\r\n.HP-view\r\n{\r\n  background: #000;\r\n  height: 10%;\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n  z-index: 9;\r\n}\r\n.HP-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n.hp-bar\r\n{\r\n      letter-spacing: -3px;\r\n}\r\n\r\n\r\n.hp-vibration\r\n{\r\n  animation-duration: 0.5s;\r\n  animation-name: vibration;\r\n}\r\n@keyframes vibration {\r\n  0%    {margin-left: 5px; margin-top: 5px;}\r\n  10%    {margin-left: 0px; margin-top: 0px;}\r\n  20%    {margin-left: 5px; margin-top: 5px;}\r\n  30%    {margin-left: 0px; margin-top: 0px;}\r\n  40%    {margin-left: 5px; margin-top: 5px;}\r\n  50%    {margin-left: 0px; margin-top: 0px;}\r\n  60%    {margin-left: 5px; margin-top: 5px;}\r\n  70%    {margin-left: 0px; margin-top: 0px;}\r\n  80%    {margin-left: 0px; margin-top: 0px;}\r\n  90%    {margin-left: 5px; margin-top: 5px;}\r\n  100%    {margin-left: 0px; margin-top: 0px;}\r\n}\r\n\r\n.cri-no{\r\n  display: none;\r\n}\r\n\r\n\r\n.cri-span{\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\r\n}\r\n\r\n.cri-yes\r\n{\r\n  display: inline-block;\r\n  position: absolute;\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n  position: relative;\r\n  margin: 0;\r\n  color: #fff;\r\n  text-transform: uppercase;\r\n  animation-duration: 0.1s;\r\n  margin-top:50%;\r\n  animation-name: criEffect;\r\n}\r\n\r\n@keyframes criEffect {\r\n  0%    {\r\n    font-size: 1em;\r\n    transform: rotate(-90deg);\r\n  }\r\n  10%    {\r\n    font-size: 3em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  20%    {\r\n    font-size: 4em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  30%    {\r\n    font-size: 5em;\r\n    transform: rotate(-20deg);\r\n  }\r\n  40%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  50%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  60%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  70%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  80%    {\r\n    font-size: 5em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  90%    {\r\n    font-size: 4em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  100%    {\r\n    font-size: 3em;\r\n    transform: rotate(-90deg);\r\n  }\r\n\r\n}\r\n\r\n/*fight-view*/\r\n\r\n.fight-view\r\n{\r\n  color:#fff;\r\n  height: calc(90% - 12em);\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.fight-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n\r\n/*fight-controller*/\r\n\r\n\r\n.fight-controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 7em;\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.fight-btn-ul\r\n{\r\n  display: inline-block;\r\n  *display: inline;\r\n  zoom:1;\r\n}\r\n.fight-btn-li\r\n{\r\n  float: left;\r\n  margin-left: -1px;\r\n  z-index: 1;\r\n  width: 50%;\r\n  height: 8em;\r\n  text-align: left;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.fight-btn-li  > a{\r\n  float: left;\r\n}\r\n\r\n.skill-btn\r\n{\r\n  font-size: 0.6em;\r\n}\r\n\r\n\r\n\r\n/*user Item0*/\r\n/* user-item */\r\n.user-item-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 20%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.user-item-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.user-item-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.user-item-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.user-item-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.user-item-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.user-item-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n.user-inven-ul{\r\n  overflow: auto;\r\n  max-height: 20em;\r\n}\r\n\r\n\r\n.ad-container\r\n{\r\n  height: 100%;\r\n}\r\n\r\n@-webkit-keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n}\r\n\r\n.user-item-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-enter;\r\n    animation-name: user-item-enter;\r\n}\r\n\r\n@-webkit-keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.user-item-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-leave;\r\n    animation-name: user-item-leave;\r\n}\r\n\r\n\r\n.item-container\r\n{\r\n  margin-top: 53px;\r\n}\r\n\r\n.item-msg\r\n{\r\n  color: #000;\r\n  padding: 10px;\r\n}\r\n\r\n.tab-in-container\r\n{\r\n  max-height: 300px;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.use-scroll-msg\r\n{\r\n  font-size: 1em;\r\n  color: #FFF;\r\n  text-align: center;\r\n}\r\n\r\n.item-option-name\r\n{\r\n  color: #C802D0;\r\n  font-weight: bold;\r\n}\r\n\r\n/* item-store */\r\n.item-store-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 10%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.item-store-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.item-store-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.item-store-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.item-store-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.item-store-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.item-store-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        top: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        top: 20%;\r\n    }\r\n}\r\n\r\n.item-store-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-enter;\r\n    animation-name: item-store-enter;\r\n}\r\n\r\n@-webkit-keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.item-store-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-leave;\r\n    animation-name: item-store-leave;\r\n}\r\n\r\n@media only screen and (min-width: 300px){\r\n  html {\r\n    font-size: 13px;\r\n}\r\n}\r\n\r\n@media only screen and (min-width: 350px){\r\n  html {\r\n    font-size: 14px;\r\n}\r\n}\r\n\r\n@media only screen and (min-width: 400px){\r\n  html {\r\n    font-size: 15px;\r\n}\r\n}\r\n", ""]);
 
 // exports
 
@@ -35060,7 +35189,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(27);
+  ReactComponentTreeHook = __webpack_require__(28);
 }
 
 function instantiateChild(childInstances, child, name, selfDebugID) {
@@ -35068,7 +35197,7 @@ function instantiateChild(childInstances, child, name, selfDebugID) {
   var keyUnique = childInstances[name] === undefined;
   if (process.env.NODE_ENV !== 'production') {
     if (!ReactComponentTreeHook) {
-      ReactComponentTreeHook = __webpack_require__(27);
+      ReactComponentTreeHook = __webpack_require__(28);
     }
     if (!keyUnique) {
       process.env.NODE_ENV !== 'production' ? warning(false, 'flattenChildren(...): Encountered two children with the same key, ' + '`%s`. Child keys must be unique; when two children share a key, only ' + 'the first child will be used.%s', KeyEscapeUtils.unescape(name), ReactComponentTreeHook.getStackAddendumByID(selfDebugID)) : void 0;
@@ -37730,7 +37859,7 @@ module.exports = ReactDOMInput;
 
 
 var DOMProperty = __webpack_require__(52);
-var ReactComponentTreeHook = __webpack_require__(27);
+var ReactComponentTreeHook = __webpack_require__(28);
 
 var warning = __webpack_require__(4);
 
@@ -37828,7 +37957,7 @@ module.exports = ReactDOMInvalidARIAHook;
 
 
 
-var ReactComponentTreeHook = __webpack_require__(27);
+var ReactComponentTreeHook = __webpack_require__(28);
 
 var warning = __webpack_require__(4);
 
@@ -38703,7 +38832,7 @@ module.exports = {
 
 var DOMProperty = __webpack_require__(52);
 var EventPluginRegistry = __webpack_require__(101);
-var ReactComponentTreeHook = __webpack_require__(27);
+var ReactComponentTreeHook = __webpack_require__(28);
 
 var warning = __webpack_require__(4);
 
@@ -38822,7 +38951,7 @@ module.exports = ReactDOMUnknownPropertyHook;
 
 var ReactInvalidSetStateWarningHook = __webpack_require__(555);
 var ReactHostOperationHistoryHook = __webpack_require__(553);
-var ReactComponentTreeHook = __webpack_require__(27);
+var ReactComponentTreeHook = __webpack_require__(28);
 var ExecutionEnvironment = __webpack_require__(17);
 
 var performanceNow = __webpack_require__(501);
@@ -42168,7 +42297,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(27);
+  ReactComponentTreeHook = __webpack_require__(28);
 }
 
 var loggedTypeFailures = {};
@@ -42210,7 +42339,7 @@ function checkReactTypeSpec(typeSpecs, values, location, componentName, element,
 
         if (process.env.NODE_ENV !== 'production') {
           if (!ReactComponentTreeHook) {
-            ReactComponentTreeHook = __webpack_require__(27);
+            ReactComponentTreeHook = __webpack_require__(28);
           }
           if (debugID !== null) {
             componentStackInfo = ReactComponentTreeHook.getStackAddendumByID(debugID);
@@ -42409,7 +42538,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(27);
+  ReactComponentTreeHook = __webpack_require__(28);
 }
 
 /**
@@ -42425,7 +42554,7 @@ function flattenSingleChildIntoContext(traverseContext, child, name, selfDebugID
     var keyUnique = result[name] === undefined;
     if (process.env.NODE_ENV !== 'production') {
       if (!ReactComponentTreeHook) {
-        ReactComponentTreeHook = __webpack_require__(27);
+        ReactComponentTreeHook = __webpack_require__(28);
       }
       if (!keyUnique) {
         process.env.NODE_ENV !== 'production' ? warning(false, 'flattenChildren(...): Encountered two children with the same key, ' + '`%s`. Child keys must be unique; when two children share a key, only ' + 'the first child will be used.%s', KeyEscapeUtils.unescape(name), ReactComponentTreeHook.getStackAddendumByID(selfDebugID)) : void 0;
@@ -46705,7 +46834,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(27);
+  ReactComponentTreeHook = __webpack_require__(28);
 }
 
 var loggedTypeFailures = {};
@@ -46747,7 +46876,7 @@ function checkReactTypeSpec(typeSpecs, values, location, componentName, element,
 
         if (process.env.NODE_ENV !== 'production') {
           if (!ReactComponentTreeHook) {
-            ReactComponentTreeHook = __webpack_require__(27);
+            ReactComponentTreeHook = __webpack_require__(28);
           }
           if (debugID !== null) {
             componentStackInfo = ReactComponentTreeHook.getStackAddendumByID(debugID);

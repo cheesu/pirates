@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Header, Home } from 'Components';
+import { Header } from 'Components';
 import { getStatusRequest, logoutRequest  } from 'Actions/authentication';
 import { searchRequest} from 'Actions/search';
 import { connect } from 'react-redux';
@@ -13,6 +13,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.props.history.push('/home');
        // get cookie by name
        function getCookie(name) {
            var value = "; " + document.cookie;
@@ -88,7 +89,7 @@ class App extends React.Component {
                                               getStatusRequest={this.props.getStatusRequest}/>
                                             }
 
-                                              <Home />
+
             </div>
         );
     }

@@ -36,6 +36,12 @@ body {
   text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);
 }
 
+.home-text
+{
+  color: #FFF;
+  text-align: center;
+}
+
 @-webkit-keyframes shine {
   0%, 10% {
     background-position: -100px;
