@@ -314,10 +314,12 @@ var useSkill = function useSkill(io, info) {
             var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
 
             var targetCurrentHP = 9999;
-            var criCount = 0;
+            var criCount = 1;
             // hit 연타 시작
             for (var count = 0; count < skillInfo.hit; count++) {
               var criOver = true;
+              console.log(criCount);
+              console.log(userInfo.lv / 15);
               if (userInfo.job == "암살자" && criCount < userInfo.lv / 15) {} else if (userInfo.job == "암살자" && criCount > userInfo.lv / 15) {
                 criOver = false;
               }
