@@ -299,21 +299,28 @@ var useSkill = function(io,info){
                   }
                   /*특수 스킬 끝*/
 
+                  /*특수스킬 방깍*/
+                  let downDpVal = 0;
+                  for(var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
+                    if(localMonsterList[monNum].sp[spCount].type=="downDp"){
+                      let skillVal = localMonsterList[monNum].sp[spCount].val;
+                      downDpVal =  (localMonsterList[monNum].dp/100)*skillVal;
+                    }
+                  }
+
 
                   let lvGap = (localMonsterList[monNum].lv - userInfo.lv)*2 ;
                   if(lvGap < -10){
                     lvGap = -10;
                   }
                   let lvBonus = userInfo.lv/(20+lvGap);
-                  let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - localMonsterList[monNum].dp;
+                  let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - (localMonsterList[monNum].dp-downDpVal);
 
                   let targetCurrentHP=9999;
                   let criCount = 1;
                   // hit 연타 시작
                   for(var count=0; count < skillInfo.hit; count++){
                   let criOver = true;
-                  console.log(criCount);
-                  console.log(userInfo.lv/15);
                   if(userInfo.job=="암살자"&& criCount < (userInfo.lv/15)){
                   }
                   else if(userInfo.job=="암살자"&& criCount > (userInfo.lv/15)){
@@ -321,16 +328,10 @@ var useSkill = function(io,info){
                   }
 
                   if(userInfo.job!="암살자"){
-                    dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - localMonsterList[monNum].dp;
+                    dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - (localMonsterList[monNum].dp-downDpVal);
                   }
 
-                    /*특수스킬 방깍*/
-                    for(var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
-                      if(localMonsterList[monNum].sp[spCount].type=="downDp"){
-                        let skillVal = localMonsterList[monNum].sp[spCount].val;
-                        dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - (localMonsterList[monNum].dp*((100-skillVal)/100));
-                      }
-                    }
+
 
                     dmg = Math.round(dmg);
                     let skillAttackMsg = "";

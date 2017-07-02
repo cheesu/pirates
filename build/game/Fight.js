@@ -306,34 +306,33 @@ var useSkill = function useSkill(io, info) {
             }
             /*특수 스킬 끝*/
 
+            /*특수스킬 방깍*/
+            var downDpVal = 0;
+            for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
+              if (localMonsterList[monNum].sp[spCount].type == "downDp") {
+                var skillVal = localMonsterList[monNum].sp[spCount].val;
+                downDpVal = localMonsterList[monNum].dp / 100 * skillVal;
+              }
+            }
+
             var lvGap = (localMonsterList[monNum].lv - userInfo.lv) * 2;
             if (lvGap < -10) {
               lvGap = -10;
             }
             var lvBonus = userInfo.lv / (20 + lvGap);
-            var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
+            var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - (localMonsterList[monNum].dp - downDpVal);
 
             var targetCurrentHP = 9999;
             var criCount = 1;
             // hit 연타 시작
             for (var count = 0; count < skillInfo.hit; count++) {
               var criOver = true;
-              console.log(criCount);
-              console.log(userInfo.lv / 15);
               if (userInfo.job == "암살자" && criCount < userInfo.lv / 15) {} else if (userInfo.job == "암살자" && criCount > userInfo.lv / 15) {
                 criOver = false;
               }
 
               if (userInfo.job != "암살자") {
-                dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp;
-              }
-
-              /*특수스킬 방깍*/
-              for (var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++) {
-                if (localMonsterList[monNum].sp[spCount].type == "downDp") {
-                  var skillVal = localMonsterList[monNum].sp[spCount].val;
-                  dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - localMonsterList[monNum].dp * ((100 - skillVal) / 100);
-                }
+                dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg - (localMonsterList[monNum].dp - downDpVal);
               }
 
               dmg = Math.round(dmg);
