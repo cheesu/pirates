@@ -258,18 +258,26 @@ var useSkill = function(io,info){
                       }
                     }
                     /***힐 끝***/
+                    else if(skillInfo.sp.type=='berserker'){
+                      if(fightInterval[userInfo.username+"berserker"] != true){
+                        fightInterval[userInfo.username+"berserker"] = true;
+                        setTimeout(function() {
+                           localMonsterList[monNum].sp.splice(spIndex, 1);
+                           io.emit(userInfo.username+"fight", "[skill]"+skillInfo.name+"의 효과가 끝났습니다.");
+                           fightInterval[userInfo.username+"berserker"] = false;
+                         }, 1000*skillInfo.sp.time);
+                      }else{
+                        io.emit(userInfo.username+"fight", "[skill] 이미 동일한 스킬이 걸려 있습니다.");
+                      }
 
+
+
+                    }
                     /***공깍***/
                     else{
 
-                      console.log("공깍방깍 캐스팅 시작");
                       for(let spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
-                        console.log("걸려있는 특수 스킬");
-                        console.log(localMonsterList[monNum].sp);
-                        console.log(localMonsterList[monNum].sp[spCount].type);
-                        console.log(skillInfo.sp.type);
                         if(localMonsterList[monNum].sp[spCount].type==skillInfo.sp.type){
-                          console.log("중복에 걸림");
                           io.emit(userInfo.username+"fight", "[skill] 이미 동일한 스킬이 걸려 있습니다.");
                           io.emit(userInfo.username+"[SkillEnd]", "");
                           clearInterval(fightInterval[userInfo.username+"skillInterval"]);
@@ -279,14 +287,9 @@ var useSkill = function(io,info){
                           return false;
                         }
                       }
-
-                      console.log("소드브레이크 발동");
                       let spIndex = localMonsterList[monNum].sp.length;
                       localMonsterList[monNum].sp.push(skillInfo.sp);
-
                       setTimeout(function() {
-                        console.log("디버프 효과 종료");
-                         // Code here
                          localMonsterList[monNum].sp.splice(spIndex, 1);
                          io.emit(info.ch+"fight", "[skill]"+skillInfo.name+"의 효과가 끝났습니다.");
                        }, 1000*skillInfo.sp.time);
@@ -324,7 +327,14 @@ var useSkill = function(io,info){
                     lvGap = -10;
                   }
                   let lvBonus = userInfo.lv/(20+lvGap);
-                  let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - (localMonsterList[monNum].dp-downDpVal);
+
+
+                  let buffDmg = 1;
+                  if(fightInterval[userInfo.username+"berserker"]){
+                    buffDmg = 1.7;
+                  }
+
+                  let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg)*buffDmg - (localMonsterList[monNum].dp-downDpVal);
 
                   let targetCurrentHP=9999;
                   let criCount = 1;
@@ -575,12 +585,17 @@ var fight = function (io,info){
               }
 
               if(userInfo.job2=='검의 달인'){
+                let berserker = false;
+                if(fightInterval[userInfo.username+"berserker"]){
+                  berserker = true;
+                }
+
                 let passiveLimit = userInfo.str;
                 if(passiveLimit>500){
                   passiveLimit = 500;
                 }
 
-                if(passiveLimit > passive){
+                if(passiveLimit > passive && !berserker){
                   reDmg = 0;
                   io.emit(userInfo.username+"fight", "[passive] 검의 달인 "+userInfo.username+"님의 "+userInfo.mount.w.name+"이(가) '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
                 }
@@ -769,7 +784,13 @@ var fight = function (io,info){
                 lvGap = -4;
               }
               let lvBonus = userInfo.lv/(20+lvGap);
-              let dmg =  (userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus) - localMonsterList[monNum].dp ;
+
+              let buffDmg = 1;
+              if(fightInterval[userInfo.username+"berserker"]){
+                buffDmg = 1.7;
+              }
+
+              let dmg =  ((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*buffDmg - localMonsterList[monNum].dp ;
 
               /*특수스킬 방깍*/
               for(var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
