@@ -262,7 +262,6 @@ var useSkill = function(io,info){
                       if(fightInterval[userInfo.username+"berserker"] != true){
                         fightInterval[userInfo.username+"berserker"] = true;
                         setTimeout(function() {
-                           localMonsterList[monNum].sp.splice(spIndex, 1);
                            io.emit(userInfo.username+"fight", "[skill]"+skillInfo.name+"의 효과가 끝났습니다.");
                            fightInterval[userInfo.username+"berserker"] = false;
                          }, 1000*skillInfo.sp.time);
@@ -348,7 +347,7 @@ var useSkill = function(io,info){
                   }
 
                   if(userInfo.job!="암살자"){
-                    dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg) - (localMonsterList[monNum].dp-downDpVal);
+                    dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg)*buffDmg - (localMonsterList[monNum].dp-downDpVal);
                   }
 
 
