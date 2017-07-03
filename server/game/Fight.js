@@ -261,12 +261,21 @@ var useSkill = function(io,info){
 
                     /***공깍***/
                     else{
+
+                      console.log("공깍방깍 캐스팅 시작");
                       for(let spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
                         console.log("걸려있는 특수 스킬");
                         console.log(localMonsterList[monNum].sp);
+                        console.log(localMonsterList[monNum].sp[spCount].type);
+                        console.log(skillInfo.sp.type);
                         if(localMonsterList[monNum].sp[spCount].type==skillInfo.sp.type){
                           console.log("중복에 걸림");
-                          io.emit(userInfo.username+"[skill]", "이미 동일한 스킬이 걸려 있습니다.");
+                          io.emit(userInfo.username+"fight", "[skill] 이미 동일한 스킬이 걸려 있습니다.");
+                          io.emit(userInfo.username+"[SkillEnd]", "");
+                          clearInterval(fightInterval[userInfo.username+"skillInterval"]);
+                          fightInterval[userInfo.username+"CastingCount"] = null;
+                          fightInterval[userInfo.username+"skillInterval"] = null;
+                          fightInterval[userInfo.username+"skill"] = false;
                           return false;
                         }
                       }
@@ -298,6 +307,7 @@ var useSkill = function(io,info){
                     return false;
                   }
                   /*특수 스킬 끝*/
+                  console.log("특수 스킬 끝");
 
                   /*특수스킬 방깍*/
                   let downDpVal = 0;
@@ -628,7 +638,7 @@ var fight = function (io,info){
                       io.emit(userInfo.username+"fight", "[item] "+ud.option.msg+"["+reDmg*10+"]");
                     }
                     else if(ud.option.option=="downDmg"){
-                      reDmg = (reDmg/100)*val;
+                      reDmg = (reDmg/100)*userInfo.mount.d.option.val;
                       io.emit(userInfo.username+"fight", "[item] "+ud.option.msg);
                     }
 
