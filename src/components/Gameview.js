@@ -163,6 +163,9 @@ class Gameview extends React.Component {
               else if(chat.indexOf('[공지사항]')==0){
                 return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
               }
+              else if(chat.indexOf('한계')==0){
+                return <p className="bla-bla-class levelup-chat" key={i}>{chat}</p>
+              }
               else if(chat.indexOf('[LEVEL UP!!]')==0 || chat.indexOf('[강화]')==0){
                 return <p className="bla-bla-class levelup-chat" key={i}>{chat}</p>
               }

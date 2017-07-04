@@ -20375,8 +20375,8 @@ var Chat = function (_React$Component) {
       _createClass(Chat, [{
             key: 'componentDidMount',
             value: function componentDidMount() {
-                  var sendMsgText = this.props.username + " 님이 입장 하셨습니다. ";
-                  this.props.socket.emit('chat', this.state.socketCh + ":ch:" + sendMsgText); // 요청
+                  /*  let sendMsgText = this.props.username + " 님이 입장 하셨습니다. " ;
+                    this.props.socket.emit('chat', this.state.socketCh+":ch:"+sendMsgText); // 요청*/
                   var addUserName = this.props.username;
                   this.props.socket.emit('totalCount', addUserName); // 요청
 
@@ -22785,6 +22785,12 @@ var Gameview = function (_React$Component) {
             return _react2.default.createElement(
               'p',
               { className: 'bla-bla-class notice-chat', key: i },
+              chat
+            );
+          } else if (chat.indexOf('한계') == 0) {
+            return _react2.default.createElement(
+              'p',
+              { className: 'bla-bla-class levelup-chat', key: i },
               chat
             );
           } else if (chat.indexOf('[LEVEL UP!!]') == 0 || chat.indexOf('[강화]') == 0) {
@@ -25676,7 +25682,7 @@ var Game = function (_React$Component) {
             if (this.props.status.currentUser == "") {
                 this.props.history.push('/login');
             } else {
-                this.socket.emit('addUser', this.props.status.currentUser);
+                this.socket.emit('addUser', this.props.status.currentUser, this.props.status.lv);
                 this.socket.on(this.props.username + "[중복접속]", function (data) {
                     //몹 채팅
                     location.href = "/login";

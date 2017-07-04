@@ -232,7 +232,7 @@ io.on('connection', function (socket) {
     io.emit(ch[0], ch[1]);
   });
 
-  socket.on('addUser', function (addUserName) {
+  socket.on('addUser', function (addUserName, userLV) {
     var userSocketId = socket.id;
     var userObj = new Object();
     userObj.userID = addUserName;
@@ -249,6 +249,12 @@ io.on('connection', function (socket) {
 
     chatUserList.push(userObj);
     console.log(addUserName + ":접속");
+
+    if (userLV > 100) {
+      io.emit('Gchat', "한계를 돌파한자 [" + addUserName + "]님이 입장 하셨습니다.");
+    } else {
+      io.emit('Gchat', addUserName + "님이 입장 하셨습니다.");
+    }
 
     var msg = addUserName + "포함 총인원:" + chatUserList.length;
     //socket.request.session = {};

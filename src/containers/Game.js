@@ -31,7 +31,7 @@ class Game extends React.Component {
           this.props.history.push('/login');
         }
         else{
-          this.socket.emit('addUser', this.props.status.currentUser);
+          this.socket.emit('addUser', this.props.status.currentUser, this.props.status.lv);
           this.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
           location.href="/login";
           });
