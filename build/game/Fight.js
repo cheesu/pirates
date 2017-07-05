@@ -332,7 +332,14 @@ var useSkill = function useSkill(io, info) {
 
             var buffDmg = 1;
             if (fightInterval[userInfo.username + "berserker"]) {
-              buffDmg = 1.7;
+              buffDmg = 2;
+            }
+
+            if (userInfo.job == '마법사') {
+              buffDmg = 1.2;
+            }
+            if (userInfo.job == '깨달은 현자') {
+              buffDmg = 1.4;
             }
 
             var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg * buffDmg - (localMonsterList[monNum].dp - downDpVal);
@@ -342,7 +349,7 @@ var useSkill = function useSkill(io, info) {
             // hit 연타 시작
             for (var count = 0; count < skillInfo.hit; count++) {
               var criOver = true;
-              if (userInfo.job == "암살자" && criCount < userInfo.lv / 15) {} else if (userInfo.job == "암살자" && criCount > userInfo.lv / 15) {
+              if (userInfo.job == "암살자" && criCount < 4) {} else if (userInfo.job == "암살자" && criCount > 4) {
                 criOver = false;
               }
 
@@ -749,7 +756,7 @@ var fight = function fight(io, info) {
 
         var buffDmg = 1;
         if (fightInterval[userInfo.username + "berserker"]) {
-          buffDmg = 1.7;
+          buffDmg = 2;
         }
 
         var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * buffDmg - localMonsterList[monNum].dp;
@@ -1037,7 +1044,7 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   var over100 = 1;
 
   if (userInfo.lv > 99) {
-    over100 = 2;
+    over100 = userInfo.lv - 98;
   }
 
   if (logB(userInfo.lv, 20) * 1000 * userInfo.lv * userInfo.lv / 6 * addLV * over100 < totalExp) {
