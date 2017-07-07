@@ -60,7 +60,7 @@ router.post('/signup', (req, res) => {
             mount:{w:"",d:""},
             item:[],
             itemCount:{r:0},
-            gold:1000,
+            gold:300000,
         });
 
         account.password = account.generateHash(account.password);

@@ -75,6 +75,16 @@ class Chat extends React.Component {
         return false;
       }
 
+
+      if(this.props.username == "운영자" && this.state.msg.indexOf('/알림')==0){
+        let sendMG ="[알림] : " +this.state.msg.substring(3,this.state.msg.length);
+        this.props.socket.emit('alarmNoticeChat', sendMG); // 요청
+        this.setState({
+            msg: ''
+        });
+        return false;
+      }
+
       if(this.state.msg.indexOf('/전체')==0){
         let sendMG ="[All] : "+this.props.username + " : " +this.state.msg.substring(3,this.state.msg.length);
         this.props.socket.emit('Gchat', sendMG); // 요청

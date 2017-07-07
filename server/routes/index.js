@@ -3,6 +3,7 @@ import account from './account';
 import map from './map';
 import skill from './skill';
 import item from './item';
+import fcm from './fcm';
 
 const router = express.Router();
 
@@ -22,4 +23,5 @@ router.use('/account', account);
 router.use('/map', map);
 router.use('/skill', skill);
 router.use('/item', item);
+router.use('/fcm', fcm);
 export default router;

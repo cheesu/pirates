@@ -24,6 +24,10 @@ var _item = require('./item');
 
 var _item2 = _interopRequireDefault(_item);
 
+var _fcm = require('./fcm');
+
+var _fcm2 = _interopRequireDefault(_fcm);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -43,4 +47,5 @@ router.use('/account', _account2.default);
 router.use('/map', _map2.default);
 router.use('/skill', _skill2.default);
 router.use('/item', _item2.default);
+router.use('/fcm', _fcm2.default);
 exports.default = router;

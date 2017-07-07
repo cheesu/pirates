@@ -46,6 +46,8 @@ var _systemnotice2 = _interopRequireDefault(_systemnotice);
 
 var _Fight = require('./game/Fight');
 
+var _Alarm = require('./game/Alarm');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // PARSE HTML BODY
@@ -195,6 +197,19 @@ io.on('connection', function (socket) {
       if (chatUserList[count].socketID == socket.id) {
         if (chatUserList[count].userID == '운영자') {
           io.emit('NoticeChat', msg);
+        }
+      }
+    }
+  });
+
+  socket.on('alarmNoticeChat', function (msg) {
+
+    for (var count = 0; count < chatUserList.length; count++) {
+      console.log(chatUserList[count].socketID);
+      console.log(chatUserList[count].userID);
+      if (chatUserList[count].socketID == socket.id) {
+        if (chatUserList[count].userID == '운영자') {
+          var alarm = (0, _Alarm.alarmNotice)(msg);
         }
       }
     }
@@ -429,4 +444,15 @@ io.sockets.on("connection", function (socket) {
   socket.on('checkParty', function (data) {
     socket.emit('checkParty', data);
   });
+});
+
+var firebase = require("firebase");
+
+firebase.initializeApp({
+  serviceAccount: {
+    projectId: "pirates-ec4b6",
+    clientEmail: "foo@pirates-ec4b6.iam.gserviceaccount.com",
+    privateKey: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDP4j7So9kIERed" + "\nz1PPUFfVCse1bP+pWfolZMeQHmZzx/33Yx+SBHFMnlRwoacc/dHaGr3LKMlce1Yr\nwjVKCxzGGYrItyyvSp1KkfHOw5gzx8enFkoj0PY" + "rr5YoOB6PsuvT1hPT7kZCQNm1\nLfqxCk0d4h7m+FSraiJb+ik2ysAVhbUbxGieJs3XZx2bhqn4zxfd+8kVp8ekJCrm\nEmb8g6IMMkx3pC+bC" + "IpAdRpNvSOa0xBocwq6THUkG0PZkptsCry09j8cIFTBCZBT\nmPizxgbCeQRU0NycnQC77k2C7DEN37dhVuT8G6y6oSdP0Uhx53zD4Q4LoZ/603s1\n9kqQPj" + "LRAgMBAAECggEAFl67R0F4c69wgiaIV0ZxsoGOzLgmVDFULhKdOFCn0mJo\nCDyzbgFqYRtR7NjducyaeMTokuRttApVqIR6kDWH6s1e1jXX6iO2WgrrIXEs1LhK\nhMb" + "CQv5pLyRIR/BaDDlDEAWjwT+NHJ4L5Lzw6CeP9Yearwd0B7TLw71fZ/+uEeKi\n3I9a5m8p7RJqGOQSGYsn67BglhMMqRH7JQ85I5ueAoJq2brKKBTrKP7zOtjjhaPT\ntwyXIG" + "F9Fj1A6rK8pFeSldX8OuZpo82ePxvYewGonbx55Yi51ns9Psk1CMLDcyQO\n5mHMJKTZEgZcDMo2RKlNyiS6An9Wpzj4f5xuu6vmLQKBgQDntXWMTYzRfXRP6VUL\nvi0kmdz3N" + "ZMFBMrblj6gSzQevQWzlB0COsyo8zysmGZf888C2xD7BrI5QD2L5jxH\n/CkNHxwQDO4YlGFwCYX2i5zfH/kokBq1yjyJFvmm2E/ndsoLugqwb88Hk/CNKAaa\n19MhZvaR8b+kbi" + "bHj3/X/F0pwwKBgQDlrWArzre26bVdlygC0X+X8/JtTswfEwai\nfGDUtefE6TQ4IbkbJVclDX9sWTFpBCYpfuZ9V0HNWrAeutSjQgn4LsaXbRfck5UK\n6Ax3EpTVnl6" + "3vwziFg+++RhHrrhBSwSC32FQFXD3ttJbxkGPBIPB6AwhHOtXsehs\n6qkuuqYT2wKBgQCmbM9hVtIuJc3FF/Ld3FrQTzNG3FQc5rRNxDx3JYzqBxpxQZEU\naOdW8l5CGbRuds/ZXT91D" + "fo05M9QDK5/hb52jkG5xY++V9Ukg7KUwvKJ0I1FdTu6\nFugkDzyBehzqQ4gbpCTJVYV+C+RbfsQ/s4USGMJBUUI0+GkiLQ/GMp03wQKBgCeC\nncqrcvsqV" + "SLWf/GMLJDtTET1izPFSBznnJi6+jXrkCof0wISeF1NZyAyb8eLCS2W\nQPxK6Gz1Ltr6dN3o3GIvWcZu4+30DW2k4ZASSDw/VDfzy7mQ5gCKRVz/d37z8sC4\nwLrQFXDnqGRVR" + "K3frvLKglun5+xcFIm4DIaXYT6FAoGBAMXD1yNjOrE/Ta9/tJYT\nOrywFQxOtv8TiaZWuW4AxjbONTi64hWj1GVZf/vj589NCXpASKmEcGkfegJKnHof\n0w2O/tbXF/T/kf6x" + "IK76ype1wiK9dqJJuRUkKDcvj/KAAxTCmvLOi2q9bG7EQGzL\nhEvapmwp9fidDK5TNbGCSmHa\n-----END PRIVATE KEY-----\n"
+  },
+  databaseURL: "https://pirates-ec4b6.firebaseio.com/"
 });

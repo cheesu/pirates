@@ -4,7 +4,7 @@ import { Header } from 'Components';
 import { getStatusRequest, logoutRequest  } from 'Actions/authentication';
 import { searchRequest} from 'Actions/search';
 import { connect } from 'react-redux';
-
+import * as firebase from "firebase";
 class App extends React.Component {
   constructor(props) {
       super(props);
