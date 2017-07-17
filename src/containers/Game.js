@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Chat, Gameview , Controller, Mapview} from 'Components';
+import { Chat, Gameview , Controller, Mapview,HomeText} from 'Components';
 import { getStatusRequest  } from 'Actions/authentication';
 import { userItemRequest  } from 'Actions/item';
 const uri = 'http://127.0.0.1:3303/';
@@ -22,67 +22,30 @@ class Game extends React.Component {
 
       componentWillUnmount(){
         console.log("home 윌 언마운트 소켓 디스커넥트 고침");
-
         this.socket.disconnect();
       }
 
       componentDidMount() {
-        if(this.props.status.currentUser==""){
-          this.props.history.push('/login');
-        }
-        else{
-          this.socket.emit('addUser', this.props.status.currentUser, this.props.status.lv);
-          this.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
-          location.href="/login";
-          });
-        }
-
-
-
+        this.props.getStatusRequest();
         // 몬스터 셋팅
 
-        this.socket.on("setMonster", function(data){
-          this.setLocalMonster(data);
-        }.bind(this));
+            if(this.props.status.currentUser==""){
+              //  this.props.history.push('/login');
+              }
+              else{
+                this.socket.emit('addUser', this.props.status.currentUser, this.props.status.lv);
+                this.socket.on(this.props.username+"[중복접속]", function(data){ //몹 채팅
+                location.href="/login";
+                });
+              }
 
+       }
 
-           // get cookie by name
-           function getCookie(name) {
-               var value = "; " + document.cookie;
-               var parts = value.split("; " + name + "=");
-               if (parts.length == 2) return parts.pop().split(";").shift();
-           }
-
-           // get loginData from cookie
-           let loginData = getCookie('key');
-           // if loginData is undefined, do nothing
-           if(typeof loginData === "undefined") return;
-           // decode base64 & parse json
-           loginData = JSON.parse(atob(loginData));
-           // if not logged in, do nothing
-           if(!loginData.isLoggedIn) return;
-           // page refreshed & has a session in cookie,
-           // check whether this cookie is valid or not
-           this.props.getStatusRequest().then(
-               () => {
-                   // if session is not valid
-                   if(!this.props.status.valid) {
-
-                       // logout the session
-                       loginData = {
-                           isLoggedIn: false,
-                           username: ''
-                       };
-
-                       document.cookie='key=' + btoa(JSON.stringify(loginData));
-
-                       // and notify
-                       let $toastContent = $('<span style="color: #FFB4BA">Your session is expired, please log in again</span>');
-                       Materialize.toast($toastContent, 4000);
-
-                   }
-               }
-           );
+       componentDidUpdate(prevProps, prevState){
+         if(prevProps.status.currentUser=="" && this.props.status.currentUser!=""){
+           console.log("재접 애드유저");
+           this.socket.emit('addUser', this.props.status.currentUser, this.props.statuslv);
+         }
        }
 
        // 몹 설정
@@ -117,9 +80,11 @@ class Game extends React.Component {
             </div>
       );
 
+      const homeText = (<HomeText />)
+
         return (
             <div className="wrapper">
-                { this.props.isLoggedIn && typeof this.props.username === "undefined" ? game : undefined }
+                { this.props.status.currentUser != "" && typeof this.props.username === "undefined" ? game :homeText }
             </div>
         );
     }

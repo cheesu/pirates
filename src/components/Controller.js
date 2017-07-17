@@ -55,6 +55,7 @@ class Controller extends React.Component {
           this.handleKeyPress = this.handleKeyPress.bind(this);
 
           this.mapName = this.props.userInfo.mapName;
+
           if(this.mapName==undefined){
             this.mapName = "항구";
           }
@@ -128,6 +129,13 @@ toggleOpenEnhancement(){
 
 
       componentDidMount(){
+
+        if(this.mapName==""){
+          this.props.getStatusRequest();
+
+          this.mapName = this.props.userInfo.mapName;
+        }
+
         $("#contrillerContainer").attr("tabIndex",0);
         $("#contrillerContainer").focus();
         this.props.getStatusRequest();
@@ -211,12 +219,8 @@ toggleOpenEnhancement(){
 
         // 파티 멤버 탈퇴
         this.props.socket.on("disconnecParty", function(disconnetUser){ //귓말
-        console.log(this.state.partyMember);
             if(this.state.partyMember.indexOf(disconnetUser)!= -1){
               this.props.socket.emit("party", disconnetUser+"님 께서 파티를 떠났습니다..",this.state.partyMember);
-              console.log(this.state.partyMember);
-              console.log(this.state.partyMember);
-              console.log(this.state.partyMember.indexOf(disconnetUser));
               this.state.partyMember.splice(this.state.partyMember.indexOf(disconnetUser),1);
               this.setState({
                 partyMember: this.state.partyMember
@@ -358,7 +362,6 @@ toggleOpenEnhancement(){
         });
 
         if(data!=null){
-          console.log("몹이쩡");
           this.props.socket.emit('private', "[몬스터]"+data.appearMsg+" :[LV:"+ data.lv+"]");
         }else{
 
@@ -643,9 +646,22 @@ toggleOpenEnhancement(){
                 changeJob: nextState.changeJob,
                 user: nextProps.userInfo,
             };
+
+
+
+
             let update = JSON.stringify(current) !== JSON.stringify(next);
               return update;
           }
+
+    componentDidUpdate(prevProps, prevState){
+      if(prevProps.userInfo.currentUser=="" && this.props.userInfo.currentUser!=""){
+        this.props.socket.emit('addUser', this.props.userInfo.currentUser, this.props.userInf.lv);
+
+        this.mapName = this.props.userInfo.mapName;
+        this.getMapAxio();
+      }
+    }
 
     render(){
       const nextMap = (

@@ -20,7 +20,6 @@ class Home extends React.Component {
 
       componentDidMount() {
 
-
        }
 
     render() {
@@ -31,5 +30,13 @@ class Home extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        isLoggedIn: state.authentication.status.isLoggedIn,
+        status: state.authentication.status,
+        userItems: state.item.items,
+    };
+};
 
-export default Home;
+
+export default connect(mapStateToProps)(Home);

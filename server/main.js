@@ -229,6 +229,8 @@ io.on('connection', (socket) => {
 
 
     socket.on('addUser', function(addUserName, userLV){
+      console.log("유저 접속 :"+addUserName);
+
       let userSocketId =socket.id;
       let userObj = new Object();
       userObj.userID = addUserName;

@@ -24,7 +24,9 @@ class Login extends React.Component {
                      };
 
                      //document.cookie = 'key=' + btoa(JSON.stringify(loginData));
-                     document.cookie = 'key=' + btoa(JSON.stringify(unescape(encodeURIComponent(loginData))));
+                     //document.cookie = 'key=' + btoa(JSON.stringify(unescape(encodeURIComponent(loginData))));
+                     document.cookie = 'key=' + btoa((encodeURIComponent(JSON.stringify(loginData))));
+
 
                      Materialize.toast('Welcome, ' + id + '!', 2000);
                      //browserHistory.push('/');

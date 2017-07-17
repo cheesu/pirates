@@ -174,7 +174,7 @@ class UserItem extends React.Component {
                   );
 
             }
-            else if(item.kind == "o"&&count!=0){
+            else if((item.kind == "o" ||item.kind == "j")  &&count!=0){
               return (
                     <li key={i}>
                       <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>

@@ -248,6 +248,8 @@ io.on('connection', function (socket) {
   });
 
   socket.on('addUser', function (addUserName, userLV) {
+    console.log("유저 접속 :" + addUserName);
+
     var userSocketId = socket.id;
     var userObj = new Object();
     userObj.userID = addUserName;

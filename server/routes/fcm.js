@@ -20,9 +20,6 @@ router.post('/getFcmData/', (req, res,next) => {
     // CHECK USER EXISTANCE
     Fcm.findOne({ endpoint: fcmData.endpoint }, (err, exists) => {
         if (err) throw err;
-
-        console.log("중복 테스");
-        console.log(exists);
         if(exists){
             return res.status(409).json({
                 error: "USERNAME EXISTS",

@@ -1,6 +1,7 @@
 import express from 'express';
 import Account from '../models/account';
 import Item from '../models/item';
+import Historyip from '../models/historyip';
 
 const router = express.Router();
 
@@ -117,6 +118,27 @@ router.post('/signin', (req, res) => {
          job:account.job,
      };
 
+     var ip = req.headers['x-forwarded-for'] ||
+          req.connection.remoteAddress ||
+          req.socket.remoteAddress ||
+          req.connection.socket.remoteAddress;
+
+    console.log("IP:"+ip);
+
+     let historyip = new Historyip({
+         username: account.username,
+         ip:ip
+     });
+
+     // 로그인 기록
+     historyip.save( err => {
+         if(err) throw err;
+         console.log(account.username+"로그인 기록 완료");
+     });
+
+
+
+
      // RETURN SUCCESS
      return res.json({
          userInfo: account
@@ -126,6 +148,10 @@ router.post('/signin', (req, res) => {
 
 // 세션 확인 구현
 router.get('/getinfo', (req, res) => {
+
+  console.log("세션 확인");
+  console.log(req.session.loginInfo);
+
   if(typeof req.session.loginInfo === "undefined") {
         return res.status(401).json({
             error: 1
@@ -134,6 +160,9 @@ router.get('/getinfo', (req, res) => {
     Account.find({username: req.session.loginInfo.username})
         .exec((err, account) => {
             if(err) throw err;
+
+              console.log("사용자 정보 다시 때려박기");
+
             res.json({info:account});
         });
 

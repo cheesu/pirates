@@ -947,6 +947,28 @@ function expLevelup(userInfo, io, monNum, info, kind) {
   try {
     // 보스 템드랍
     if (localMonsterList[monNum].type == "boss") {
+
+      var jname = 'j1';
+      if (localMonsterList[monNum].lv >= 90) {
+        jname = 'j4';
+      } else if (localMonsterList[monNum].lv >= 70) {
+        jname = 'j3';
+      } else if (localMonsterList[monNum].lv >= 50) {
+        jname = 'j2';
+      } else if (localMonsterList[monNum].lv >= 10) {
+        jname = 'j1';
+      }
+
+      if (userInfo.item.indexOf(jname) == -1) {
+        userInfo.item.push(jname);
+      }
+
+      if (userInfo.itemCount[jname] == undefined) {
+        userInfo.itemCount[jname] = 1;
+      } else {
+        userInfo.itemCount[jname] = userInfo.itemCount[jname] + 1;
+      }
+
       var _dropPer = Math.floor(Math.random() * 100) + 1;
       if (_dropPer < 70) {
         if (userInfo.item.indexOf('ph3') == -1) {

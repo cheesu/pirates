@@ -24,10 +24,7 @@ class Teleport extends React.Component {
         cookie.save("map", "0-0", { path: '/' });
 
         let count  = 0;
-        console.log("인터벌 도는지 테스트 합니다");
     let inter =  setInterval(function(){
-            console.log("인터벌 도는지 테스트 합니다123123");
-            console.log(this.state.useScroll);
 
             if(count==1){
               this.setState({

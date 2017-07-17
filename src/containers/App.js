@@ -13,7 +13,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.props.history.push('/home');
+  //  this.props.history.push('/home');
        // get cookie by name
        function getCookie(name) {
            var value = "; " + document.cookie;
@@ -27,30 +27,41 @@ class App extends React.Component {
        if(typeof loginData === "undefined") return;
 
        // decode base64 & parse json
-       loginData = JSON.parse(atob(loginData));
-
+      // loginData = JSON.parse(atob(loginData));
+      loginData = JSON.parse(decodeURIComponent(atob(loginData)));
        // if not logged in, do nothing
-       if(!loginData.isLoggedIn) return;
+    /*   if(!loginData.isLoggedIn){
+         console.log("뀨? 로그인 펄스");
 
+         return;
+       }
+*/
        // page refreshed & has a session in cookie,
        // check whether this cookie is valid or not
        this.props.getStatusRequest().then(
            () => {
                // if session is not valid
                if(!this.props.status.valid) {
+
                    // logout the session
                    loginData = {
                        isLoggedIn: false,
                        username: ''
                    };
 
-                   document.cookie='key=' + btoa(JSON.stringify(loginData));
-
+                   //document.cookie='key=' + btoa(JSON.stringify(loginData));
+                    //document.cookie = 'key=' + btoa(JSON.stringify(unescape(encodeURIComponent(loginData))));
+                    document.cookie = 'key=' + btoa((encodeURIComponent(JSON.stringify(loginData))));
                    // and notify
                    let $toastContent = $('<span style="color: #FFB4BA">Your session is expired, please log in again</span>');
                    Materialize.toast($toastContent, 4000);
+                    this.props.history.push('/home');
+               }
+               else{
 
                }
+
+
            }
        );
    }

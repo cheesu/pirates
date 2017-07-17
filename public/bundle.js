@@ -24023,6 +24023,7 @@ var Controller = function (_React$Component) {
     _this.handleKeyPress = _this.handleKeyPress.bind(_this);
 
     _this.mapName = _this.props.userInfo.mapName;
+
     if (_this.mapName == undefined) {
       _this.mapName = "항구";
     }
@@ -24095,6 +24096,13 @@ var Controller = function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
+
+      if (this.mapName == "") {
+        this.props.getStatusRequest();
+
+        this.mapName = this.props.userInfo.mapName;
+      }
+
       $("#contrillerContainer").attr("tabIndex", 0);
       $("#contrillerContainer").focus();
       this.props.getStatusRequest();
@@ -24175,12 +24183,8 @@ var Controller = function (_React$Component) {
       // 파티 멤버 탈퇴
       this.props.socket.on("disconnecParty", function (disconnetUser) {
         //귓말
-        console.log(this.state.partyMember);
         if (this.state.partyMember.indexOf(disconnetUser) != -1) {
           this.props.socket.emit("party", disconnetUser + "님 께서 파티를 떠났습니다..", this.state.partyMember);
-          console.log(this.state.partyMember);
-          console.log(this.state.partyMember);
-          console.log(this.state.partyMember.indexOf(disconnetUser));
           this.state.partyMember.splice(this.state.partyMember.indexOf(disconnetUser), 1);
           this.setState({
             partyMember: this.state.partyMember
@@ -24332,7 +24336,6 @@ var Controller = function (_React$Component) {
       });
 
       if (data != null) {
-        console.log("몹이쩡");
         this.props.socket.emit('private', "[몬스터]" + data.appearMsg + " :[LV:" + data.lv + "]");
       } else {
 
@@ -24595,8 +24598,19 @@ var Controller = function (_React$Component) {
         changeJob: nextState.changeJob,
         user: nextProps.userInfo
       };
+
       var update = JSON.stringify(current) !== JSON.stringify(next);
       return update;
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (prevProps.userInfo.currentUser == "" && this.props.userInfo.currentUser != "") {
+        this.props.socket.emit('addUser', this.props.userInfo.currentUser, this.props.userInf.lv);
+
+        this.mapName = this.props.userInfo.mapName;
+        this.getMapAxio();
+      }
     }
   }, {
     key: 'render',
@@ -28741,7 +28755,7 @@ var UserItem = function (_React$Component) {
                 )
               )
             );
-          } else if (item.kind == "o" && count != 0) {
+          } else if ((item.kind == "o" || item.kind == "j") && count != 0) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28911,7 +28925,7 @@ var App = function (_React$Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
-            this.props.history.push('/home');
+            //  this.props.history.push('/home');
             // get cookie by name
             function getCookie(name) {
                 var value = "; " + document.cookie;
@@ -28925,28 +28939,34 @@ var App = function (_React$Component) {
             if (typeof loginData === "undefined") return;
 
             // decode base64 & parse json
-            loginData = JSON.parse(atob(loginData));
-
+            // loginData = JSON.parse(atob(loginData));
+            loginData = JSON.parse(decodeURIComponent(atob(loginData)));
             // if not logged in, do nothing
-            if (!loginData.isLoggedIn) return;
-
+            /*   if(!loginData.isLoggedIn){
+                 console.log("뀨? 로그인 펄스");
+                   return;
+               }
+            */
             // page refreshed & has a session in cookie,
             // check whether this cookie is valid or not
             this.props.getStatusRequest().then(function () {
                 // if session is not valid
                 if (!_this2.props.status.valid) {
+
                     // logout the session
                     loginData = {
                         isLoggedIn: false,
                         username: ''
                     };
 
-                    document.cookie = 'key=' + btoa(JSON.stringify(loginData));
-
+                    //document.cookie='key=' + btoa(JSON.stringify(loginData));
+                    //document.cookie = 'key=' + btoa(JSON.stringify(unescape(encodeURIComponent(loginData))));
+                    document.cookie = 'key=' + btoa(encodeURIComponent(JSON.stringify(loginData)));
                     // and notify
                     var $toastContent = $('<span style="color: #FFB4BA">Your session is expired, please log in again</span>');
                     Materialize.toast($toastContent, 4000);
-                }
+                    _this2.props.history.push('/home');
+                } else {}
             });
         }
     }, {
@@ -29072,16 +29092,16 @@ var Game = function (_React$Component) {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
             console.log("home 윌 언마운트 소켓 디스커넥트 고침");
-
             this.socket.disconnect();
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this2 = this;
+            this.props.getStatusRequest();
+            // 몬스터 셋팅
 
             if (this.props.status.currentUser == "") {
-                this.props.history.push('/login');
+                //  this.props.history.push('/login');
             } else {
                 this.socket.emit('addUser', this.props.status.currentUser, this.props.status.lv);
                 this.socket.on(this.props.username + "[중복접속]", function (data) {
@@ -29089,47 +29109,14 @@ var Game = function (_React$Component) {
                     location.href = "/login";
                 });
             }
-
-            // 몬스터 셋팅
-
-            this.socket.on("setMonster", function (data) {
-                this.setLocalMonster(data);
-            }.bind(this));
-
-            // get cookie by name
-            function getCookie(name) {
-                var value = "; " + document.cookie;
-                var parts = value.split("; " + name + "=");
-                if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (prevProps.status.currentUser == "" && this.props.status.currentUser != "") {
+                console.log("재접 애드유저");
+                this.socket.emit('addUser', this.props.status.currentUser, this.props.statuslv);
             }
-
-            // get loginData from cookie
-            var loginData = getCookie('key');
-            // if loginData is undefined, do nothing
-            if (typeof loginData === "undefined") return;
-            // decode base64 & parse json
-            loginData = JSON.parse(atob(loginData));
-            // if not logged in, do nothing
-            if (!loginData.isLoggedIn) return;
-            // page refreshed & has a session in cookie,
-            // check whether this cookie is valid or not
-            this.props.getStatusRequest().then(function () {
-                // if session is not valid
-                if (!_this2.props.status.valid) {
-
-                    // logout the session
-                    loginData = {
-                        isLoggedIn: false,
-                        username: ''
-                    };
-
-                    document.cookie = 'key=' + btoa(JSON.stringify(loginData));
-
-                    // and notify
-                    var $toastContent = $('<span style="color: #FFB4BA">Your session is expired, please log in again</span>');
-                    Materialize.toast($toastContent, 4000);
-                }
-            });
         }
 
         // 몹 설정
@@ -29167,10 +29154,12 @@ var Game = function (_React$Component) {
                 })
             );
 
+            var homeText = _react2.default.createElement(_Components.HomeText, null);
+
             return _react2.default.createElement(
                 'div',
                 { className: 'wrapper' },
-                this.props.isLoggedIn && typeof this.props.username === "undefined" ? game : undefined
+                this.props.status.currentUser != "" && typeof this.props.username === "undefined" ? game : homeText
             );
         }
     }]);
@@ -29207,7 +29196,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 
 Object.defineProperty(exports, "__esModule", {
-      value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -29231,37 +29220,45 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Home = function (_React$Component) {
-      _inherits(Home, _React$Component);
+    _inherits(Home, _React$Component);
 
-      function Home(props, context) {
-            _classCallCheck(this, Home);
+    function Home(props, context) {
+        _classCallCheck(this, Home);
 
-            var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props, context));
+        var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props, context));
 
-            _this.state = {
-                  useScroll: ''
-            };
-            return _this;
-      }
+        _this.state = {
+            useScroll: ''
+        };
+        return _this;
+    }
 
-      _createClass(Home, [{
-            key: 'componentWillUnmount',
-            value: function componentWillUnmount() {}
-      }, {
-            key: 'componentDidMount',
-            value: function componentDidMount() {}
-      }, {
-            key: 'render',
-            value: function render() {
+    _createClass(Home, [{
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {}
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {}
+    }, {
+        key: 'render',
+        value: function render() {
 
-                  return _react2.default.createElement(_Components.HomeText, null);
-            }
-      }]);
+            return _react2.default.createElement(_Components.HomeText, null);
+        }
+    }]);
 
-      return Home;
+    return Home;
 }(_react2.default.Component);
 
-exports.default = Home;
+var mapStateToProps = function mapStateToProps(state) {
+    return {
+        isLoggedIn: state.authentication.status.isLoggedIn,
+        status: state.authentication.status,
+        userItems: state.item.items
+    };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(Home);
 
 /***/ }),
 /* 314 */
@@ -29324,7 +29321,8 @@ var Login = function (_React$Component) {
                     };
 
                     //document.cookie = 'key=' + btoa(JSON.stringify(loginData));
-                    document.cookie = 'key=' + btoa(JSON.stringify(unescape(encodeURIComponent(loginData))));
+                    //document.cookie = 'key=' + btoa(JSON.stringify(unescape(encodeURIComponent(loginData))));
+                    document.cookie = 'key=' + btoa(encodeURIComponent(JSON.stringify(loginData)));
 
                     Materialize.toast('Welcome, ' + id + '!', 2000);
                     //browserHistory.push('/');
@@ -29533,10 +29531,7 @@ var Teleport = function (_React$Component) {
       _reactCookies2.default.save("map", "0-0", { path: '/' });
 
       var count = 0;
-      console.log("인터벌 도는지 테스트 합니다");
       var inter = setInterval(function () {
-        console.log("인터벌 도는지 테스트 합니다123123");
-        console.log(this.state.useScroll);
 
         if (count == 1) {
           this.setState({
