@@ -12,6 +12,10 @@ var _map = require('../models/map');
 
 var _map2 = _interopRequireDefault(_map);
 
+var _monster = require('../models/monster');
+
+var _monster2 = _interopRequireDefault(_monster);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -21,8 +25,14 @@ router.get('/getMap/:mapName', function (req, res) {
     _map2.default.findOne({ mapName: req.params.mapName }, function (err, map) {
         if (err) throw err;
         // RETURN SUCCESS
-        return res.json({
-            mapInfo: map
+
+        _monster2.default.findOne({ mapName: req.params.mapName, type: 'boss' }, function (err, mon) {
+            if (err) throw err;
+            var monster = eval(mon);
+            return res.json({
+                mapInfo: map,
+                bossLocal: monster.area
+            });
         });
     });
 });

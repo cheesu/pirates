@@ -24218,6 +24218,11 @@ var Controller = function (_React$Component) {
         for (var count = 0; count < mapY.length; count++) {
           mapArr.push(mapY[count].split(","));
         }
+
+        var bossArea = response.data.bossLocal;
+
+        var bossAreaArr = bossArea.split("-");
+        mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
         _this2.setState({
           map: mapArr,
           mapMsg: response.data.mapInfo.msg
@@ -27061,7 +27066,7 @@ var Mapview = function (_React$Component) {
         _react2.default.createElement(
           'div',
           null,
-          '\u2606: \uB098\uC758\uC704\uCE58, \u25A1:\uAC08 \uC218 \uC788\uB294\uAE38, \u25A0:\uBABB\uAC10, \u2668:\uC0C1\uC810 ,\u203B:\uB2E4\uC74C\uB9F5'
+          '\u2606: \uB098\uC758\uC704\uCE58, \u25A1:\uAC08 \uC218 \uC788\uB294\uAE38, \u25A0:\uBABB\uAC10, \u2668:\uC0C1\uC810,\u0392:\uBCF4\uC2A4 ,\u203B:\uB2E4\uC74C\uB9F5'
         )
       );
     }

@@ -254,6 +254,11 @@ toggleOpenEnhancement(){
               for(let count = 0; count<mapY.length; count++){
                 mapArr.push(mapY[count].split(","));
               }
+
+              var bossArea = response.data.bossLocal;
+
+              var bossAreaArr = bossArea.split("-");
+              mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
               this.setState({
                 map:mapArr,
                 mapMsg:response.data.mapInfo.msg

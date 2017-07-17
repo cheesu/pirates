@@ -1,6 +1,6 @@
 import express from 'express';
 import Map from '../models/map';
-
+import Monster from '../models/monster';
 const router = express.Router();
 
 
@@ -11,9 +11,17 @@ router.get('/getMap/:mapName', (req, res) => {
  Map.findOne({ mapName: req.params.mapName}, (err, map) => {
      if(err) throw err;
      // RETURN SUCCESS
-     return res.json({
-         mapInfo: map
+
+     Monster.findOne({ mapName: req.params.mapName, type:'boss'}, (err, mon) => {
+        if(err) throw err;
+          var monster =   eval(mon)
+       return res.json({
+           mapInfo: map,
+           bossLocal:monster.area
+       });
      });
+
+
  });
 });
 

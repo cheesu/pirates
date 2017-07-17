@@ -48,7 +48,7 @@ class Mapview extends React.Component {
 
 
             })}
-            <div>☆: 나의위치, □:갈 수 있는길, ■:못감, ♨:상점 ,※:다음맵</div>
+            <div>☆: 나의위치, □:갈 수 있는길, ■:못감, ♨:상점,Β:보스 ,※:다음맵</div>
           </div>
         );
     }

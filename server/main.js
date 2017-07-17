@@ -409,6 +409,9 @@ io.sockets.on("connection", function(socket){
           else if(val == 11){
             msg[countY][countX] = '♣';
           }
+          else if(val == 99){
+            msg[countY][countX] = 'Β';
+          }
 
           try {
             if(local[0]==countY&&local[1]==countX){

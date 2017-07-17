@@ -404,6 +404,8 @@ io.sockets.on("connection", function (socket) {
           msg[countY][countX] = '♨';
         } else if (val == 11) {
           msg[countY][countX] = '♣';
+        } else if (val == 99) {
+          msg[countY][countX] = 'Β';
         }
 
         try {
