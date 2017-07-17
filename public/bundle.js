@@ -24257,6 +24257,12 @@ var Controller = function (_React$Component) {
         for (var count = 0; count < mapY.length; count++) {
           mapArr.push(mapY[count].split(","));
         }
+
+        var bossArea = response.data.bossLocal;
+
+        var bossAreaArr = bossArea.split("-");
+        mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+
         _this3.setState({
           map: mapArr,
           prev: true,
@@ -24288,6 +24294,12 @@ var Controller = function (_React$Component) {
         for (var count = 0; count < mapY.length; count++) {
           mapArr.push(mapY[count].split(","));
         }
+
+        var bossArea = response.data.bossLocal;
+
+        var bossAreaArr = bossArea.split("-");
+        mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+
         _this4.setState({
           map: mapArr,
           prev: false,

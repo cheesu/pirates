@@ -33,9 +33,15 @@ router.get('/nextMap/:mapName', (req, res) => {
      Map.findOne({ mapName: thisMap.next}, (err, nextMap) => {
          if(err) throw err;
          // RETURN SUCCESS
-         return res.json({
-             mapInfo: nextMap
+         Monster.findOne({ mapName: req.params.mapName, type:'boss'}, (err, mon) => {
+            if(err) throw err;
+              var monster =   eval(mon)
+           return res.json({
+               mapInfo: nextMap,
+               bossLocal:monster.area
+           });
          });
+
      });
  });
 });
@@ -48,8 +54,13 @@ router.get('/prevMap/:mapName', (req, res) => {
      Map.findOne({ mapName: thisMap.prev}, (err, prevMap) => {
          if(err) throw err;
          // RETURN SUCCESS
-         return res.json({
-             mapInfo: prevMap
+         Monster.findOne({ mapName: req.params.mapName, type:'boss'}, (err, mon) => {
+            if(err) throw err;
+              var monster =   eval(mon)
+           return res.json({
+               mapInfo: prevMap,
+               bossLocal:monster.area
+           });
          });
      });
  });
