@@ -24220,9 +24220,11 @@ var Controller = function (_React$Component) {
         }
 
         var bossArea = response.data.bossLocal;
+        if (bossArea != 'null') {
+          var bossAreaArr = bossArea.split("-");
+          mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+        }
 
-        var bossAreaArr = bossArea.split("-");
-        mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
         _this2.setState({
           map: mapArr,
           mapMsg: response.data.mapInfo.msg
@@ -24260,8 +24262,10 @@ var Controller = function (_React$Component) {
 
         var bossArea = response.data.bossLocal;
 
-        var bossAreaArr = bossArea.split("-");
-        mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+        if (bossArea != 'null') {
+          var bossAreaArr = bossArea.split("-");
+          mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+        }
 
         _this3.setState({
           map: mapArr,
@@ -24297,8 +24301,10 @@ var Controller = function (_React$Component) {
 
         var bossArea = response.data.bossLocal;
 
-        var bossAreaArr = bossArea.split("-");
-        mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+        if (bossArea != 'null') {
+          var bossAreaArr = bossArea.split("-");
+          mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+        }
 
         _this4.setState({
           map: mapArr,

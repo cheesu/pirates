@@ -14,11 +14,24 @@ router.get('/getMap/:mapName', (req, res) => {
 
      Monster.findOne({ mapName: req.params.mapName, type:'boss'}, (err, mon) => {
         if(err) throw err;
-          var monster =   eval(mon)
-       return res.json({
-           mapInfo: map,
-           bossLocal:monster.area
-       });
+
+
+      var monster =   eval(mon);
+      if(monster == null){
+        return res.json({
+            mapInfo: map,
+            bossLocal:"null"
+        });
+      }
+      else{
+        return res.json({
+            mapInfo: map,
+            bossLocal:monster.area
+        });
+      }
+
+
+
      });
 
 
@@ -36,10 +49,18 @@ router.get('/nextMap/:mapName', (req, res) => {
          Monster.findOne({ mapName: req.params.mapName, type:'boss'}, (err, mon) => {
             if(err) throw err;
               var monster =   eval(mon)
-           return res.json({
-               mapInfo: nextMap,
-               bossLocal:monster.area
-           });
+              if(monster == null){
+                return res.json({
+                    mapInfo: nextMap,
+                    bossLocal:"null"
+                });
+              }
+              else{
+                return res.json({
+                    mapInfo: nextMap,
+                    bossLocal:monster.area
+                });
+              }
          });
 
      });
@@ -57,10 +78,18 @@ router.get('/prevMap/:mapName', (req, res) => {
          Monster.findOne({ mapName: req.params.mapName, type:'boss'}, (err, mon) => {
             if(err) throw err;
               var monster =   eval(mon)
-           return res.json({
-               mapInfo: prevMap,
-               bossLocal:monster.area
-           });
+              if(monster == null){
+                return res.json({
+                    mapInfo: prevMap,
+                    bossLocal:"null"
+                });
+              }
+              else{
+                return res.json({
+                    mapInfo: prevMap,
+                    bossLocal:monster.area
+                });
+              }
          });
      });
  });

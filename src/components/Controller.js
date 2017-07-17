@@ -256,9 +256,11 @@ toggleOpenEnhancement(){
               }
 
               var bossArea = response.data.bossLocal;
+              if(bossArea!='null'){
+                var bossAreaArr = bossArea.split("-");
+                mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+              }
 
-              var bossAreaArr = bossArea.split("-");
-              mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
               this.setState({
                 map:mapArr,
                 mapMsg:response.data.mapInfo.msg
@@ -296,8 +298,10 @@ toggleOpenEnhancement(){
 
              var bossArea = response.data.bossLocal;
 
-             var bossAreaArr = bossArea.split("-");
-             mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+             if(bossArea!='null'){
+               var bossAreaArr = bossArea.split("-");
+               mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+             }
 
              this.setState({
                map:mapArr,
@@ -331,8 +335,10 @@ toggleOpenEnhancement(){
 
              var bossArea = response.data.bossLocal;
 
-             var bossAreaArr = bossArea.split("-");
-             mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+             if(bossArea!='null'){
+               var bossAreaArr = bossArea.split("-");
+               mapArr[bossAreaArr[0]][bossAreaArr[1]] = 99;
+             }
 
              this.setState({
                map:mapArr,

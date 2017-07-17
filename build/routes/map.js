@@ -28,11 +28,19 @@ router.get('/getMap/:mapName', function (req, res) {
 
         _monster2.default.findOne({ mapName: req.params.mapName, type: 'boss' }, function (err, mon) {
             if (err) throw err;
+
             var monster = eval(mon);
-            return res.json({
-                mapInfo: map,
-                bossLocal: monster.area
-            });
+            if (monster == null) {
+                return res.json({
+                    mapInfo: map,
+                    bossLocal: "null"
+                });
+            } else {
+                return res.json({
+                    mapInfo: map,
+                    bossLocal: monster.area
+                });
+            }
         });
     });
 });
@@ -48,10 +56,17 @@ router.get('/nextMap/:mapName', function (req, res) {
             _monster2.default.findOne({ mapName: req.params.mapName, type: 'boss' }, function (err, mon) {
                 if (err) throw err;
                 var monster = eval(mon);
-                return res.json({
-                    mapInfo: nextMap,
-                    bossLocal: monster.area
-                });
+                if (monster == null) {
+                    return res.json({
+                        mapInfo: nextMap,
+                        bossLocal: "null"
+                    });
+                } else {
+                    return res.json({
+                        mapInfo: nextMap,
+                        bossLocal: monster.area
+                    });
+                }
             });
         });
     });
@@ -68,10 +83,17 @@ router.get('/prevMap/:mapName', function (req, res) {
             _monster2.default.findOne({ mapName: req.params.mapName, type: 'boss' }, function (err, mon) {
                 if (err) throw err;
                 var monster = eval(mon);
-                return res.json({
-                    mapInfo: prevMap,
-                    bossLocal: monster.area
-                });
+                if (monster == null) {
+                    return res.json({
+                        mapInfo: prevMap,
+                        bossLocal: "null"
+                    });
+                } else {
+                    return res.json({
+                        mapInfo: prevMap,
+                        bossLocal: monster.area
+                    });
+                }
             });
         });
     });
