@@ -58,7 +58,7 @@ router.post('/signup', (req, res) => {
             exp:0,
             max_hp:100,
             max_mp:100,
-            mount:{w:"",d:""},
+            mount:{w:"",d:"",r:"",n:""},
             item:[],
             itemCount:{r:0},
             gold:300000,
@@ -137,8 +137,6 @@ router.post('/signin', (req, res) => {
      });
 
 
-
-
      // RETURN SUCCESS
      return res.json({
          userInfo: account
@@ -160,6 +158,30 @@ router.get('/getinfo', (req, res) => {
     Account.find({username: req.session.loginInfo.username})
         .exec((err, account) => {
             if(err) throw err;
+            let userInfo = eval(account[0]);
+
+            try {
+              let test = userInfo.mount.r;
+              if(test == undefined){
+                userInfo.mount.r = "";
+              }
+            } catch (e) {
+              userInfo.mount.r = "";
+            } finally {
+
+            }
+
+
+            try {
+              let test2 = userInfo.mount.n;
+              if(test2 == undefined){
+                userInfo.mount.n = "";
+              }
+            } catch (e) {
+              userInfo.mount.n = "";
+            } finally {
+
+            }
 
               console.log("사용자 정보 다시 때려박기");
 
@@ -194,7 +216,7 @@ router.get('/mountItem/:itemID', (req, res) => {
 
                     let itemInfo = eval(item[0]);
 
-                    if(itemInfo.job=="ALL"||itemInfo.job=="all"||itemInfo.job==userInfo.job){
+                    if(itemInfo.job=="ALL"||itemInfo.job=="all"||itemInfo.job=="All"||itemInfo.job==userInfo.job){
 
                         let str = userInfo.str;
                         let dex = userInfo.dex;
@@ -225,6 +247,12 @@ router.get('/mountItem/:itemID', (req, res) => {
                         }
                         else if(itemInfo.kind=="d"){
                           userInfo.mount.d = itemInfo;
+                        }
+                        else if(itemInfo.kind=="ring"){
+                          userInfo.mount.r = itemInfo;
+                        }
+                        else if(itemInfo.kind=="necklace"){
+                          userInfo.mount.n = itemInfo;
                         }
 
                         // 장착할 무기에 상승옵션이 있다면 스탯 적용한다.
@@ -319,6 +347,30 @@ router.get('/useItem/:itemID', (req, res) => {
 
                     }
 
+                    else if(itemInfo.kind=="elixir"){ // 엘릭서 먹져
+                      if(itemInfo.heal=="str"){
+                        var upStr = userInfo.str+1;
+                        Account.update({username: userInfo.username},{$set:{str:upStr}}, function(err, output){
+                          res.json({msg:itemInfo.effectMSG+"  힘이 1 올랐습니다."});
+                        });
+                      }
+                      else if(itemInfo.heal=="int"){
+                        var up = userInfo.int+1;
+                        Account.update({username: userInfo.username},{$set:{int:up}}, function(err, output){
+                          res.json({msg:itemInfo.effectMSG+"  지력이 1 올랐습니다."});
+                        });
+                      }
+                      else if(itemInfo.heal=="dex"){
+                        var up = userInfo.dex+1;
+                        Account.update({username: userInfo.username},{$set:{dex:up}}, function(err, output){
+                          res.json({msg:itemInfo.effectMSG+"  민첩이 1 올랐습니다."});
+                        });
+                      }
+
+
+
+                    }
+
                   });
 
 
@@ -328,6 +380,7 @@ router.get('/useItem/:itemID', (req, res) => {
             }
         });
 });
+
 
 /*스크롤 사용*/
 router.get('/useScroll/:itemID', (req, res) => {
@@ -730,6 +783,82 @@ router.post('/buyItem/', (req, res) => {
                       }
 
                       userInfo.gold = userInfo.gold - (itemInfo.price*buyCount*selePer);
+
+                      userInfo.itemCount[itemInfo.id] = haveCheck+buyCount;
+                      Account.update({username: userInfo.username},{$set:{itemCount:userInfo.itemCount,item:userInfo.item, gold:userInfo.gold }}, function(err, output){
+                        res.json({msg:"구매 완료 하였습니다."});
+                      });
+                    }
+
+                  });
+
+        });
+});
+
+
+
+/*밀수꾼 보석 아이템 구매*/
+router.post('/buyJItem/', (req, res) => {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+
+    console.log("바이 보석류 아이템");
+    console.log(req.body);
+    var itemid  = req.body.name
+    var buyCount  = req.body.count
+    Account.find({username: req.session.loginInfo.username})
+        .exec((err, accounts) => {
+            if(err) throw err;
+            let userInfo = eval(accounts[0]);
+
+              Item.find({id: itemid})
+                  .exec((err, item) => {
+                      if(err) throw err;
+
+                    let itemInfo = eval(item[0]);
+
+                    let userJ1 = userInfo.itemCount.j1;
+                    let userJ2 = userInfo.itemCount.j2;
+                    let userJ3 = userInfo.itemCount.j3;
+                    let userJ4 = userInfo.itemCount.j4;
+
+                    if(userJ1==undefined){
+                      userJ1 =0;
+                    }
+                    if(userJ2==undefined){
+                      userJ2 =0;
+                    }
+                    if(userJ3==undefined){
+                      userJ3 =0;
+                    }
+                    if(userJ4==undefined){
+                      userJ4 =0;
+                    }
+
+                    let itemJ1 = itemInfo.jPrice.j1;
+                    let itemJ2 = itemInfo.jPrice.j2;
+                    let itemJ3 = itemInfo.jPrice.j3;
+                    let itemJ4 = itemInfo.jPrice.j4;
+
+
+                    if(itemJ1>userJ1 || itemJ2>userJ2 || itemJ3>userJ3 || itemJ4>userJ4){
+
+                      res.json({msg:"소지 보석이 부족합니다."});
+
+                    }
+                    else{
+                      let haveCheck = userInfo.itemCount[itemInfo.id];
+                      if(haveCheck==undefined){
+                        haveCheck = 0;
+                      }
+
+                      if (userInfo.item.indexOf(itemInfo.id) == -1){
+                        userInfo.item.push(itemInfo.id);
+                      }
+
+                    userInfo.itemCount.j1 = userJ1 - itemJ1;
+                    userInfo.itemCount.j2 = userJ2 - itemJ2;
+                    userInfo.itemCount.j3 = userJ3 - itemJ3;
+                    userInfo.itemCount.j4 = userJ4 - itemJ4;
 
                       userInfo.itemCount[itemInfo.id] = haveCheck+buyCount;
                       Account.update({username: userInfo.username},{$set:{itemCount:userInfo.itemCount,item:userInfo.item, gold:userInfo.gold }}, function(err, output){

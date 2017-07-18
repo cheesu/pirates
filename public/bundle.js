@@ -24018,6 +24018,7 @@ var Controller = function (_React$Component) {
     _this.toggleOpenStore = _this.toggleOpenStore.bind(_this);
     _this.toggleOpenChangeJob = _this.toggleOpenChangeJob.bind(_this);
     _this.toggleOpenEnhancement = _this.toggleOpenEnhancement.bind(_this);
+    _this.storeKind = 'normal';
 
     _this.saveMap = _this.saveMap.bind(_this);
     _this.handleKeyPress = _this.handleKeyPress.bind(_this);
@@ -24500,6 +24501,12 @@ var Controller = function (_React$Component) {
 
       // 상점
       if (mapArr[map[0]][map[1]] == 9) {
+        this.storeKind = "normal";
+
+        if (this.mapName == "루비파이선 갑판-3") {
+          this.storeKind = "ship";
+        }
+
         this.setState({
           store: true
         });
@@ -24791,7 +24798,8 @@ var Controller = function (_React$Component) {
             userInfo: this.props.userInfo,
             userItemRequest: this.props.userItemRequest,
             getStatusRequest: this.props.getStatusRequest,
-            userItems: this.props.userItems
+            userItems: this.props.userItems,
+            storeKind: this.storeKind
           }) : undefined
         ),
         _react2.default.createElement(
@@ -27830,15 +27838,32 @@ var Store = function (_React$Component) {
       }
     }
   }, {
+    key: 'buyJItem',
+    value: function buyJItem(item, count) {
+      var _this3 = this;
+
+      var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
+      if (con_test) {
+        _axios2.default.post('/api/account/buyJItem/', { name: item.id, count: count }).then(function (response) {
+          _this3.props.getStatusRequest();
+          _this3.props.userItemRequest();
+          alert(response.data.msg);
+          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  }, {
     key: 'sellItem',
     value: function sellItem(item) {
-      var _this3 = this;
+      var _this4 = this;
 
       var con_test = confirm(item.name + "을(를) 판매 하시겠습니까?");
       if (con_test) {
         _axios2.default.get('/api/account/sellItem/' + item.id).then(function (response) {
-          _this3.props.getStatusRequest();
-          _this3.props.userItemRequest();
+          _this4.props.getStatusRequest();
+          _this4.props.userItemRequest();
           alert(response.data.msg);
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
         }).catch(function (error) {
@@ -27877,7 +27902,7 @@ var Store = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
       var mapDataToLinks = function mapDataToLinks(data, tabType) {
         if (data == undefined) {
@@ -27906,7 +27931,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this4.countItem(item);
+          var count = _this5.countItem(item);
           if (item.kind == "p" && tabType == item.kind) {
             return _react2.default.createElement(
               'li',
@@ -27949,17 +27974,17 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.buyItem.bind(_this5, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uAC1C\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item, 50), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.buyItem.bind(_this5, item, 50), className: 'waves-effect waves-light btn' },
                     '50\uAC1C\uAD6C\uB9E4 [10% \uD560\uC778 ',
                     item.price * 50 * 0.9,
                     '\uACE8\uB4DC]'
@@ -27967,7 +27992,7 @@ var Store = function (_React$Component) {
                 )
               )
             );
-          } else if (item.kind == "w" && tabType == item.kind && _this4.props.userInfo.job == item.job) {
+          } else if (item.kind == "w" && tabType == item.kind && _this5.props.userInfo.job == item.job) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28023,13 +28048,13 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
               )
             );
-          } else if (item.kind == "d" && tabType == item.kind && _this4.props.userInfo.job == item.job) {
+          } else if (item.kind == "d" && tabType == item.kind && _this5.props.userInfo.job == item.job) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28085,7 +28110,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28134,7 +28159,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 ),
@@ -28143,8 +28168,344 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.buyItem.bind(_this4, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.buyItem.bind(_this5, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uC7A5 \uAD6C\uB9E4'
+                  )
+                )
+              )
+            );
+          }
+        });
+      };
+
+      // 밀수꾼 아이템
+      var mapDataToLinksShip = function mapDataToLinksShip(data, tabType) {
+        if (data == undefined) {
+          return _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              'div',
+              { className: 'collapsible-header' },
+              _react2.default.createElement(
+                'span',
+                { className: 'badge' },
+                'none'
+              ),
+              'loading...'
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'collapsible-body item-msg' },
+              _react2.default.createElement(
+                'span',
+                null,
+                '\uC7AC\uC2DC\uB3C4'
+              )
+            )
+          );
+        }
+        return data.map(function (item, i) {
+          var count = _this5.countItem(item);
+          if (item.kind == "elixir" && tabType == item.kind) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uBCF4\uC720\uAC1C\uC218 ',
+                  count
+                ),
+                item.name
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uC5D0\uBA54\uB784\uB4DC:',
+                    item.jPrice.j1,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uB8E8\uBE44:',
+                    item.jPrice.j2,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uC0AC\uD30C\uC774\uC5B4:',
+                    item.jPrice.j3,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uB8E8\uBCA8\uB77C\uC774\uD2B8:',
+                    item.jPrice.j4,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.buyJItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    '\uAD6C\uB9E4'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "ring" && tabType == item.kind) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  ' \uBCF4\uC720\uAC1C\uC218 ',
+                  count,
+                  ' '
+                ),
+                item.name,
+                '[',
+                item.job,
+                ']'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uC5D0\uBA54\uB784\uB4DC:',
+                    item.jPrice.j1,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uB8E8\uBE44:',
+                    item.jPrice.j2,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uC0AC\uD30C\uC774\uC5B4:',
+                    item.jPrice.j3,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uB8E8\uBCA8\uB77C\uC774\uD2B8:',
+                    item.jPrice.j4,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.buyJItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    '\uAD6C\uB9E4'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "necklace" && tabType == item.kind && _this5.props.userInfo.job == item.job) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '  \uBCF4\uC720\uAC1C\uC218 ',
+                  count,
+                  ' '
+                ),
+                item.name,
+                '[',
+                item.job,
+                ']'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uC5D0\uBA54\uB784\uB4DC:',
+                    item.jPrice.j1,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uB8E8\uBE44:',
+                    item.jPrice.j2,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uC0AC\uD30C\uC774\uC5B4:',
+                    item.jPrice.j3,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uB8E8\uBCA8\uB77C\uC774\uD2B8:',
+                    item.jPrice.j4,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.buyJItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    '\uAD6C\uB9E4'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "rp" && tabType == item.kind) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '  \uBCF4\uC720\uAC1C\uC218 ',
+                  count,
+                  ' '
+                ),
+                item.name
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uB4F1\uAE09 : ',
+                  item.type,
+                  ' ',
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uAC00\uACA9 :',
+                    item.price,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    '\uAD6C\uB9E4'
+                  ),
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.buyItem.bind(_this5, item, 10), className: 'waves-effect waves-light btn' },
+                    '10\uAC1C\uAD6C\uB9E4'
+                  ),
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.buyItem.bind(_this5, item, 50), className: 'waves-effect waves-light btn' },
+                    '50\uAC1C\uAD6C\uB9E4 [10% \uD560\uC778 ',
+                    item.price * 50 * 0.9,
+                    '\uACE8\uB4DC]'
                   )
                 )
               )
@@ -28181,7 +28542,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this4.countItem(item);
+          var count = _this5.countItem(item);
           if (count != 0) {
             return _react2.default.createElement(
               'li',
@@ -28224,7 +28585,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this4.sellItem.bind(_this4, item), className: 'waves-effect waves-light btn' },
+                    { onClick: _this5.sellItem.bind(_this5, item), className: 'waves-effect waves-light btn' },
                     '\uD310\uB9E4'
                   )
                 )
@@ -28233,6 +28594,245 @@ var Store = function (_React$Component) {
           }
         });
       };
+
+      var normalStore = _react2.default.createElement(
+        'div',
+        { className: 'container item-container' },
+        _react2.default.createElement(
+          'span',
+          null,
+          '\uD574\uC801\uB4E4\uC774\uB098 \uBBFC\uAC04\uC778\uB4E4\uC774 \uAC70\uB798\uB97C \uD558\uB294 \uC554\uC2DC\uC7A5\uC774\uB2E4. \uAC00\uB054\uC529 \uD754\uD788 \uBCFC \uC218 \uC5C6\uB294 \uBB3C\uD488\uB4E4\uB3C4 \uB4E4\uC5B4 \uC628\uB2E4\uACE0 \uD55C\uB2E4.'
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          '\uC18C\uC9C0\uAE08 : ',
+          _react2.default.createElement('span', null),
+          this.props.userInfo.gold,
+          ' Gold'
+        ),
+        _react2.default.createElement(
+          'ul',
+          { id: 'tabs-swipe-demo', className: 'tabs' },
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { className: 'active', href: '#test-swipe-1' },
+              'Weapon'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-2' },
+              'Armor'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-3' },
+              'Potion'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-4' },
+              'Scroll'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-5' },
+              '\uD310\uB9E4'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-1', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinks(this.props.items, "w")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-2', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinks(this.props.items, "d")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-3', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinks(this.props.items, "p")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-4', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinks(this.props.items, "s")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-5', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToUserItemLinks(this.props.userItems.itemList)
+          )
+        )
+      );
+
+      var shipStore = _react2.default.createElement(
+        'div',
+        { className: 'container item-container' },
+        _react2.default.createElement(
+          'span',
+          null,
+          '\uD750\uD750 \uC790\uB124 \uD639\uC2DC \uC88B\uC740 \uBCF4\uC11D \uAC00\uC9C0\uACE0 \uC788\uB098? \uB0B4\uAC00 \uB354 \uC88B\uC740\uAC78 \uBCF4\uC5EC\uC8FC\uB3C4\uB85D \uD558\uC9C0 \uC774\uB798\uBD48\uB3C4 \uB0B4\uAC00 \uC774\uBC14\uB2E5\uC5D0\uC120 \uC5B4\uB9C8\uC5B4\uB9C8\uD55C \uBC00\uC218\uAFBC\uC774\uB77C\uACE0 .'
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          '\uC18C\uC9C0\uAE08 : ',
+          _react2.default.createElement('span', null),
+          this.props.userInfo.gold,
+          ' Gold'
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          '\uBCF4\uC11D : ',
+          _react2.default.createElement(
+            'span',
+            null,
+            '\uC5D0\uBA54\uB784\uB4DC'
+          ),
+          this.props.userInfo.itemCount.j1,
+          ' \uAC1C',
+          _react2.default.createElement(
+            'span',
+            null,
+            '\uB8E8\uBE44'
+          ),
+          this.props.userInfo.itemCount.j2,
+          ' \uAC1C',
+          _react2.default.createElement(
+            'span',
+            null,
+            '\uC0AC\uD30C\uC774\uC5B4'
+          ),
+          this.props.userInfo.itemCount.j3,
+          ' \uAC1C',
+          _react2.default.createElement(
+            'span',
+            null,
+            '\uB8E8\uBCA8\uB77C\uC774\uD2B8'
+          ),
+          this.props.userInfo.itemCount.j4,
+          ' \uAC1C'
+        ),
+        _react2.default.createElement(
+          'ul',
+          { id: 'tabs-swipe-demo', className: 'tabs' },
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { className: 'active', href: '#test-swipe-1' },
+              '\uC5D8\uB9AD\uC11C'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-2' },
+              '\uBC18\uC9C0'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-3' },
+              '\uBAA9\uAC78\uC774'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-4' },
+              '\uACE0\uAE09\uD3EC\uC158'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-1', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinksShip(this.props.items, "elixir")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-2', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinksShip(this.props.items, "ring")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-3', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinksShip(this.props.items, "necklace")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-4', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinksShip(this.props.items, "rp")
+          )
+        )
+      );
 
       return _react2.default.createElement(
         'div',
@@ -28247,117 +28847,7 @@ var Store = function (_React$Component) {
             'CLOSE'
           )
         ),
-        _react2.default.createElement(
-          'div',
-          { className: 'container item-container' },
-          _react2.default.createElement(
-            'span',
-            null,
-            '\uBC00\uC218\uAFBC\uB4E4\uC774 \uAC70\uB798\uB97C \uD558\uB294 \uC554\uC2DC\uC7A5\uC774\uB2E4. \uAC00\uB054\uC529 \uD754\uD788 \uBCFC \uC218 \uC5C6\uB294 \uBB3C\uD488\uB4E4\uB3C4 \uB4E4\uC5B4 \uC628\uB2E4\uACE0 \uD55C\uB2E4.'
-          ),
-          _react2.default.createElement(
-            'p',
-            null,
-            '\uC18C\uC9C0\uAE08 : ',
-            _react2.default.createElement('span', null),
-            this.props.userInfo.gold,
-            ' Gold'
-          ),
-          _react2.default.createElement(
-            'ul',
-            { id: 'tabs-swipe-demo', className: 'tabs' },
-            _react2.default.createElement(
-              'li',
-              { className: 'tab col s3' },
-              _react2.default.createElement(
-                'a',
-                { className: 'active', href: '#test-swipe-1' },
-                'Weapon'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              { className: 'tab col s3' },
-              _react2.default.createElement(
-                'a',
-                { href: '#test-swipe-2' },
-                'Armor'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              { className: 'tab col s3' },
-              _react2.default.createElement(
-                'a',
-                { href: '#test-swipe-3' },
-                'Potion'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              { className: 'tab col s3' },
-              _react2.default.createElement(
-                'a',
-                { href: '#test-swipe-4' },
-                'Scroll'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              { className: 'tab col s3' },
-              _react2.default.createElement(
-                'a',
-                { href: '#test-swipe-5' },
-                '\uD310\uB9E4'
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { id: 'test-swipe-1', className: 'col s12 tab-in-container' },
-            _react2.default.createElement(
-              'ul',
-              { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
-              mapDataToLinks(this.props.items, "w")
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { id: 'test-swipe-2', className: 'col s12 tab-in-container' },
-            _react2.default.createElement(
-              'ul',
-              { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
-              mapDataToLinks(this.props.items, "d")
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { id: 'test-swipe-3', className: 'col s12 tab-in-container' },
-            _react2.default.createElement(
-              'ul',
-              { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
-              mapDataToLinks(this.props.items, "p")
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { id: 'test-swipe-4', className: 'col s12 tab-in-container' },
-            _react2.default.createElement(
-              'ul',
-              { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
-              mapDataToLinks(this.props.items, "s")
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { id: 'test-swipe-5', className: 'col s12 tab-in-container' },
-            _react2.default.createElement(
-              'ul',
-              { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
-              mapDataToUserItemLinks(this.props.userItems.itemList)
-            )
-          )
-        )
+        this.props.storeKind == 'ship' ? shipStore : normalStore
       );
     }
   }]);
@@ -28566,7 +29056,7 @@ var UserItem = function (_React$Component) {
         }
         return data.map(function (item, i) {
           var count = _this5.countItem(item);
-          if (item.kind == "p" && count != 0) {
+          if ((item.kind == "p" || item.kind == "rp") && count != 0) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28598,6 +29088,40 @@ var UserItem = function (_React$Component) {
                   ' ~ ',
                   item.max
                 ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.useItem.bind(_this5, item.id), className: 'waves-effect waves-light btn' },
+                    '\uC0AC\uC6A9'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "elixir" && count != 0) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uBCF4\uC720\uAC1C\uC218 ',
+                  count
+                ),
+                item.name
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
                 _react2.default.createElement(
                   'span',
                   null,
@@ -28722,6 +29246,44 @@ var UserItem = function (_React$Component) {
                   '+',
                   item.min
                 ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.userEqMount.bind(_this5, item.id), className: 'waves-effect waves-light btn' },
+                    '\uC7A5\uCC29'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "ring" && count != 0) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '  ',
+                  _this5.props.userInfo.mount.r.id == item.id ? "장착" : "미장착",
+                  ' '
+                ),
+                item.name,
+                '[',
+                item.job,
+                ']'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
                 _react2.default.createElement(
                   'span',
                   null,

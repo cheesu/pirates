@@ -49,7 +49,7 @@ class Controller extends React.Component {
           this.toggleOpenStore = this.toggleOpenStore.bind(this);
           this.toggleOpenChangeJob = this.toggleOpenChangeJob.bind(this);
           this.toggleOpenEnhancement = this.toggleOpenEnhancement.bind(this);
-
+          this.storeKind = 'normal';
 
           this.saveMap = this.saveMap.bind(this);
           this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -541,6 +541,12 @@ toggleOpenEnhancement(){
 
         // 상점
         if(mapArr[map[0]][map[1]]==9){
+          this.storeKind = "normal";
+
+          if(this.mapName=="루비파이선 갑판-3"){
+            this.storeKind = "ship";
+          }
+
           this.setState({
             store:true,
           });
@@ -549,6 +555,12 @@ toggleOpenEnhancement(){
             store:false,
           });
         }
+
+
+
+
+
+
 
         // 전직
         if(mapArr[map[0]][map[1]]==11){
@@ -746,6 +758,7 @@ toggleOpenEnhancement(){
                                                   userItemRequest = {this.props.userItemRequest}
                                                   getStatusRequest = {this.props.getStatusRequest}
                                                   userItems = {this.props.userItems}
+                                                  storeKind = {this.storeKind}
                                                   /> : undefined }
                 </ReactCSSTransitionGroup>
 

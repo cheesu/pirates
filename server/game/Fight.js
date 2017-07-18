@@ -385,6 +385,34 @@ var useSkill = function(io,info){
                       targetCurrentHP = 0;
                     }
 
+
+                    // 피흡 마나흡 옵션
+
+
+                    let ring = userInfo.mount.r;
+                    let necklace = userInfo.mount.n;
+
+                    if(ring!=undefined && ring!=null){
+                      if(ring.option.option=='lifeDrain'){
+                        let drainHP = (dmg/100)*ring.option.per;
+                        drainHP = Math.round(drainHP);
+                        fightInterval[userInfo.username+"HP"] = fightInterval[userInfo.username+"HP"]+drainHP;
+                      }
+                      else if(ring.option.option=='manaDrain'){
+                        let drainMP = (dmg/100)*ring.option.per;
+                        drainMP = Math.round(drainMP);
+                        fightInterval[userInfo.username+"MP"] = fightInterval[userInfo.username+"MP"]+drainMP;
+                        io.emit(userInfo.username+"userMP", fightInterval[userInfo.username+"MP"]+"-"+userInfo.max_mp);
+                      }
+                    }
+
+
+
+
+
+
+
+
                     /*어그로 */
                     let aggro = localMonsterList[monNum].Aggravation; // 어그로
                     if(aggro.length==0){
@@ -437,9 +465,14 @@ var useSkill = function(io,info){
                     io.emit(info.ch+"fight", "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
 
                     expLevelup(userInfo,io,monNum,info,"스킬"); // 렙업인지 경치만 획득인지 계산한다
+
+                    Account.update({username: userInfo.username},{$set:{hp:fightInterval[userInfo.username+"HP"],mp:fightInterval[userInfo.username+"MP"]}}, function(err, output){
+
+                    });
                   }
 
-
+                  io.emit(userInfo.username+"userHP", fightInterval[userInfo.username+"HP"]+"-"+userInfo.max_hp);
+                  io.emit(userInfo.username+"currentUserHP", fightInterval[userInfo.username+"HP"]+"-"+userInfo.max_hp);
                   io.emit(userInfo.username+"[SkillEnd]", "");
                   criCount = 0;
                   clearInterval(fightInterval[userInfo.username+"skillInterval"]);

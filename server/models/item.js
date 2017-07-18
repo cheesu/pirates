@@ -9,6 +9,7 @@ const Item = new Schema({
    min: Number(),
    max: Number(),
    price: Number(),
+   jPrice:Object(),
    job: String,
    type: String,
    msg: String,

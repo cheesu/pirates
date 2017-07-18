@@ -115,13 +115,24 @@ class UserItem extends React.Component {
         }
           return data.map((item, i) => {
             var count = this.countItem(item);
-            if(item.kind == "p"&&count!=0){
+            if((item.kind == "p"||item.kind == "rp")&&count!=0){
               return (
                 <li key={i}>
                   <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
                   <div className="collapsible-body item-msg">
                     <p>등급 : {item.type}</p>
                     <p>회복력 : {item.min} ~ {item.max}</p>
+                    <span>{item.msg}</span>
+                    <p><a onClick={this.useItem.bind(this,item.id)}  className="waves-effect waves-light btn">사용</a></p>
+                  </div>
+                </li>
+               );
+            }
+            else if(item.kind == "elixir"&&count!=0){
+              return (
+                <li key={i}>
+                  <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
+                  <div className="collapsible-body item-msg">
                     <span>{item.msg}</span>
                     <p><a onClick={this.useItem.bind(this,item.id)}  className="waves-effect waves-light btn">사용</a></p>
                   </div>
@@ -161,6 +172,18 @@ class UserItem extends React.Component {
                   );
 
             }
+            else if(item.kind == "ring"&&count!=0){
+              return (
+                    <li key={i}>
+                      <div className="collapsible-header"><span className="badge">  {this.props.userInfo.mount.r.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
+                      <div className="collapsible-body item-msg">
+                        <span>{item.msg}</span>
+                        <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
+                      </div>
+                    </li>
+                  );
+
+            }
             else if(item.kind == "s"&&count!=0){
               return (
                     <li key={i}>
@@ -187,6 +210,7 @@ class UserItem extends React.Component {
                   );
 
                 }
+
 
 
 
