@@ -53,7 +53,7 @@ router.get('/nextMap/:mapName', function (req, res) {
         _map2.default.findOne({ mapName: thisMap.next }, function (err, nextMap) {
             if (err) throw err;
             // RETURN SUCCESS
-            _monster2.default.findOne({ mapName: req.params.mapName, type: 'boss' }, function (err, mon) {
+            _monster2.default.findOne({ mapName: nextMap.mapName, type: 'boss' }, function (err, mon) {
                 if (err) throw err;
                 var monster = eval(mon);
                 if (monster == null) {
@@ -80,7 +80,7 @@ router.get('/prevMap/:mapName', function (req, res) {
         _map2.default.findOne({ mapName: thisMap.prev }, function (err, prevMap) {
             if (err) throw err;
             // RETURN SUCCESS
-            _monster2.default.findOne({ mapName: req.params.mapName, type: 'boss' }, function (err, mon) {
+            _monster2.default.findOne({ mapName: prevMap.mapName, type: 'boss' }, function (err, mon) {
                 if (err) throw err;
                 var monster = eval(mon);
                 if (monster == null) {
