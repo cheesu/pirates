@@ -27217,11 +27217,11 @@ var RightMenu = function (_React$Component) {
             var nextOver100 = 1;
 
             if (currentLV > 99) {
-                over100 = 2;
+                over100 = currentLV - 98;
             }
 
             if (nextLV > 99) {
-                nextOver100 = 2;
+                nextOver100 = nextLV - 98;
             }
 
             if (addLV == 0) {

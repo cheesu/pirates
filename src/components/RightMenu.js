@@ -69,11 +69,11 @@ calcExp(){
   let nextOver100 = 1;
 
   if(currentLV > 99){
-    over100 = 2
+    over100 = currentLV  - 98
   }
 
   if(nextLV > 99){
-    nextOver100 = 2
+    nextOver100 = nextLV  - 98
   }
 
 
@@ -83,6 +83,9 @@ calcExp(){
   if(addNextLV==0){
     addNextLV = 1;
   }
+
+
+
 
 let currentLVExp = ((this.logB(currentLV, 20)*1000)*currentLV*currentLV/6)*addLV*over100;
   let nextLVExp = ((this.logB(nextLV, 20)*1000)*nextLV*nextLV/6)*addNextLV*nextOver100;
