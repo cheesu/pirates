@@ -621,6 +621,7 @@ var fight = function fight(io, info) {
           var berserker = false;
           if (fightInterval[userInfo.username + "berserker"]) {
             berserker = true;
+            reDmg = 1;
           }
 
           var passiveLimit = userInfo.str;
@@ -628,7 +629,7 @@ var fight = function fight(io, info) {
             passiveLimit = 500;
           }
 
-          if (passiveLimit > passive && !berserker) {
+          if (passiveLimit > passive) {
             reDmg = 0;
             io.emit(userInfo.username + "fight", "[passive] 검의 달인 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) '카아아아앙!' 하는 금속 마찰음을 내며 적의 공격을 상쇄합니다");
           }
@@ -808,7 +809,7 @@ var fight = function fight(io, info) {
 
         var buffDmg = 1;
         if (fightInterval[userInfo.username + "berserker"]) {
-          buffDmg = 2;
+          buffDmg = 1;
         }
 
         var dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * buffDmg - localMonsterList[monNum].dp;
