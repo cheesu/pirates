@@ -23,12 +23,12 @@ router.post('/getSkill/', function (req, res) {
     // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
 
     if (req.body.job2 == undefined) {
-        _skill2.default.find({ job: req.body.job, lv: { "$lt": 40 } }, { _id: false, name: true, lv: true, mp: true, txt: true }).limit(10).sort({ lv: 1 }).exec(function (err, skills) {
+        _skill2.default.find({ job: req.body.job, lv: { "$lt": 40 } }, { _id: false, name: true, lv: true, mp: true, txt: true }).limit(10).sort({ lv: -1 }).exec(function (err, skills) {
             if (err) throw err;
             res.json(skills);
         });
     } else {
-        _skill2.default.find({ job: req.body.job, lv: { "$gte": 40 } }).limit(10).sort({ lv: 1 }).exec(function (err, skills) {
+        _skill2.default.find({ job: req.body.job, lv: { "$gte": 40 } }).limit(10).sort({ lv: -1 }).exec(function (err, skills) {
             if (err) throw err;
             res.json(skills);
         });

@@ -239,7 +239,7 @@ class Store extends React.Component {
                     </li>
                   );
             }
-            else if(item.kind == "necklace"&&tabType==item.kind&&this.props.userInfo.job==item.job){
+            else if(item.kind == "necklace"&&tabType==item.kind){
               return (
                     <li key={i}>
                       <div className="collapsible-header"><span className="badge">  보유개수 {count} </span>{item.name}[{item.job}]</div>

@@ -25689,7 +25689,7 @@ var FightController = function (_React$Component) {
 
             var itemMapDataToLinks = function itemMapDataToLinks(data) {
                 return data.map(function (item, i) {
-                    if (item.kind == "p" && _this3.props.status.itemCount[item.id] != 0 && _this3.props.status.itemCount[item.id] != undefined) {
+                    if ((item.kind == "p" || item.kind == "rp") && _this3.props.status.itemCount[item.id] != 0 && _this3.props.status.itemCount[item.id] != undefined) {
                         return _react2.default.createElement(
                             'a',
                             { key: i, className: 'waves-effect waves-light btn item-btn', href: '#!', onClick: _this3.useItem.bind(_this3, item.id), 'data-name': item.name },
@@ -28367,7 +28367,7 @@ var Store = function (_React$Component) {
                 )
               )
             );
-          } else if (item.kind == "necklace" && tabType == item.kind && _this5.props.userInfo.job == item.job) {
+          } else if (item.kind == "necklace" && tabType == item.kind) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -29274,6 +29274,44 @@ var UserItem = function (_React$Component) {
                   { className: 'badge' },
                   '  ',
                   _this5.props.userInfo.mount.r.id == item.id ? "장착" : "미장착",
+                  ' '
+                ),
+                item.name,
+                '[',
+                item.job,
+                ']'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this5.userEqMount.bind(_this5, item.id), className: 'waves-effect waves-light btn' },
+                    '\uC7A5\uCC29'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "necklace" && count != 0) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '  ',
+                  _this5.props.userInfo.mount.n.id == item.id ? "장착" : "미장착",
                   ' '
                 ),
                 item.name,

@@ -184,6 +184,18 @@ class UserItem extends React.Component {
                   );
 
             }
+            else if(item.kind == "necklace"&&count!=0){
+              return (
+                    <li key={i}>
+                      <div className="collapsible-header"><span className="badge">  {this.props.userInfo.mount.n.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
+                      <div className="collapsible-body item-msg">
+                        <span>{item.msg}</span>
+                        <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
+                      </div>
+                    </li>
+                  );
+
+            }
             else if(item.kind == "s"&&count!=0){
               return (
                     <li key={i}>

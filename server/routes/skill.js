@@ -17,7 +17,7 @@ router.post('/getSkill/', (req, res) => {
     if(req.body.job2 == undefined){
       Skill.find({job: req.body.job ,lv:{"$lt":40}}, {_id: false, name: true, lv: true, mp: true, txt:true })
           .limit(10)
-          .sort({lv: 1})
+          .sort({lv: -1})
           .exec((err, skills) => {
               if(err) throw err;
               res.json(skills);
@@ -26,7 +26,7 @@ router.post('/getSkill/', (req, res) => {
     else{
       Skill.find({job: req.body.job, lv:{"$gte":40} })
           .limit(10)
-          .sort({lv: 1})
+          .sort({lv: -1})
           .exec((err, skills) => {
               if(err) throw err;
               res.json(skills);

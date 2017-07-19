@@ -340,6 +340,22 @@ var useSkill = function(io,info){
                     buffDmg = 1.4;
                   }
 
+
+                  let ring = userInfo.mount.r;
+                  let necklace = userInfo.mount.n;
+                  let upSkillDmg = 1;
+                  // 목걸이 추가 뎀지
+                  if(necklace!=undefined&&necklace!=null){
+                    wAP = wAP+necklace.min;
+                    if(necklace.option.option == "offerings"){
+                      fightInterval[info.username+"HP"] = fightInterval[info.username+"HP"]-necklace.option.hp;
+                      upSkillDmg = upSkillDmg+(necklace.option.per/100);
+                    }
+                  }
+
+
+
+
                   let dmg =  (((userInfo.int+userInfo.str)+((userInfo.int+userInfo.str+wAP)*lvBonus))*skillInfo.dmg)*buffDmg - (localMonsterList[monNum].dp-downDpVal);
 
                   let targetCurrentHP=9999;
@@ -347,9 +363,9 @@ var useSkill = function(io,info){
                   // hit 연타 시작
                   for(var count=0; count < skillInfo.hit; count++){
                   let criOver = true;
-                  if(userInfo.job=="암살자"&& criCount < 4 ){
+                  if(userInfo.job=="암살자"&& criCount < 5 ){
                   }
-                  else if(userInfo.job=="암살자"&& criCount > 4 ){
+                  else if(userInfo.job=="암살자"&& criCount > 5 ){
                   criOver = false;
                   }
 
@@ -359,7 +375,7 @@ var useSkill = function(io,info){
 
 
 
-                    dmg = Math.round(dmg);
+                    dmg = Math.round(dmg*upSkillDmg);
                     let skillAttackMsg = "";
 
                     if(lvGap < 0){
@@ -367,10 +383,19 @@ var useSkill = function(io,info){
                     }
 
                     var critical = checkCritical(userInfo.dex-(lvGap*15));
+                    var upCriDmg = 1.7;
                     let result="";
+
+                    if(necklace!=undefined&&necklace!=null){
+                      if(necklace.option.option == "upCriDmg"){
+                        upCriDmg = upCriDmg+(necklace.option.per/100);
+                      }
+                    }
+
+
                     if(critical&&criOver){
                       criCount++;
-                      dmg = dmg*1.7;
+                      dmg = dmg*upCriDmg;
                       dmg = Math.round(dmg);
                       skillAttackMsg =  "[skill]"+skillInfo.attackMsg+"["+dmg+"]-[Critical!!!!]"
                       localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
@@ -387,11 +412,6 @@ var useSkill = function(io,info){
 
 
                     // 피흡 마나흡 옵션
-
-
-                    let ring = userInfo.mount.r;
-                    let necklace = userInfo.mount.n;
-
                     if(ring!=undefined && ring!=null){
                       if(ring.option.option=='lifeDrain'){
                         let drainHP = (dmg/100)*ring.option.per;
@@ -808,6 +828,13 @@ var fight = function (io,info){
 
               var wAP = wMinAP+randomAP;
 
+              let ring = userInfo.mount.r;
+              let necklace = userInfo.mount.n;
+              // 목걸이 추가 뎀지
+              if(necklace!=undefined&&necklace!=null){
+                wAP = wAP+necklace.min;
+              }
+
               if(userInfo.job2=='검의 달인'){
                 let passive = Math.floor(Math.random() * 1000)+1;
                 if(userInfo.str > passive){
@@ -855,9 +882,16 @@ var fight = function (io,info){
               }
 
               var critical = checkCritical(userInfo.dex/lvGap);
+              var upCriDmg = 1.7;
               let result="";
+
+              if(necklace!=undefined&&necklace!=null){
+                if(necklace.option.option == "upCriDmg"){
+                  upCriDmg = upCriDmg+(necklace.option.per/100);
+                }
+              }
               if(critical){
-                dmg = dmg*1.7;
+                dmg = dmg*upCriDmg;
                 dmg = Math.round(dmg);
                 result =  "Critical!!!! "+userInfo.username+"님께서 "+info.target+"에게 "+wName+"을(를) 휘둘러"+dmg+"의 공격을 하였습니다.";
                 localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;

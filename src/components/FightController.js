@@ -163,7 +163,7 @@ class FightController extends React.Component {
 
       const itemMapDataToLinks = (data) => {
           return data.map((item, i) => {
-              if(item.kind == "p" && this.props.status.itemCount[item.id] != 0 && this.props.status.itemCount[item.id]!=undefined){
+              if((item.kind == "p"||item.kind == "rp") && this.props.status.itemCount[item.id] != 0 && this.props.status.itemCount[item.id]!=undefined){
                 return (
                   <a key={i} className='waves-effect waves-light btn item-btn' href="#!" onClick={this.useItem.bind(this,item.id)} data-name={item.name} >{item.name}- {this.props.status.itemCount[item.id]}개</a>
                 )
