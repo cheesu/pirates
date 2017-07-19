@@ -374,8 +374,10 @@ router.get('/useScroll/:itemID', function (req, res) {
 
       _item2.default.find({ id: itemid }).exec(function (err, item) {
         var itemInfo = eval(item[0]);
-        console.log(itemInfo);
-        _account2.default.update({ username: userInfo.username }, { $set: { mapName: itemInfo.mapName } }, function (err, output) {
+        var targetMap = itemInfo.mapName;
+
+        _account2.default.update({ username: userInfo.username }, { $set: { mapName: targetMap } }, function (err, output) {
+
           res.json({ msg: itemInfo.effectMSG });
         });
       });

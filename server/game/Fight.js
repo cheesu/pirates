@@ -1073,6 +1073,31 @@ function checkCritical(dex){
         io.emit(userInfo.username+"fight", "[시스템]  몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
       }
 
+
+
+
+      if(localMonsterList[monNum].dropPer != undefined && dropPer <= localMonsterList[monNum].dropPer){
+
+        let dropItems = localMonsterList[monNum].dropItem;
+        let itemIndex =  Math.floor(Math.random() * dropItems.length);
+        let getItem = dropItems[itemIndex];
+
+        if (userInfo.item.indexOf(getItem) == -1) {
+            userInfo.item.push(getItem);
+        }
+        if(userInfo.itemCount[getItem]==undefined){
+          userInfo.itemCount[getItem] = 1;
+        }else{
+          userInfo.itemCount[getItem] = userInfo.itemCount[getItem] +1;
+        }
+
+
+        userInfo.item.push(getItem);
+        io.emit(userInfo.username, "[시스템] 축하드립니다 전리품을 획득 하였습니다.");
+      }
+
+
+
     } catch (e) {
       console.log("일반몹 템드랍  오류");
         console.log(e);

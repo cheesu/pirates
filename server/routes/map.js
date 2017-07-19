@@ -11,9 +11,9 @@ router.get('/getMap/:mapName', (req, res) => {
  Map.findOne({ mapName: req.params.mapName}, (err, map) => {
      if(err) throw err;
      // RETURN SUCCESS
-
      Monster.findOne({ mapName: req.params.mapName, type:'boss'}, (err, mon) => {
         if(err) throw err;
+
 
 
       var monster =   eval(mon);

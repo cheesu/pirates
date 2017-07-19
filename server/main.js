@@ -394,7 +394,7 @@ io.sockets.on("connection", function(socket){
           if(val == 0){
             msg[countY][countX] = '□';
           }
-          else if(val == -1){
+          else if(val == -1 || val == 8){
             msg[countY][countX] = '■';
           }
           else if(val == 3){

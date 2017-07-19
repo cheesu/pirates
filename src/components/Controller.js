@@ -276,13 +276,18 @@ toggleOpenEnhancement(){
       }
 
       saveMap(){
-        axios.get('/api/account/saveMap/' + this.mapName)
-           .then((response) => {
-             console.log(response.data);
-              console.log(response.data.msg);
-           }).catch((error) => {
-               console.log(error);
-           });
+        let targetMapName = this.mapName;
+        if(this.mapName.indexOf("예배당")!=-1 || this.mapName.indexOf("주교실")!=-1 || this.mapName.indexOf("신전")!=-1){
+          targetMapName = "빛의항구";
+        }
+          axios.get('/api/account/saveMap/' + targetMapName)
+             .then((response) => {
+               console.log(response.data);
+                console.log(response.data.msg);
+             }).catch((error) => {
+                 console.log(error);
+             });
+
       }
 
 

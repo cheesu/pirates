@@ -999,6 +999,25 @@ function expLevelup(userInfo, io, monNum, info, kind) {
       io.emit(userInfo.username, "[시스템] 몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
       io.emit(userInfo.username + "fight", "[시스템]  몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
     }
+
+    if (localMonsterList[monNum].dropPer != undefined && dropPer <= localMonsterList[monNum].dropPer) {
+
+      var dropItems = localMonsterList[monNum].dropItem;
+      var itemIndex = Math.floor(Math.random() * dropItems.length);
+      var getItem = dropItems[itemIndex];
+
+      if (userInfo.item.indexOf(getItem) == -1) {
+        userInfo.item.push(getItem);
+      }
+      if (userInfo.itemCount[getItem] == undefined) {
+        userInfo.itemCount[getItem] = 1;
+      } else {
+        userInfo.itemCount[getItem] = userInfo.itemCount[getItem] + 1;
+      }
+
+      userInfo.item.push(getItem);
+      io.emit(userInfo.username, "[시스템] 축하드립니다 전리품을 획득 하였습니다.");
+    }
   } catch (e) {
     console.log("일반몹 템드랍  오류");
     console.log(e);
@@ -1054,20 +1073,20 @@ function expLevelup(userInfo, io, monNum, info, kind) {
       }
 
       if (_dropPer <= localMonsterList[monNum].dropPer) {
-        var dropItems = localMonsterList[monNum].dropItem;
-        var itemIndex = Math.floor(Math.random() * dropItems.length);
-        var getItem = dropItems[itemIndex];
+        var _dropItems = localMonsterList[monNum].dropItem;
+        var _itemIndex = Math.floor(Math.random() * _dropItems.length);
+        var _getItem = _dropItems[_itemIndex];
 
-        if (userInfo.item.indexOf(getItem) == -1) {
-          userInfo.item.push(getItem);
+        if (userInfo.item.indexOf(_getItem) == -1) {
+          userInfo.item.push(_getItem);
         }
-        if (userInfo.itemCount[getItem] == undefined) {
-          userInfo.itemCount[getItem] = 1;
+        if (userInfo.itemCount[_getItem] == undefined) {
+          userInfo.itemCount[_getItem] = 1;
         } else {
-          userInfo.itemCount[getItem] = userInfo.itemCount[getItem] + 1;
+          userInfo.itemCount[_getItem] = userInfo.itemCount[_getItem] + 1;
         }
 
-        userInfo.item.push(getItem);
+        userInfo.item.push(_getItem);
         io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
         io.emit(userInfo.username + "fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
       }

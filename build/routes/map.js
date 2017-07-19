@@ -25,7 +25,6 @@ router.get('/getMap/:mapName', function (req, res) {
     _map2.default.findOne({ mapName: req.params.mapName }, function (err, map) {
         if (err) throw err;
         // RETURN SUCCESS
-
         _monster2.default.findOne({ mapName: req.params.mapName, type: 'boss' }, function (err, mon) {
             if (err) throw err;
 

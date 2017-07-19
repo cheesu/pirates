@@ -405,8 +405,10 @@ router.get('/useScroll/:itemID', (req, res) => {
               Item.find({id: itemid})
                   .exec((err, item) => {
                     let itemInfo = eval(item[0]);
-                    console.log(itemInfo);
-                    Account.update({username: userInfo.username},{$set:{mapName:itemInfo.mapName}}, function(err, output){
+                    let targetMap = itemInfo.mapName;
+
+                    Account.update({username: userInfo.username},{$set:{mapName:targetMap}}, function(err, output){
+
                       res.json({msg:itemInfo.effectMSG});
                     });
 

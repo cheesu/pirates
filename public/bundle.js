@@ -24241,7 +24241,11 @@ var Controller = function (_React$Component) {
   }, {
     key: 'saveMap',
     value: function saveMap() {
-      _axios2.default.get('/api/account/saveMap/' + this.mapName).then(function (response) {
+      var targetMapName = this.mapName;
+      if (this.mapName.indexOf("예배당") != -1 || this.mapName.indexOf("주교실") != -1 || this.mapName.indexOf("신전") != -1) {
+        targetMapName = "빛의항구";
+      }
+      _axios2.default.get('/api/account/saveMap/' + targetMapName).then(function (response) {
         console.log(response.data);
         console.log(response.data.msg);
       }).catch(function (error) {
