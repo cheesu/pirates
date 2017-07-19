@@ -65,12 +65,11 @@ function loadMonsterList() {
         monObj.Aggravation = []; // 기여도 담아놓는 그릇
         monObj.AggravationTaget = []; // 기여도 담아놓는 그릇
         monObj.area = monsters[monCount].mapName + "-" + monLocalArr[localCount];
+        monObj.dropItem = monsters[monCount].dropItem;
+        monObj.dropPer = monsters[monCount].dropPer;
 
         if (!initServer) {
-          if (monObj.type == 'boss') {
-            monObj.dropItem = monsters[monCount].dropItem;
-            monObj.dropPer = monsters[monCount].dropPer;
-          }
+
           localMonsterList.push(monObj);
         } else {
           for (var listCount = 0; listCount < localMonsterList.length; listCount++) {
@@ -1023,8 +1022,7 @@ function expLevelup(userInfo, io, monNum, info, kind) {
       io.emit(userInfo.username + "fight", "[시스템]  몬스터의 품안에서 심상치 않은 무엇인가가 떨어집니다.");
     }
 
-    if (localMonsterList[monNum].dropPer != undefined && dropPer <= localMonsterList[monNum].dropPer) {
-
+    if (localMonsterList[monNum].dropPer != undefined && dropPer <= localMonsterList[monNum].dropPer * 10) {
       var dropItems = localMonsterList[monNum].dropItem;
       var itemIndex = Math.floor(Math.random() * dropItems.length);
       var getItem = dropItems[itemIndex];

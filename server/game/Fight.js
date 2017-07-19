@@ -46,13 +46,11 @@ function loadMonsterList(){
               monObj.Aggravation = []; // 기여도 담아놓는 그릇
               monObj.AggravationTaget = []; // 기여도 담아놓는 그릇
               monObj.area= monsters[monCount].mapName+"-"+monLocalArr[localCount];
-
+              monObj.dropItem = monsters[monCount].dropItem;
+              monObj.dropPer = monsters[monCount].dropPer;
 
               if(!initServer){
-                if(monObj.type =='boss'){
-                  monObj.dropItem = monsters[monCount].dropItem;
-                  monObj.dropPer = monsters[monCount].dropPer;
-                }
+
                 localMonsterList.push(monObj);
               }else{
                 for(let listCount=0; listCount < localMonsterList.length; listCount++){
@@ -1096,10 +1094,7 @@ function checkCritical(dex){
       }
 
 
-
-
-      if(localMonsterList[monNum].dropPer != undefined && dropPer <= localMonsterList[monNum].dropPer){
-
+      if(localMonsterList[monNum].dropPer != undefined && dropPer <= localMonsterList[monNum].dropPer*10){
         let dropItems = localMonsterList[monNum].dropItem;
         let itemIndex =  Math.floor(Math.random() * dropItems.length);
         let getItem = dropItems[itemIndex];
