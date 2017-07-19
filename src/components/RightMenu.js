@@ -20,6 +20,9 @@ class RightMenu extends React.Component {
         this.onAllClose = this.onAllClose.bind(this);
         this.compMode = this.compMode.bind(this);
         this.normalMode = this.normalMode.bind(this);
+        this.autoCloseMode = this.autoCloseMode.bind(this);
+        this.closeMode = this.closeMode.bind(this);
+
 
         this.calcExp = this.calcExp.bind(this);
 
@@ -57,6 +60,15 @@ compMode(){
   console.log("회사모드 설정")
   cookie.save("mode", "comp", { path: '/' });
 }
+
+closeMode(){
+  cookie.save("closeMode", "close", { path: '/' });
+}
+
+autoCloseMode(){
+  cookie.save("closeMode", "auto", { path: '/' });
+}
+
 
 calcExp(){
   let currentLV = this.props.status.lv-1;
@@ -156,9 +168,11 @@ logB(x, base) {
                 <div className="container">
                     <br></br>
                     <br></br><br></br>
-                      <ul>
-                          <li><a onClick={this.compMode}  ><i className="material-icons btn  waves-effect waves-light">회사모드</i></a></li>
-                          <li><a onClick={this.normalMode}><i className="material-icons btn  waves-effect waves-light">일반모드</i></a></li>
+                      <ul className="mode-btn-ul">
+                          <li className="mode-btn"><a onClick={this.compMode}  ><i className="material-icons btn  waves-effect waves-light">회사모드</i></a></li>
+                          <li className="mode-btn"><a onClick={this.normalMode}><i className="material-icons btn  waves-effect waves-light">일반모드</i></a></li>
+                          <li className="mode-btn"><a onClick={this.autoCloseMode}><i className="material-icons btn  waves-effect waves-light">전투창 자동</i></a></li>
+                          <li className="mode-btn"><a onClick={this.closeMode}><i className="material-icons btn  waves-effect waves-light">전투창 수동</i></a></li>
                       </ul>
                     <div className="user-info">
 

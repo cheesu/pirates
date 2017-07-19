@@ -875,7 +875,29 @@ var fight = function (io,info){
                 }
               }
 
+              // 피흡 마나흡 옵션
+              if(ring!=undefined && ring!=null){
+                if(ring.option.option=='lifeDrain'){
+                  let drainHP = (dmg/100)*ring.option.per;
+                  drainHP = Math.round(drainHP);
+                  fightInterval[userInfo.username+"HP"] = fightInterval[userInfo.username+"HP"]+drainHP;
 
+                  if(fightInterval[userInfo.username+"HP"] > userInfo.max_hp){
+                    fightInterval[userInfo.username+"HP"] = userInfo.max_hp;
+                  }
+                  io.emit(userInfo.username+"userHP", fightInterval[userInfo.username+"HP"]+"-"+userInfo.max_hp);
+                }
+                else if(ring.option.option=='manaDrain'){
+                  let drainMP = (dmg/100)*ring.option.per;
+                  drainMP = Math.round(drainMP);
+                  fightInterval[userInfo.username+"MP"] = fightInterval[userInfo.username+"MP"]+drainMP;
+
+                  if(fightInterval[userInfo.username+"MP"] > userInfo.max_mp){
+                    fightInterval[userInfo.username+"MP"] = userInfo.max_mp;
+                  }
+                  io.emit(userInfo.username+"userMP", fightInterval[userInfo.username+"MP"]+"-"+userInfo.max_mp);
+                }
+              }
 
 
 

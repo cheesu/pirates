@@ -3,6 +3,7 @@ import axios from 'axios';
 import {debounce} from 'throttle-debounce';
 import { connect } from 'react-redux';
 import { skillRequest  } from 'Actions/skill';
+import cookie from 'react-cookies';
 class FightController extends React.Component {
   constructor(props, context) {
           super(props, context);
@@ -28,8 +29,12 @@ class FightController extends React.Component {
           let handleCloseExit = this.handleCloseExit.bind(this);
           let toggleFight = this.toggleFight.bind(this);
           this.props.socket.on(this.props.attackInfo.userName+"endFight", function(data){ //귓말
-          toggleFight();
-          //handleCloseExit();
+            toggleFight();
+            //handleCloseExit();
+            let closeMode =  cookie.load("closeMode");
+            if(closeMode=="auto"){
+              handleCloseExit();
+            }
           });
 
           this.props.socket.on(this.props.attackInfo.userName+"[SkillEnd]", function(data){ //귓말

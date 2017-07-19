@@ -546,6 +546,17 @@ ul.right-menu-results {
     animation-name: right-menu-leave;
 }
 
+
+.mode-btn-ul
+{
+  display: inline-block;
+}
+.mode-btn
+{
+  float: left;
+  display: inline-block;
+}
+
 .inven-btn
 {
   width: 40%;
