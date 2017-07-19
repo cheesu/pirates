@@ -417,12 +417,20 @@ var useSkill = function(io,info){
                         let drainHP = (dmg/100)*ring.option.per;
                         drainHP = Math.round(drainHP);
                         fightInterval[userInfo.username+"HP"] = fightInterval[userInfo.username+"HP"]+drainHP;
+
+                        if(fightInterval[userInfo.username+"HP"] > userInfo.max_hp){
+                          fightInterval[userInfo.username+"HP"] = userInfo.max_hp;
+                        }
+
                       }
                       else if(ring.option.option=='manaDrain'){
                         let drainMP = (dmg/100)*ring.option.per;
                         drainMP = Math.round(drainMP);
                         fightInterval[userInfo.username+"MP"] = fightInterval[userInfo.username+"MP"]+drainMP;
                         io.emit(userInfo.username+"userMP", fightInterval[userInfo.username+"MP"]+"-"+userInfo.max_mp);
+                        if(fightInterval[userInfo.username+"MP"] > userInfo.max_mp){
+                          fightInterval[userInfo.username+"MP"] = userInfo.max_mp;
+                        }
                       }
                     }
 

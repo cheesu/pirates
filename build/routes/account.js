@@ -298,7 +298,7 @@ router.get('/useItem/:itemID', function (req, res) {
 
       _item2.default.find({ id: itemid }).exec(function (err, item) {
         var itemInfo = eval(item[0]);
-        if (itemInfo.kind == "p") {
+        if (itemInfo.kind == "p" || itemInfo.kind == "rp") {
 
           var randomHeal = Math.floor(Math.random() * itemInfo.max);
           var upData = itemInfo.min + randomHeal;
@@ -625,7 +625,7 @@ router.get('/fightUseItem/:itemID', function (req, res) {
 
       _item2.default.find({ id: itemid }).exec(function (err, item) {
         var itemInfo = eval(item[0]);
-        if (itemInfo.kind == "p") {
+        if (itemInfo.kind == "p" || itemInfo.kind == "rp") {
 
           var randomHeal = Math.floor(Math.random() * itemInfo.max);
           var upData = itemInfo.min + randomHeal;
