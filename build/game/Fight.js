@@ -345,7 +345,7 @@ var useSkill = function useSkill(io, info) {
             var necklace = userInfo.mount.n;
             var upSkillDmg = 1;
             // 목걸이 추가 뎀지
-            if (necklace != undefined && necklace != null) {
+            if (necklace != undefined && necklace != null && necklace != "") {
               wAP = wAP + necklace.min;
               if (necklace.option.option == "offerings") {
                 fightInterval[info.username + "HP"] = fightInterval[info.username + "HP"] - necklace.option.hp;
@@ -379,7 +379,7 @@ var useSkill = function useSkill(io, info) {
               var upCriDmg = 1.7;
               var result = "";
 
-              if (necklace != undefined && necklace != null) {
+              if (necklace != undefined && necklace != null && necklace != "") {
                 if (necklace.option.option == "upCriDmg") {
                   upCriDmg = upCriDmg + necklace.option.per / 100;
                 }
@@ -403,7 +403,8 @@ var useSkill = function useSkill(io, info) {
               }
 
               // 피흡 마나흡 옵션
-              if (ring != undefined && ring != null) {
+              console.log(ring);
+              if (ring != undefined && ring != null && ring != "") {
                 if (ring.option.option == 'lifeDrain') {
                   var drainHP = dmg / 100 * ring.option.per;
                   drainHP = Math.round(drainHP);
@@ -787,7 +788,7 @@ var fight = function fight(io, info) {
         var ring = userInfo.mount.r;
         var necklace = userInfo.mount.n;
         // 목걸이 추가 뎀지
-        if (necklace != undefined && necklace != null) {
+        if (necklace != undefined && necklace != null && necklace != "") {
           wAP = wAP + necklace.min;
         }
 
@@ -822,7 +823,8 @@ var fight = function fight(io, info) {
         }
 
         // 피흡 마나흡 옵션
-        if (ring != undefined && ring != null) {
+        console.log(ring);
+        if (ring != undefined && ring != null && ring != "") {
           if (ring.option.option == 'lifeDrain') {
             var drainHP = dmg / 100 * ring.option.per;
             drainHP = Math.round(drainHP);
@@ -858,7 +860,7 @@ var fight = function fight(io, info) {
         var upCriDmg = 1.7;
         var result = "";
 
-        if (necklace != undefined && necklace != null) {
+        if (necklace != undefined && necklace != null && necklace != "") {
           if (necklace.option.option == "upCriDmg") {
             upCriDmg = upCriDmg + necklace.option.per / 100;
           }
