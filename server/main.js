@@ -223,6 +223,8 @@ io.on('connection', (socket) => {
           }
         }
       }
+
+
       let ch = msg.split(":ch:");
       io.emit(ch[0], ch[1]);
     });

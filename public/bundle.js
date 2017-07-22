@@ -24982,7 +24982,7 @@ exports.default = Search;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25010,352 +25010,364 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Enhancement = function (_React$Component) {
-    _inherits(Enhancement, _React$Component);
+  _inherits(Enhancement, _React$Component);
 
-    function Enhancement(props) {
-        _classCallCheck(this, Enhancement);
+  function Enhancement(props) {
+    _classCallCheck(this, Enhancement);
 
-        var _this = _possibleConstructorReturn(this, (Enhancement.__proto__ || Object.getPrototypeOf(Enhancement)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Enhancement.__proto__ || Object.getPrototypeOf(Enhancement)).call(this, props));
 
-        _this.state = {
-            keyword: ''
-        };
+    _this.state = {
+      keyword: ''
+    };
 
-        _this.handleClose = _this.handleClose.bind(_this);
-        //    this.props.getEnhancementItemRequest();
+    _this.handleClose = _this.handleClose.bind(_this);
+    //    this.props.getEnhancementItemRequest();
 
-        return _this;
+    return _this;
+  }
+
+  _createClass(Enhancement, [{
+    key: 'handleClose',
+    value: function handleClose() {
+      this.props.onClose();
     }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      $('.collapsible').collapsible();
+      $('ul.tabs').tabs();
+    }
+  }, {
+    key: 'requestChangeOption',
+    value: function requestChangeOption(userInfo, grade) {
+      var _this2 = this;
 
-    _createClass(Enhancement, [{
-        key: 'handleClose',
-        value: function handleClose() {
-            this.props.onClose();
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            $('.collapsible').collapsible();
-            $('ul.tabs').tabs();
-        }
-    }, {
-        key: 'requestChangeOption',
-        value: function requestChangeOption(userInfo, grade) {
-            var _this2 = this;
+      if (this.props.userInfo.mount.w.type != 'private') {
+        alert("개인전용 무기를 착용한 상태에서만 옵션을 부여 할 수 있습니다. 개인무기는 레벨 15를 달성후 운영자에게 요청하시면 얻을 수 있습니다.");
+        return false;
+      }
 
-            if (this.props.userInfo.mount.w.type != 'private') {
-                alert("개인전용 무기를 착용한 상태에서만 옵션을 부여 할 수 있습니다. 개인무기는 레벨 15를 달성후 운영자에게 요청하시면 얻을 수 있습니다.");
-                return false;
-            }
+      var price = 20000;
 
-            var price = 20000;
+      if (grade == 5) {
+        price = 120000;
+      }
 
-            if (grade == 5) {
-                price = 120000;
-            }
+      if (this.props.userInfo.gold < price) {
+        alert("소지금이 부족합니다. 옵션부여에 " + price + "골드가 소모됩니다.");
+        return false;
+      }
 
-            if (this.props.userInfo.gold < price) {
-                alert("소지금이 부족합니다. 옵션부여에 " + price + "골드가 소모됩니다.");
-                return false;
-            }
+      if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < grade) {
+        alert("[욕망의 돌]이 없습니다. 무기 강화를 위해 [욕망의 돌]이  필요 합니다.");
+        return false;
+      }
 
-            if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < grade) {
-                alert("[욕망의 돌]이 없습니다. 무기 강화를 위해 [욕망의 돌]이  필요 합니다.");
-                return false;
-            }
+      var con_test = confirm("욕망의돌 " + grade + "개와 " + price + "골드를 사용해 " + this.props.userInfo.mount.w.name + "에 옵션을 부여 하시겠습니까?");
+      if (con_test) {
+        _axios2.default.get('/api/account/changeOption/' + grade).then(function (response) {
 
-            var con_test = confirm("욕망의돌 " + grade + "개와 " + price + "골드를 사용해 " + this.props.userInfo.mount.w.name + "에 옵션을 부여 하시겠습니까?");
-            if (con_test) {
-                _axios2.default.get('/api/account/changeOption/' + grade).then(function (response) {
-                    if (!response.data.result) {
-                        alert(response.data.msg);
-                        _this2.props.socket.emit('Gchat', "[강화] " + userInfo.job2 + response.data.msg);
-                    } else {
-                        alert(response.data.msg);
-                        alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
-                        _this2.props.socket.emit('Gchat', "[강화] " + userInfo.job2 + response.data.msg);
-                    }
+          var job2 = userInfo.job2;
+          if (userInfo.job2 == undefined) {
+            job2 = "일반 여행자 ";
+          }
 
-                    //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+          if (!response.data.result) {
+            alert(response.data.msg);
+            _this2.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
+          } else {
+            alert(response.data.msg);
+            alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
+            _this2.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
+          }
 
-                    _this2.props.getStatusRequest();
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            }
-        }
-    }, {
-        key: 'requestEnhancement',
-        value: function requestEnhancement(userInfo) {
-            var _this3 = this;
+          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
 
-            if (this.props.userInfo.mount.w.type != 'private') {
-                alert("개인전용 무기를 착용한 상태에서만 강화 할 수 있습니다. 개인무기는 레벨 15를 달성후 운영자에게 요청하시면 얻을 수 있습니다.");
-                return false;
-            }
+          _this2.props.getStatusRequest();
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  }, {
+    key: 'requestEnhancement',
+    value: function requestEnhancement(userInfo) {
+      var _this3 = this;
 
-            if (this.props.userInfo.gold < 20000) {
-                alert("소지금이 부족합니다. 강화엔 2만골드가 소모됩니다.");
-                return false;
-            }
+      if (this.props.userInfo.mount.w.type != 'private') {
+        alert("개인전용 무기를 착용한 상태에서만 강화 할 수 있습니다. 개인무기는 레벨 15를 달성후 운영자에게 요청하시면 얻을 수 있습니다.");
+        return false;
+      }
 
-            if (userInfo.item.indexOf('ow1') == -1 || userInfo.itemCount.ow1 == undefined || userInfo.itemCount.ow1 < 1) {
-                alert("[달의눈물]이 없습니다. 무기 강화를 위해 [달의눈물]이 필요 합니다.");
-                return false;
-            }
+      if (this.props.userInfo.gold < 20000) {
+        alert("소지금이 부족합니다. 강화엔 2만골드가 소모됩니다.");
+        return false;
+      }
 
-            var con_test = confirm("달의눈물 1개와 2만골드를 사용해 " + this.props.userInfo.mount.w.name + "을(를) 강화 하시겠습니까?");
-            if (con_test) {
-                _axios2.default.get('/api/account/enhancement/').then(function (response) {
-                    if (!response.data.result) {
-                        alert(response.data.msg);
-                        _this3.props.socket.emit('Gchat', "[강화] " + userInfo.job2 + response.data.msg);
-                    } else {
-                        alert(response.data.msg);
-                        alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
-                        _this3.props.socket.emit('Gchat', "[강화] " + userInfo.job2 + response.data.msg);
-                    }
+      if (userInfo.item.indexOf('ow1') == -1 || userInfo.itemCount.ow1 == undefined || userInfo.itemCount.ow1 < 1) {
+        alert("[달의눈물]이 없습니다. 무기 강화를 위해 [달의눈물]이 필요 합니다.");
+        return false;
+      }
 
-                    //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+      var con_test = confirm("달의눈물 1개와 2만골드를 사용해 " + this.props.userInfo.mount.w.name + "을(를) 강화 하시겠습니까?");
+      if (con_test) {
+        _axios2.default.get('/api/account/enhancement/').then(function (response) {
 
-                    _this3.props.getStatusRequest();
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            }
-        }
-    }, {
-        key: 'shouldComponentUpdate',
-        value: function shouldComponentUpdate(nextProps, nextState) {
-            var current = {
-                user: this.props.userInfo,
-                Enhancement: this.props.items
+          var job2 = userInfo.job2;
+          if (userInfo.job2 == undefined) {
+            job2 = "일반 여행자 ";
+          }
 
-            };
-            var next = {
-                user: nextProps.userInfo,
-                Enhancement: nextProps.items
-            };
-            var update = JSON.stringify(current) !== JSON.stringify(next);
-            return update;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
+          if (!response.data.result) {
+            alert(response.data.msg);
+            _this3.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
+          } else {
+            alert(response.data.msg);
+            alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
+            _this3.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
+          }
 
-            var maList = _react2.default.createElement(
-                'li',
-                null,
-                _react2.default.createElement(
-                    'a',
-                    { onClick: this.toggleOpenEnhancement, className: 'waves-effect waves-light btn red controller-btn attack-btn' },
-                    '\uC804\uC9C1'
-                )
-            );
+          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
 
-            return _react2.default.createElement(
+          _this3.props.getStatusRequest();
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  }, {
+    key: 'shouldComponentUpdate',
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      var current = {
+        user: this.props.userInfo,
+        Enhancement: this.props.items
+
+      };
+      var next = {
+        user: nextProps.userInfo,
+        Enhancement: nextProps.items
+      };
+      var update = JSON.stringify(current) !== JSON.stringify(next);
+      return update;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+
+      var maList = _react2.default.createElement(
+        'li',
+        null,
+        _react2.default.createElement(
+          'a',
+          { onClick: this.toggleOpenEnhancement, className: 'waves-effect waves-light btn red controller-btn attack-btn' },
+          '\uC804\uC9C1'
+        )
+      );
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'item-store-screen center-align' },
+        _react2.default.createElement(
+          'div',
+          { className: 'right' },
+          _react2.default.createElement(
+            'a',
+            { className: 'waves-effect waves-light btn red lighten-1',
+              onClick: this.handleClose },
+            'CLOSE'
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'container item-container' },
+          _react2.default.createElement(
+            'p',
+            null,
+            '\uBB34\uAE30 \uAC15\uD654\uB294 \uAC1C\uC778\uC804\uC6A9 \uBB34\uAE30\uB9CC \uAC00\uB2A5 \uD569\uB2C8\uB2E4.'
+          ),
+          _react2.default.createElement(
+            'p',
+            null,
+            '\uC18C\uC9C0\uAE08 : ',
+            _react2.default.createElement(
+              'span',
+              null,
+              this.props.userInfo.gold
+            ),
+            ' Gold'
+          ),
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list user-inven-ul', 'data-collapsible': 'accordion' },
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
                 'div',
-                { className: 'item-store-screen center-align' },
+                { className: 'collapsible-header' },
                 _react2.default.createElement(
-                    'div',
-                    { className: 'right' },
-                    _react2.default.createElement(
-                        'a',
-                        { className: 'waves-effect waves-light btn red lighten-1',
-                            onClick: this.handleClose },
-                        'CLOSE'
-                    )
+                  'span',
+                  { className: 'badge' },
+                  '\uB2EC\uC758\uB208\uBB3C 1\uAC1C \uC18C\uBAA8'
+                ),
+                '\uBB34\uAE30\uB97C \uAC15\uD654 \uD55C\uB2E4'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '"\uBA85\uD544\uC740 \uBD93\uC744 \uAC00\uB9AC\uC9C0 \uC54A\uC9C0\uB9CC \uC88B\uC740 \uBD93\uC744 \uC4F0\uBA74 \uB354 \uC88B\uC740 \uAE00\uC774 \uB098\uC628\uB2E4"'
                 ),
                 _react2.default.createElement(
-                    'div',
-                    { className: 'container item-container' },
-                    _react2.default.createElement(
-                        'p',
-                        null,
-                        '\uBB34\uAE30 \uAC15\uD654\uB294 \uAC1C\uC778\uC804\uC6A9 \uBB34\uAE30\uB9CC \uAC00\uB2A5 \uD569\uB2C8\uB2E4.'
-                    ),
-                    _react2.default.createElement(
-                        'p',
-                        null,
-                        '\uC18C\uC9C0\uAE08 : ',
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            this.props.userInfo.gold
-                        ),
-                        ' Gold'
-                    ),
-                    _react2.default.createElement(
-                        'ul',
-                        { className: 'collapsible item-list user-inven-ul', 'data-collapsible': 'accordion' },
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'collapsible-header' },
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'badge' },
-                                    '\uB2EC\uC758\uB208\uBB3C 1\uAC1C \uC18C\uBAA8'
-                                ),
-                                '\uBB34\uAE30\uB97C \uAC15\uD654 \uD55C\uB2E4'
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'collapsible-body item-msg' },
-                                _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    '"\uBA85\uD544\uC740 \uBD93\uC744 \uAC00\uB9AC\uC9C0 \uC54A\uC9C0\uB9CC \uC88B\uC740 \uBD93\uC744 \uC4F0\uBA74 \uB354 \uC88B\uC740 \uAE00\uC774 \uB098\uC628\uB2E4"'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '\uB2EC\uC758 \uB208\uBB3C 1\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '2\uB9CC\uACE8\uB4DC\uAC00 \uC18C\uBE44\uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    _react2.default.createElement(
-                                        'a',
-                                        { onClick: this.requestEnhancement.bind(this, this.props.userInfo), className: 'waves-effect waves-light btn' },
-                                        '\uBB34\uAE30\uAC15\uD654'
-                                    )
-                                )
-                            )
-                        ),
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'collapsible-header' },
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'badge' },
-                                    '\uC695\uB9DD\uC758\uB3CC1\uAC1C \uC18C\uBAA8'
-                                ),
-                                '\uBB34\uAE30\uC5D0 \uC635\uC158\uC744 \uBD80\uC5EC \uD55C\uB2E4.'
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'collapsible-body item-msg' },
-                                _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    '"\uBB34\uAE30\uC5D0 \uD2B9\uC218\uC635\uC158\uC774 \uB79C\uB364\uD558\uAC8C \uBD80\uC5EC \uB429\uB2C8\uB2E4."'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '\uD2B9\uC218\uC635\uC158\uC740 1\uAC00\uC9C0\uB9CC \uC801\uC6A9 \uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '\uC695\uB9DD\uC758\uB3CC 1\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '2\uB9CC\uACE8\uB4DC\uAC00 \uC18C\uBE44\uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    _react2.default.createElement(
-                                        'a',
-                                        { onClick: this.requestChangeOption.bind(this, this.props.userInfo, 1), className: 'waves-effect waves-light btn' },
-                                        '\uC635\uC158\uBD80\uC5EC'
-                                    )
-                                )
-                            )
-                        ),
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'collapsible-header' },
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'badge' },
-                                    '\uC695\uB9DD\uC758\uB3CC5\uAC1C \uC18C\uBAA8'
-                                ),
-                                '\uBB34\uAE30\uC5D0 \uACE0\uAE09 \uC635\uC158\uC744 \uBD80\uC5EC \uD55C\uB2E4.'
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'collapsible-body item-msg' },
-                                _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    '"\uBB34\uAE30\uC5D0 \uD2B9\uC218\uC635\uC158\uC774 \uB79C\uB364\uD558\uAC8C \uBD80\uC5EC \uB429\uB2C8\uB2E4."'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '\uD2B9\uC218\uC635\uC158\uC740 1\uAC00\uC9C0\uB9CC \uC801\uC6A9 \uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '\uC695\uB9DD\uC758\uB3CC 5\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    '12\uB9CC\uACE8\uB4DC\uAC00 \uC18C\uBE44\uB429\uB2C8\uB2E4.'
-                                ),
-                                _react2.default.createElement(
-                                    'p',
-                                    null,
-                                    _react2.default.createElement(
-                                        'a',
-                                        { onClick: this.requestChangeOption.bind(this, this.props.userInfo, 5), className: 'waves-effect waves-light btn' },
-                                        '\uC635\uC158\uBD80\uC5EC'
-                                    )
-                                )
-                            )
-                        )
-                    )
+                  'p',
+                  null,
+                  '\uB2EC\uC758 \uB208\uBB3C 1\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '2\uB9CC\uACE8\uB4DC\uAC00 \uC18C\uBE44\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.requestEnhancement.bind(this, this.props.userInfo), className: 'waves-effect waves-light btn' },
+                    '\uBB34\uAE30\uAC15\uD654'
+                  )
                 )
-            );
-        }
-    }]);
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uC695\uB9DD\uC758\uB3CC1\uAC1C \uC18C\uBAA8'
+                ),
+                '\uBB34\uAE30\uC5D0 \uC635\uC158\uC744 \uBD80\uC5EC \uD55C\uB2E4.'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '"\uBB34\uAE30\uC5D0 \uD2B9\uC218\uC635\uC158\uC774 \uB79C\uB364\uD558\uAC8C \uBD80\uC5EC \uB429\uB2C8\uB2E4."'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uD2B9\uC218\uC635\uC158\uC740 1\uAC00\uC9C0\uB9CC \uC801\uC6A9 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC695\uB9DD\uC758\uB3CC 1\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '2\uB9CC\uACE8\uB4DC\uAC00 \uC18C\uBE44\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.requestChangeOption.bind(this, this.props.userInfo, 1), className: 'waves-effect waves-light btn' },
+                    '\uC635\uC158\uBD80\uC5EC'
+                  )
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uC695\uB9DD\uC758\uB3CC5\uAC1C \uC18C\uBAA8'
+                ),
+                '\uBB34\uAE30\uC5D0 \uACE0\uAE09 \uC635\uC158\uC744 \uBD80\uC5EC \uD55C\uB2E4.'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '"\uBB34\uAE30\uC5D0 \uD2B9\uC218\uC635\uC158\uC774 \uB79C\uB364\uD558\uAC8C \uBD80\uC5EC \uB429\uB2C8\uB2E4."'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uD2B9\uC218\uC635\uC158\uC740 1\uAC00\uC9C0\uB9CC \uC801\uC6A9 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC695\uB9DD\uC758\uB3CC 5\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '12\uB9CC\uACE8\uB4DC\uAC00 \uC18C\uBE44\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.requestChangeOption.bind(this, this.props.userInfo, 5), className: 'waves-effect waves-light btn' },
+                    '\uC635\uC158\uBD80\uC5EC'
+                  )
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
 
-    return Enhancement;
+  return Enhancement;
 }(_react2.default.Component);
 
 Enhancement.propTypes = {
-    onClose: _react2.default.PropTypes.func
+  onClose: _react2.default.PropTypes.func
 };
 
 Enhancement.defaultProps = {
-    onClose: function onClose() {
-        console.error('onClose not defined');
-    }
+  onClose: function onClose() {
+    console.error('onClose not defined');
+  }
 };
 
 var mapStateToProps = function mapStateToProps(state) {
-    return {
-        items: state.item.storeItems,
-        userItems: state.item.items
-    };
+  return {
+    items: state.item.storeItems,
+    userItems: state.item.items
+  };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-    return {
-        getStatusRequest: function getStatusRequest() {
-            return dispatch((0, _authentication.getStatusRequest)());
-        }
-    };
+  return {
+    getStatusRequest: function getStatusRequest() {
+      return dispatch((0, _authentication.getStatusRequest)());
+    }
+  };
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Enhancement);

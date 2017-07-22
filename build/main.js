@@ -243,6 +243,7 @@ io.on('connection', function (socket) {
         }
       }
     }
+
     var ch = msg.split(":ch:");
     io.emit(ch[0], ch[1]);
   });

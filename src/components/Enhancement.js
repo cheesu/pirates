@@ -58,14 +58,20 @@ class Enhancement extends React.Component {
     if(con_test){
       axios.get('/api/account/changeOption/'+ grade)
          .then((response) => {
+
+           let job2 = userInfo.job2;
+           if(userInfo.job2==undefined){
+             job2 = "일반 여행자 ";
+           }
+
             if(!response.data.result){
               alert(response.data.msg);
-              this.props.socket.emit('Gchat', "[강화] "+userInfo.job2 +response.data.msg);
+              this.props.socket.emit('Gchat', "[강화] "+job2 +response.data.msg);
             }
             else{
               alert(response.data.msg);
               alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
-              this.props.socket.emit('Gchat', "[강화] "+userInfo.job2 +response.data.msg);
+              this.props.socket.emit('Gchat', "[강화] "+job2 +response.data.msg);
             }
 
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
@@ -100,14 +106,21 @@ class Enhancement extends React.Component {
     if(con_test){
       axios.get('/api/account/enhancement/')
          .then((response) => {
+
+           let job2 = userInfo.job2;
+           if(userInfo.job2==undefined){
+             job2 = "일반 여행자 ";
+           }
+
+
             if(!response.data.result){
               alert(response.data.msg);
-              this.props.socket.emit('Gchat', "[강화] "+userInfo.job2 +response.data.msg);
+              this.props.socket.emit('Gchat', "[강화] "+job2 +response.data.msg);
             }
             else{
               alert(response.data.msg);
               alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
-              this.props.socket.emit('Gchat', "[강화] "+userInfo.job2 +response.data.msg);
+              this.props.socket.emit('Gchat', "[강화] "+job2 +response.data.msg);
             }
 
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
