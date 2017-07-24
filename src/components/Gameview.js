@@ -150,7 +150,7 @@ class Gameview extends React.Component {
               }
         }
 
-      if($(".bla-bla-class").length>350){
+      if($(".bla-bla-class").length>200){
         $(".bla-bla-class").remove();
       }
 

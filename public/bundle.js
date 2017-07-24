@@ -25852,15 +25852,64 @@ var Fightview = function (_React$Component) {
   }, {
     key: 'addChatData',
     value: function addChatData(data) {
-      this.setState({
-        chat: this.state.chat.concat(data)
-      });
-
-      if (this.state.chat.length > 250) {
-        this.setState({
-          chat: []
+      /*  this.setState({
+          chat: this.state.chat.concat(data)
         });
+          if(this.state.chat.length>250){
+          this.setState({
+            chat: []
+          });
+        }*/
+
+      var chat = data;
+      var mode = _reactCookies2.default.load("mode");
+      var addText = "<p>" + data + "</p>";
+
+      try {
+        if (mode == "comp") {
+          if (chat.indexOf('[line098098098]') == 0) {
+            addText = " <p class='bla-bla-class' ></p>";
+          } else if (chat.indexOf('[monsterDieMsg]') == 0) {
+            var _text = chat;
+            _text = _text.substr(15, _text.length);
+            addText = " <p class='bla-bla-class' >" + _text + "</p>";
+          } else {
+            addText = " <p class='bla-bla-class' >" + chat + "</p>";
+          }
+        } else {
+          if (chat.indexOf('[피격]') == 0) {
+            addText = " <p class='bla-bla-class chat-Shoot' >" + chat + "</p>";
+          } else if (chat.indexOf('[item]') == 0) {
+            addText = " <p class='bla-bla-class chat-item' >" + chat + "</p>";
+          } else if (chat.indexOf('[skill]') == 0) {
+            addText = " <p class='bla-bla-class chat-skill' >" + chat + "</p>";
+          } else if (chat.indexOf('[line098098098]') == 0) {
+            addText = " <p class='bla-bla-class chat-line' ></p>";
+          } else if (chat.indexOf('[귓속말]') == 0) {
+            addText = " <p class='bla-bla-class whisper-chat' >" + chat + "</p>";
+          } else if (chat.indexOf('[공지사항]') == 0) {
+            addText = " <p class='bla-bla-class notice-chat' >" + chat + "</p>";
+          } else if (chat.indexOf('[시스템]') == 0) {
+            addText = " <p class='bla-bla-class system-chat' >" + chat + "</p>";
+          } else if (chat.indexOf('Critical!!!!') == 0) {
+            addText = " <p class='bla-bla-class cri-chat' >" + chat + "</p>";
+          } else if (chat.indexOf('[monsterDieMsg]') == 0) {
+            var _text2 = chat;
+            _text2 = _text2.substr(15, _text2.length);
+            addText = " <p class='bla-bla-class mon-die-chat' >" + _text2 + "</p>";
+          } else {
+            addText = " <p class='bla-bla-class' >" + chat + "</p>";
+          }
+        }
+      } catch (e) {
+        console.log(e);
+        addText = " <p class='bla-bla-class' >채팅창 오류... 복구중....</p>";
+      } finally {}
+
+      if ($(".bla-bla-class").length > 150) {
+        $(".bla-bla-class").remove();
       }
+      $("#fightView").append(addText);
 
       var objDiv = document.getElementById("fightView");
       objDiv.scrollTop = objDiv.scrollHeight;
@@ -25880,103 +25929,7 @@ var Fightview = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(
-        'div',
-        { id: 'fightView', className: 'fight-view' },
-        this.state.chat.map(function (chat, i) {
-          try {
-
-            var mode = _reactCookies2.default.load("mode");
-
-            if (mode == "comp") {
-              if (chat.indexOf('[line098098098]') == 0) {
-                return _react2.default.createElement('p', { className: 'bla-bla-class', key: i });
-              } else if (chat.indexOf('[monsterDieMsg]') == 0) {
-                var _text = chat;
-                _text = _text.substr(15, _text.length);
-                return _react2.default.createElement(
-                  'p',
-                  { className: 'bla-bla-class', key: i },
-                  _text
-                );
-              } else {
-                return _react2.default.createElement(
-                  'p',
-                  { className: 'bla-bla-class', key: i },
-                  chat
-                );
-              }
-            }
-
-            if (chat.indexOf('[피격]') == 0) {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class chat-Shoot', key: i },
-                chat
-              );
-            } else if (chat.indexOf('[item]') == 0) {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class chat-item', key: i },
-                chat
-              );
-            } else if (chat.indexOf('[skill]') == 0) {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class chat-skill', key: i },
-                chat
-              );
-            } else if (chat.indexOf('[line098098098]') == 0) {
-              return _react2.default.createElement('p', { className: 'bla-bla-class chat-line', key: i });
-            } else if (chat.indexOf('[귓속말]') == 0) {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class whisper-chat', key: i },
-                chat
-              );
-            } else if (chat.indexOf('[공지사항]') == 0) {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class notice-chat', key: i },
-                chat
-              );
-            } else if (chat.indexOf('[시스템]') == 0) {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class system-chat', key: i },
-                chat
-              );
-            } else if (chat.indexOf('Critical!!!!') == 0) {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class cri-chat', key: i },
-                chat
-              );
-            } else if (chat.indexOf('[monsterDieMsg]') == 0) {
-              var _text2 = chat;
-              _text2 = _text2.substr(15, _text2.length);
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class mon-die-chat', key: i },
-                _text2
-              );
-            } else {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class', key: i },
-                chat
-              );
-            }
-          } catch (e) {
-            console.log(e);
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class', key: i },
-              '\uCC44\uD305\uCC3D \uC624\uB958... \uBCF5\uAD6C\uC911....'
-            );
-          } finally {}
-        })
-      );
+      return _react2.default.createElement('div', { id: 'fightView', className: 'fight-view' });
     }
   }]);
 
@@ -26166,7 +26119,7 @@ var Gameview = function (_React$Component) {
         }
       }
 
-      if ($(".bla-bla-class").length > 350) {
+      if ($(".bla-bla-class").length > 200) {
         $(".bla-bla-class").remove();
       }
 

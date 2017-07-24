@@ -37,7 +37,7 @@ class Fightview extends React.Component {
     }
 
     addChatData(data){
-      this.setState({
+    /*  this.setState({
         chat: this.state.chat.concat(data)
       });
 
@@ -45,7 +45,73 @@ class Fightview extends React.Component {
         this.setState({
           chat: []
         });
+      }*/
+
+      let chat = data;
+      let mode =   cookie.load("mode");
+      let addText = "<p>"+data+"</p>"
+
+     try{
+      if(mode=="comp"){
+          if(chat.indexOf('[line098098098]')==0){
+            addText =" <p class='bla-bla-class' ></p>";
+          }else if(chat.indexOf('[monsterDieMsg]')==0){
+            let _text = chat;
+            _text = _text.substr(15,_text.length);
+            addText =" <p class='bla-bla-class' >"+_text+"</p>";
+          }else{
+            addText =" <p class='bla-bla-class' >"+chat+"</p>";
+          }
       }
+      else{
+        if(chat.indexOf('[피격]')==0){
+               addText =" <p class='bla-bla-class chat-Shoot' >"+chat+"</p>";
+             }
+             else if(chat.indexOf('[item]')==0){
+               addText =" <p class='bla-bla-class chat-item' >"+chat+"</p>";
+             }
+             else if(chat.indexOf('[skill]')==0){
+               addText =" <p class='bla-bla-class chat-skill' >"+chat+"</p>";
+             }
+             else if(chat.indexOf('[line098098098]')==0){
+               addText =" <p class='bla-bla-class chat-line' ></p>";
+             }
+             else if(chat.indexOf('[귓속말]')==0){
+               addText =" <p class='bla-bla-class whisper-chat' >"+chat+"</p>";
+             }
+             else if(chat.indexOf('[공지사항]')==0){
+               addText =" <p class='bla-bla-class notice-chat' >"+chat+"</p>";
+             }
+             else if(chat.indexOf('[시스템]')==0){
+               addText =" <p class='bla-bla-class system-chat' >"+chat+"</p>";
+             }
+             else if(chat.indexOf('Critical!!!!')==0){
+               addText =" <p class='bla-bla-class cri-chat' >"+chat+"</p>";
+             }
+             else if(chat.indexOf('[monsterDieMsg]')==0){
+               let _text = chat;
+               _text = _text.substr(15,_text.length);
+               addText =" <p class='bla-bla-class mon-die-chat' >"+_text+"</p>";
+             }
+           else{
+             addText =" <p class='bla-bla-class' >"+chat+"</p>";
+           }
+         }
+       }catch (e) {
+           console.log(e);
+           addText =" <p class='bla-bla-class' >채팅창 오류... 복구중....</p>";
+      } finally{
+      }
+
+
+
+
+
+
+      if($(".bla-bla-class").length>150){
+        $(".bla-bla-class").remove();
+      }
+      $("#fightView").append(addText);
 
       let objDiv =  document.getElementById("fightView");
       objDiv.scrollTop = objDiv.scrollHeight;
@@ -66,73 +132,6 @@ class Fightview extends React.Component {
     render(){
         return (
           <div id="fightView" className="fight-view">
-
-            {this.state.chat.map(function(chat,i){
-              try {
-
-                let mode =   cookie.load("mode");
-
-                if(mode=="comp"){
-                  if(chat.indexOf('[line098098098]')==0){
-                   return <p className="bla-bla-class" key={i}></p>
-                 }else if(chat.indexOf('[monsterDieMsg]')==0){
-                   let _text = chat;
-                   _text = _text.substr(15,_text.length);
-                   return <p className="bla-bla-class" key={i}>{_text}</p>
-                 }else{
-                   return <p className="bla-bla-class" key={i}>{chat}</p>
-                 }
-
-                }
-
-
-
-
-                if(chat.indexOf('[피격]')==0){
-                  return <p className="bla-bla-class chat-Shoot" key={i}>{chat}</p>
-                }
-                else if(chat.indexOf('[item]')==0){
-                  return <p className="bla-bla-class chat-item" key={i}>{chat}</p>
-                }
-                else if(chat.indexOf('[skill]')==0){
-                  return <p className="bla-bla-class chat-skill" key={i}>{chat}</p>
-                }
-                else if(chat.indexOf('[line098098098]')==0){
-                  return <p className="bla-bla-class chat-line" key={i}></p>
-                }
-                else if(chat.indexOf('[귓속말]')==0){
-                  return <p className="bla-bla-class whisper-chat" key={i}>{chat}</p>
-                }
-                else if(chat.indexOf('[공지사항]')==0){
-                  return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
-                }
-                else if(chat.indexOf('[시스템]')==0){
-                  return <p className="bla-bla-class system-chat" key={i}>{chat}</p>
-                }
-                else if(chat.indexOf('Critical!!!!')==0){
-                  return <p className="bla-bla-class cri-chat" key={i}>{chat}</p>
-                }
-                else if(chat.indexOf('[monsterDieMsg]')==0){
-                  let _text = chat;
-                  _text = _text.substr(15,_text.length);
-                  return <p className="bla-bla-class mon-die-chat" key={i}>{_text}</p>
-                }
-
-                else{
-                  return <p className="bla-bla-class" key={i}>{chat}</p>
-                }
-              } catch (e) {
-                console.log(e);
-                return <p className="bla-bla-class" key={i}>채팅창 오류... 복구중....</p>
-              } finally {
-
-              }
-
-
-
-
-            })}
-
 
           </div>
         );
