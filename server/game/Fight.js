@@ -452,7 +452,7 @@ var useSkill = function(io,info){
                       _aggroObj.dmg = dmg;
 
                       if(userInfo.job=='검사'){
-                        _aggroObj.dmg = _aggroObj.dmg *1.8;
+                        _aggroObj.dmg = _aggroObj.dmg *2.5;
                       }
 
                       localMonsterList[monNum].Aggravation.push(_aggroObj);
@@ -554,6 +554,10 @@ var fight = function (io,info){
             fightInterval[userInfo.username+"fighting"] = true; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
             fightInterval[userInfo.username+"HP"] = userInfo.hp;
 
+            let distanceCount = 2; // 원거리 캐릭은 2타를 맞지 않는다.
+
+
+
             // 몬스터가 공격 인터벌 시작
             fightInterval[userInfo.username+"monsterAttack"] = setInterval(function(){
 
@@ -654,6 +658,8 @@ var fight = function (io,info){
 
               // 패시브 발동 확률(렙 격차 따라서 발동확률은 낮아진다.)
               let passive = Math.floor(Math.random() * 1000)+(lvGap*10);
+
+
 
               if(userInfo.job2=='깨달은 현자'&&fightInterval[userInfo.username+"skill"]){
                 reDmg = reDmg*0.8;
@@ -779,6 +785,13 @@ var fight = function (io,info){
                   io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+"강력한 일격!!!!!! "+userInfo.username+"님이["+reDmg+"]의 피해를 입었습니다.[CRITICAL!!!]");
                 }else{
                   io.emit(info.ch+"fight", "[피격]"+localMonsterList[monNum].attackMsg+" "+userInfo.username+"님이["+reDmg+"]의 피해를 입었습니다.");
+                }
+
+                // 원거리 캐릭 2타 무효
+                if(distanceCount > 0 && (userInfo.job=="마법사" || userInfo.job=="마법사") ){
+                  reDmg = 0;
+                  io.emit(userInfo.username+"fight", "[passive] "+localMonsterList[monNum].name+" 멀리 떨어져있는 "+userInfo.username+" 님에게 공격을 가하지 못했습니다.");
+                  distanceCount--;
                 }
 
 

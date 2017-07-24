@@ -25091,6 +25091,9 @@ var Enhancement = function (_React$Component) {
       }
     }
   }, {
+    key: 'extendSocket',
+    value: function extendSocket(userInfo) {}
+  }, {
     key: 'requestEnhancement',
     value: function requestEnhancement(userInfo) {
       var _this3 = this;
@@ -25332,6 +25335,68 @@ var Enhancement = function (_React$Component) {
                     'a',
                     { onClick: this.requestChangeOption.bind(this, this.props.userInfo, 5), className: 'waves-effect waves-light btn' },
                     '\uC635\uC158\uBD80\uC5EC'
+                  )
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uC694\uAD6C\uB808\uBCA8 50\uC774\uC0C1'
+                ),
+                '\uC18C\uCF13 \uD655\uC7A5 lv.1'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '"\uAC1C\uC778\uBB34\uAE30\uC758 \uC18C\uCF13\uC744 \uD655\uC7A5 \uD569\uB2C8\uB2E4.."'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uD2B9\uC218 \uC635\uC158\uC774 \uBD80\uC5EC\uB41C \uBCF4\uC11D\uC744 \uC7A5\uCC29\uD560 \uC18C\uCF13\uC744 \uCD94\uAC00 \uD569\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'lv.1 \uC18C\uCF13\uC740 \uD55C\uBC88\uB9CC \uD655\uC7A5\uC774 \uAC00\uB2A5 \uD569\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '50\uB9CC \uACE8\uB4DC\uAC00 \uC18C\uBAA8 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC695\uB9DD\uC758\uB3CC 10\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC5D0\uBA54\uB784\uB4DC 20\uAC1C\uAC00 \uC18C\uBAA8 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uB8E8\uBE44 10\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.extendSocket.bind(this, this.props.userInfo, 5), className: 'waves-effect waves-light btn' },
+                    '\uC18C\uCF13 \uD655\uC7A5(\uBBF8\uAD6C\uD604)'
                   )
                 )
               )
@@ -26058,14 +26123,15 @@ var Gameview = function (_React$Component) {
     key: 'addChatData',
     value: function addChatData(data) {
 
-      /*  this.setState({
-          chat: this.state.chat.concat(data)
+      this.setState({
+        chat: this.state.chat.concat(data)
+      });
+
+      if (this.state.chat.length > 10) {
+        this.setState({
+          chat: []
         });
-          if(this.state.chat.length>350){
-          this.setState({
-            chat: []
-          });
-        }*/
+      }
 
       var chat = data;
       var mode = _reactCookies2.default.load("mode");

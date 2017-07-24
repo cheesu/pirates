@@ -75,15 +75,15 @@ class Gameview extends React.Component {
 
     addChatData(data){
 
-    /*  this.setState({
+      this.setState({
         chat: this.state.chat.concat(data)
       });
 
-      if(this.state.chat.length>350){
+      if(this.state.chat.length>10){
         this.setState({
           chat: []
         });
-      }*/
+      }
 
       let chat = data;
       let mode =   cookie.load("mode");

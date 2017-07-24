@@ -83,6 +83,9 @@ class Enhancement extends React.Component {
     }
   }
 
+extendSocket(userInfo){
+
+}
 
   requestEnhancement(userInfo){
 
@@ -192,6 +195,20 @@ class Enhancement extends React.Component {
                         <p>욕망의돌 5개가 소모됩니다.</p>
                         <p>12만골드가 소비됩니다.</p>
                         <p><a onClick={this.requestChangeOption.bind(this,this.props.userInfo,5)}  className="waves-effect waves-light btn">옵션부여</a></p>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="collapsible-header"><span className="badge">요구레벨 50이상</span>소켓 확장 lv.1</div>
+                      <div className="collapsible-body item-msg">
+                        <span>"개인무기의 소켓을 확장 합니다.."</span>
+                        <p>특수 옵션이 부여된 보석을 장착할 소켓을 추가 합니다.</p>
+                        <p>lv.1 소켓은 한번만 확장이 가능 합니다.</p>
+                        <p>50만 골드가 소모 됩니다.</p>
+                        <p>욕망의돌 10개가 소모됩니다.</p>
+                        <p>에메랄드 20개가 소모 됩니다.</p>
+                        <p>루비 10개가 소모됩니다.</p>
+                        <p><a onClick={this.extendSocket.bind(this,this.props.userInfo,5)}  className="waves-effect waves-light btn">소켓 확장(미구현)</a></p>
                       </div>
                     </li>
 
