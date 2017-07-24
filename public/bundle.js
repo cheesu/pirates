@@ -25856,9 +25856,10 @@ var Fightview = function (_React$Component) {
         chat: this.state.chat.concat(data)
       });
 
-      if (this.state.chat.length > 80) {
-        var reData = this.state.chat;
-        reData.splice(0, this.state.chat.length - 80);
+      if (this.state.chat.length > 250) {
+        this.setState({
+          chat: []
+        });
       }
 
       var objDiv = document.getElementById("fightView");
@@ -26104,15 +26105,72 @@ var Gameview = function (_React$Component) {
     key: 'addChatData',
     value: function addChatData(data) {
 
-      this.setState({
-        chat: this.state.chat.concat(data)
-      });
-
-      if (this.state.chat.length > 350) {
-        this.setState({
-          chat: []
+      /*  this.setState({
+          chat: this.state.chat.concat(data)
         });
+          if(this.state.chat.length>350){
+          this.setState({
+            chat: []
+          });
+        }*/
+
+      var chat = data;
+      var mode = _reactCookies2.default.load("mode");
+      var addText = "<p>" + data + "</p>";
+
+      if (mode == "comp") {
+
+        if (chat.indexOf('[monsterDieMsg]') == 0) {
+          var _text = chat;
+          _text = _text.substr(15, _text.length);
+          addText = "<p class='bla-bla-class' >" + _text + "</p>";
+        } else if (chat.indexOf('[몬스터]') == 0) {
+          var _text2 = chat;
+          _text2 = _text2.substr(5, _text2.length);
+          addText = "<p class='bla-bla-class'> " + _text2 + "}</p>";
+        } else if (chat.indexOf('[line098098098]') == 0) {
+          addText = "<p class='bla-bla-class chat-line'></p>";
+        } else {
+          addText = "<p class='bla-bla-class' >" + chat + "</p>";
+        }
+      } else {
+
+        if (chat.indexOf('[휴식]') == 0) {
+          addText = "<p class='bla-bla-class chat-green' >" + chat + "</p>";
+        } else if (chat.indexOf('[line098098098]') == 0) {
+          addText = "<p class='bla-bla-class chat-line' ></p>";
+        } else if (chat.indexOf('[몬스터]') == 0) {
+          var _text3 = chat;
+          _text3 = _text3.substr(5, _text3.length);
+          addText = "<p class='bla-bla-class chat-setmonster' ><span class='chat-setmonster-span'></span> " + _text3 + "</p>";
+        } else if (chat.indexOf('[귓속말]') == 0) {
+          addText = "<p class='bla-bla-class whisper-chat' >" + chat + "</p>";
+        } else if (chat.indexOf('[시스템]') == 0) {
+          addText = "<p class='bla-bla-class system-chat' >" + chat + "</p>";
+        } else if (chat.indexOf('...') == 0) {
+          addText = "<p class='bla-bla-class chat-map-effect'  ><span class='chat-map-effect-span'></span>  " + chat + "</p>";
+        } else if (chat.indexOf('[공지사항]') == 0) {
+          addText = "<p class='bla-bla-class notice-chat' >" + chat + "</p>";
+        } else if (chat.indexOf('한계') == 0) {
+          addText = "<p class='bla-bla-class levelup-chat' >" + chat + "</p>";
+        } else if (chat.indexOf('[LEVEL UP!!]') == 0 || chat.indexOf('[강화]') == 0) {
+          addText = "<p class='bla-bla-class levelup-chat' >" + chat + "</p>";
+        } else if (chat.indexOf('막혀서') == 0 || chat.indexOf('벽에') == 0) {
+          addText = "<p class='bla-bla-class blocking-chat' >" + chat + "</p>";
+        } else if (chat.indexOf('[monsterDieMsg]') == 0) {
+          var _text4 = chat;
+          _text4 = _text4.substr(15, _text4.length);
+          addText = "<p class='bla-bla-class mon-die-chat' >" + _text4 + "</p>";
+        } else {
+          addText = "<p class='bla-bla-class' >" + chat + "</p>";
+        }
       }
+
+      if ($(".bla-bla-class").length > 350) {
+        $(".bla-bla-class").remove();
+      }
+
+      $("#gameChatView").append(addText);
 
       var objDiv = document.getElementById("gameChatView");objDiv.scrollTop = objDiv.scrollHeight;
       var objDiv = null;
@@ -26173,118 +26231,6 @@ var Gameview = function (_React$Component) {
             )
           )
         ),
-        this.state.chat.map(function (chat, i) {
-
-          var mode = _reactCookies2.default.load("mode");
-
-          if (mode == "comp") {
-
-            if (chat.indexOf('[monsterDieMsg]') == 0) {
-              var _text = chat;
-              _text = _text.substr(15, _text.length);
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class', key: i },
-                _text
-              );
-            } else if (chat.indexOf('[몬스터]') == 0) {
-              var _text2 = chat;
-              _text2 = _text2.substr(5, _text2.length);
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class', key: i },
-                ' ',
-                _text2
-              );
-            } else if (chat.indexOf('[line098098098]') == 0) {
-              return _react2.default.createElement('p', { className: 'bla-bla-class chat-line', key: i });
-            } else {
-              return _react2.default.createElement(
-                'p',
-                { className: 'bla-bla-class', key: i },
-                chat
-              );
-            }
-          }
-
-          if (chat.indexOf('[휴식]') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class chat-green', key: i },
-              chat
-            );
-          } else if (chat.indexOf('[line098098098]') == 0) {
-            return _react2.default.createElement('p', { className: 'bla-bla-class chat-line', key: i });
-          } else if (chat.indexOf('[몬스터]') == 0) {
-            var _text3 = chat;
-            _text3 = _text3.substr(5, _text3.length);
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class chat-setmonster', key: i },
-              _react2.default.createElement('span', { className: 'chat-setmonster-span' }),
-              ' ',
-              _text3
-            );
-          } else if (chat.indexOf('[귓속말]') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class whisper-chat', key: i },
-              chat
-            );
-          } else if (chat.indexOf('[시스템]') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class system-chat', key: i },
-              chat
-            );
-          } else if (chat.indexOf('...') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class chat-map-effect', key: i },
-              _react2.default.createElement('span', { className: 'chat-map-effect-span' }),
-              '  ',
-              chat
-            );
-          } else if (chat.indexOf('[공지사항]') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class notice-chat', key: i },
-              chat
-            );
-          } else if (chat.indexOf('한계') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class levelup-chat', key: i },
-              chat
-            );
-          } else if (chat.indexOf('[LEVEL UP!!]') == 0 || chat.indexOf('[강화]') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class levelup-chat', key: i },
-              chat
-            );
-          } else if (chat.indexOf('막혀서') == 0 || chat.indexOf('벽에') == 0) {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class blocking-chat', key: i },
-              chat
-            );
-          } else if (chat.indexOf('[monsterDieMsg]') == 0) {
-            var _text4 = chat;
-            _text4 = _text4.substr(15, _text4.length);
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class mon-die-chat', key: i },
-              _text4
-            );
-          } else {
-            return _react2.default.createElement(
-              'p',
-              { className: 'bla-bla-class', key: i },
-              chat
-            );
-          }
-        }),
         _react2.default.createElement(
           _CSSTransitionGroup2.default,
           { transitionName: 'search', transitionEnterTimeout: 300, transitionLeaveTimeout: 300 },

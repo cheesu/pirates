@@ -359,13 +359,12 @@ var useSkill = function useSkill(io, info) {
             var criCount = 1;
             // hit 연타 시작
             for (var count = 0; count < skillInfo.hit; count++) {
-              var criOver = true;
-              if (userInfo.job == "암살자" && criCount < 5) {} else if (userInfo.job == "암살자" && criCount > 5) {
-                criOver = false;
-              }
 
               if (userInfo.job != "암살자") {
                 dmg = (userInfo.int + userInfo.str + (userInfo.int + userInfo.str + wAP) * lvBonus) * skillInfo.dmg * buffDmg - (localMonsterList[monNum].dp - downDpVal);
+              }
+              if (userInfo.job == "암살자") {
+                dmg = (userInfo.int + userInfo.str + userInfo.dex + (userInfo.int + userInfo.str + userInfo.dex + wAP) * lvBonus) * skillInfo.dmg * buffDmg - (localMonsterList[monNum].dp - downDpVal);
               }
 
               dmg = Math.round(dmg * upSkillDmg);
@@ -379,13 +378,17 @@ var useSkill = function useSkill(io, info) {
               var upCriDmg = 1.7;
               var result = "";
 
+              if (userInfo.job == "암살자") {
+                upCriDmg = upCriDmg + 0.2;
+              }
+
               if (necklace != undefined && necklace != null && necklace != "") {
                 if (necklace.option.option == "upCriDmg") {
                   upCriDmg = upCriDmg + necklace.option.per / 100;
                 }
               }
 
-              if (critical && criOver) {
+              if (critical) {
                 criCount++;
                 dmg = dmg * upCriDmg;
                 dmg = Math.round(dmg);
@@ -561,7 +564,7 @@ var fight = function fight(io, info) {
         var randomDP = Math.floor(Math.random() * dMaxDP) + dMinDP;
 
         var dpBo = userInfo.lv / 2;
-        randomDP = randomDP + dpBo / 100 * dpBo;
+        randomDP = randomDP + randomDP / 100 * dpBo;
 
         var lvGap = localMonsterList[monNum].lv - userInfo.lv;
         if (lvGap < 0) {
@@ -594,6 +597,13 @@ var fight = function fight(io, info) {
           if (localMonsterList[monNum].hp < 1500000 && localMonsterList[monNum].hp > 800000) {
             reDmg = reDmg * 1.3;
             io.emit(info.ch + "fight", "[피격] '지옥으로 떨어져라 버리지들아!' 성기사 정찰대 대장의 눈이 붉게 변합니다.");
+          }
+        }
+
+        if (localMonsterList[monNum].name == "펜릴 기사단장 존세나" || localMonsterList[monNum].name == "신사르 기사단장 지이예") {
+          if (localMonsterList[monNum].hp < 15000000 && localMonsterList[monNum].hp > 100) {
+            reDmg = reDmg * 1.3;
+            io.emit(info.ch + "fight", "[피격] '더이상 봐줄 수 없겠어!!!' 분노로 가득차 붉게 변합니다.");
           }
         }
 

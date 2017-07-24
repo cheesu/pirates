@@ -75,7 +75,7 @@ class Gameview extends React.Component {
 
     addChatData(data){
 
-      this.setState({
+    /*  this.setState({
         chat: this.state.chat.concat(data)
       });
 
@@ -83,7 +83,80 @@ class Gameview extends React.Component {
         this.setState({
           chat: []
         });
+      }*/
+
+      let chat = data;
+      let mode =   cookie.load("mode");
+      let addText = "<p>"+data+"</p>"
+
+      if(mode=="comp"){
+
+                if(chat.indexOf('[monsterDieMsg]')==0){
+                  let _text = chat;
+                  _text = _text.substr(15,_text.length);
+                  addText =  "<p class='bla-bla-class' >"+_text+"</p>";
+                }else if(chat.indexOf('[몬스터]')==0){
+                  let _text = chat;
+                  _text = _text.substr(5,_text.length);
+                  addText =  "<p class='bla-bla-class'> "+_text+"}</p>";
+                }else if(chat.indexOf('[line098098098]')==0){
+                  addText =  "<p class='bla-bla-class chat-line'></p>";
+                }
+                else{
+                    addText =  "<p class='bla-bla-class' >"+chat+"</p>";
+                }
+              }
+        else{
+
+              if(chat.indexOf('[휴식]')==0){
+                addText =  "<p class='bla-bla-class chat-green' >"+chat+"</p>";
+              }
+              else if(chat.indexOf('[line098098098]')==0){
+                addText =  "<p class='bla-bla-class chat-line' ></p>";
+              }
+              else if(chat.indexOf('[몬스터]')==0){
+                let _text = chat;
+                _text = _text.substr(5,_text.length);
+                addText =  "<p class='bla-bla-class chat-setmonster' ><span class='chat-setmonster-span'></span> "+_text+"</p>";
+              }
+              else if(chat.indexOf('[귓속말]')==0){
+                addText =  "<p class='bla-bla-class whisper-chat' >"+chat+"</p>";
+              }
+              else if(chat.indexOf('[시스템]')==0){
+                addText =  "<p class='bla-bla-class system-chat' >"+chat+"</p>";
+              }
+              else if(chat.indexOf('...')==0){
+                addText =  "<p class='bla-bla-class chat-map-effect'  ><span class='chat-map-effect-span'></span>  "+chat+"</p>";
+              }
+              else if(chat.indexOf('[공지사항]')==0){
+                addText =  "<p class='bla-bla-class notice-chat' >"+chat+"</p>";
+              }
+              else if(chat.indexOf('한계')==0){
+                addText =  "<p class='bla-bla-class levelup-chat' >"+chat+"</p>";
+              }
+              else if(chat.indexOf('[LEVEL UP!!]')==0 || chat.indexOf('[강화]')==0){
+                addText =  "<p class='bla-bla-class levelup-chat' >"+chat+"</p>";
+              }
+              else if(chat.indexOf('막혀서')==0||chat.indexOf('벽에')==0){
+                addText =  "<p class='bla-bla-class blocking-chat' >"+chat+"</p>";
+              }
+              else if(chat.indexOf('[monsterDieMsg]')==0){
+                let _text = chat;
+                _text = _text.substr(15,_text.length);
+                addText =  "<p class='bla-bla-class mon-die-chat' >"+_text+"</p>";
+              }
+              else{
+                addText =  "<p class='bla-bla-class' >"+chat+"</p>";
+              }
+        }
+
+      if($(".bla-bla-class").length>350){
+        $(".bla-bla-class").remove();
       }
+
+
+      $("#gameChatView").append(addText);
+
 
       var objDiv = document.getElementById("gameChatView"); objDiv.scrollTop = objDiv.scrollHeight;
       var objDiv = null;
@@ -117,70 +190,6 @@ class Gameview extends React.Component {
                   <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
               </ul>
             </div>
-            {this.state.chat.map(function(chat,i){
-
-              let mode =   cookie.load("mode");
-
-              if(mode=="comp"){
-
-                if(chat.indexOf('[monsterDieMsg]')==0){
-                  let _text = chat;
-                  _text = _text.substr(15,_text.length);
-                  return <p className="bla-bla-class" key={i}>{_text}</p>
-                }else if(chat.indexOf('[몬스터]')==0){
-                  let _text = chat;
-                  _text = _text.substr(5,_text.length);
-                  return (<p className="bla-bla-class" key={i}> {_text}</p>);
-                }else if(chat.indexOf('[line098098098]')==0){
-                  return <p className="bla-bla-class chat-line" key={i}></p>
-                }
-                else{
-                    return <p className="bla-bla-class" key={i}>{chat}</p>
-                }
-              }
-
-
-              if(chat.indexOf('[휴식]')==0){
-                return <p className="bla-bla-class chat-green" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('[line098098098]')==0){
-                return <p className="bla-bla-class chat-line" key={i}></p>
-              }
-              else if(chat.indexOf('[몬스터]')==0){
-                let _text = chat;
-                _text = _text.substr(5,_text.length);
-                return (<p className="bla-bla-class chat-setmonster" key={i}><span className="chat-setmonster-span"></span> {_text}</p>);
-              }
-              else if(chat.indexOf('[귓속말]')==0){
-                return <p className="bla-bla-class whisper-chat" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('[시스템]')==0){
-                return <p className="bla-bla-class system-chat" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('...')==0){
-                return (<p className="bla-bla-class chat-map-effect" key={i} ><span className="chat-map-effect-span"></span>  {chat}</p>);
-              }
-              else if(chat.indexOf('[공지사항]')==0){
-                return <p className="bla-bla-class notice-chat" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('한계')==0){
-                return <p className="bla-bla-class levelup-chat" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('[LEVEL UP!!]')==0 || chat.indexOf('[강화]')==0){
-                return <p className="bla-bla-class levelup-chat" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('막혀서')==0||chat.indexOf('벽에')==0){
-                return <p className="bla-bla-class blocking-chat" key={i}>{chat}</p>
-              }
-              else if(chat.indexOf('[monsterDieMsg]')==0){
-                let _text = chat;
-                _text = _text.substr(15,_text.length);
-                return <p className="bla-bla-class mon-die-chat" key={i}>{_text}</p>
-              }
-              else{
-                return <p className="bla-bla-class" key={i}>{chat}</p>
-              }
-            })}
 
 
                 <ReactCSSTransitionGroup transitionName="search" transitionEnterTimeout={300} transitionLeaveTimeout={300}>

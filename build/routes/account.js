@@ -345,6 +345,16 @@ router.get('/useItem/:itemID', function (req, res) {
             _account2.default.update({ username: userInfo.username }, { $set: { dex: up } }, function (err, output) {
               res.json({ msg: itemInfo.effectMSG + "  민첩이 1 올랐습니다." });
             });
+          } else if (itemInfo.heal == "hp") {
+            var up = userInfo.max_hp + 100;
+            _account2.default.update({ username: userInfo.username }, { $set: { max_hp: up } }, function (err, output) {
+              res.json({ msg: itemInfo.effectMSG + "  최대 체력이 100 올랐습니다." });
+            });
+          } else if (itemInfo.heal == "mp") {
+            var up = userInfo.max_mp + 100;
+            _account2.default.update({ username: userInfo.username }, { $set: { max_mp: up } }, function (err, output) {
+              res.json({ msg: itemInfo.effectMSG + "  최대 마력이 100 올랐습니다." });
+            });
           }
         }
       });

@@ -41,9 +41,10 @@ class Fightview extends React.Component {
         chat: this.state.chat.concat(data)
       });
 
-      if(this.state.chat.length>80){
-        let reData = this.state.chat;
-        reData.splice(0,this.state.chat.length-80);
+      if(this.state.chat.length>250){
+        this.setState({
+          chat: []
+        });
       }
 
       let objDiv =  document.getElementById("fightView");
