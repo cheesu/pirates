@@ -26440,7 +26440,7 @@ var HPview = function (_React$Component) {
     value: function viewUserHP(data) {
       var userHPArr = data.split("-");
       var userHP = "";
-      var currentHP = Number(userHPArr[0]);
+      var currentHP = Number(userHPArr[0]).toFixed(0);
       var maxHP = Number(userHPArr[1]);
 
       var hpPer = currentHP / maxHP * 100;

@@ -112,7 +112,7 @@ class HPview extends React.Component {
   viewUserHP(data){
       let userHPArr = data.split("-");
       let userHP= "";
-      let currentHP = Number(userHPArr[0]);
+      let currentHP = Number(userHPArr[0]).toFixed(0);
       let maxHP = Number(userHPArr[1]);
 
       let hpPer =  (currentHP / maxHP) * 100;
