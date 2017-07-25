@@ -21,7 +21,7 @@ class Game extends React.Component {
       }
 
   handleKeyPress(e) {
-    $("#contrillerContainer").focus();
+  //  $("#contrillerContainer").focus();
   }
 
       componentWillUnmount(){

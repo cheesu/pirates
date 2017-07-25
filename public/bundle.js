@@ -30013,7 +30013,7 @@ var Game = function (_React$Component) {
     _createClass(Game, [{
         key: 'handleKeyPress',
         value: function handleKeyPress(e) {
-            $("#contrillerContainer").focus();
+            //  $("#contrillerContainer").focus();
         }
     }, {
         key: 'componentWillUnmount',
