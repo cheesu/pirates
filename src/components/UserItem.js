@@ -145,6 +145,27 @@ class UserItem extends React.Component {
                 optionName = item.option.optionName;
               }
 
+              let socket1 = "없음";
+              let socket1Msg = "미확장";
+              if(item.socket1!=undefined){
+                socket1Msg = "미장착";
+                if(item.socket1.name != undefined){
+                  socket1 = item.socket1.name;
+                  socket1Msg = item.socket1.msg;
+                }
+              }
+
+              let socket2 = "없음";
+              let socket2Msg = "미확장";
+              if(item.socket2!=undefined){
+                socket1Msg = "미장착";
+                if(item.socket2.name != undefined){
+                  socket2 = item.socket2.name;
+                  socket2Msg = item.socket2.msg;
+                }
+              }
+
+
               return (
                     <li key={i}>
                       <div className="collapsible-header"><span className="badge">{this.props.userInfo.mount.w.id == item.id ? "장착" : "미장착"} </span>{item.name}[{item.job}]</div>
@@ -153,6 +174,8 @@ class UserItem extends React.Component {
                         <p>데미지 : {item.min} ~ {item.max}+{item.min}</p>
                         <span>{item.msg}</span>
                         <p>특수능력 : <span className="item-option-name"> {optionName} </span></p>
+                        <p> 소켓1[{socket1}] : <span className="item-option-name"> {socket1Msg} </span></p>
+                        <p> 소켓2[{socket2}] : <span className="item-option-name"> {socket2Msg} </span></p>
                         <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
                       </div>
                     </li>
@@ -221,7 +244,21 @@ class UserItem extends React.Component {
                     </li>
                   );
 
+            }
+            else if((item.kind == "m")  &&count!=0){
+              return (
+                    <li key={i}>
+                      <div className="collapsible-header"><span className="badge">보유개수 {count}</span>{item.name}</div>
+                      <div className="collapsible-body item-msg">
+                        <p>등급 : {item.type}</p>
+                        <span>{item.msg}</span>
+                        <p><a   className="waves-effect waves-light btn">사용불가</a></p>
+                      </div>
+                    </li>
+                  );
+
                 }
+
 
 
 

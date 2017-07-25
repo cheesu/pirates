@@ -627,6 +627,133 @@ router.get('/changeOption/:grade', (req, res) => {
         });
 });
 
+
+
+router.get('/extendSocket/', (req, res) => {
+  console.log("서버 소켓 확장 요청");
+  Account.find({username: req.session.loginInfo.username})
+      .exec((err, accounts) => {
+        if(err) throw err;
+        let userInfo = eval(accounts[0]);
+
+        console.log(userInfo);
+        console.log("test");
+        console.log(userInfo.mount.w.socket1);
+        if(userInfo.mount.w.type != 'private'){
+          res.json({msg:"개인무기에만 소켓을 확장 할 수 있습니다.", result:false});
+          return false;
+        }
+        else if(userInfo.lv < 50){
+          res.json({msg:"50레벨 이상 부터 개인무기에 소켓을 확장 할 수 있습니다..", result:false});
+          return false;
+        }else if(userInfo.mount.w.socket1 != undefined){
+          res.json({msg:"이미 소켓이 확장 되어 있습니다.", result:false});
+          return false;
+        }
+        else if(userInfo.gold < 500000){
+          res.json({msg:"골드가 부족 합니다.", result:false});
+          return false;
+        }
+        else if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < 5) {
+          res.json({msg:"욕망의 돌이 부족 합니다.", result:false});
+          return false;
+        }
+        else if (userInfo.item.indexOf('j1') == -1 || userInfo.itemCount.j1 == undefined || userInfo.itemCount.j1 < 20) {
+          res.json({msg:"에메랄드가 부족 합니다.", result:false});
+          return false;
+        }
+        else if (userInfo.item.indexOf('j2') == -1 || userInfo.itemCount.j2 == undefined || userInfo.itemCount.j2 < 10) {
+          res.json({msg:"루비가 부족 합니다.", result:false});
+          return false;
+        }
+
+        else{
+          console.log("소켓 확장 시작");
+          userInfo.itemCount.ow2 = userInfo.itemCount.ow2-5;
+          userInfo.itemCount.j1 = userInfo.itemCount.j1-20;
+          userInfo.itemCount.j2 = userInfo.itemCount.j2-10;
+          userInfo.gold = userInfo.gold - 500000;
+          Account.update({username: userInfo.username},{$set:{itemCount:userInfo.itemCount, gold:userInfo.gold}}, function(err, output){
+
+            console.log(userInfo.mount.w.id);
+            let socket1 = {};
+            Item.update({id:userInfo.mount.w.id},{$set:{socket1:socket1}},function(err, output){
+              let resultMsg = req.session.loginInfo.username+"님의 ["+userInfo.mount.w.name+"]이(가) 1단계 소켓 확장에 성공 하였습니다.";
+              res.json({msg:resultMsg, result:true});
+
+            });
+
+          });
+        }
+
+
+      });
+
+
+});
+
+
+
+/*소켓석 박기*/
+router.post('/buySocketItem/', (req, res) => {
+  console.log("바이 소켓");
+  console.log(req.body);
+  var itemid  = req.body.name
+  Account.find({username: req.session.loginInfo.username})
+      .exec((err, accounts) => {
+          if(err) throw err;
+          let userInfo = eval(accounts[0]);
+
+          Item.find({id: itemid})
+              .exec((err, item) => {
+                  if(err) throw err;
+                  let itemInfo = eval(item[0]);
+
+                  if(itemInfo.kind == "socket1" && userInfo.mount.w.socket1==undefined){
+                    res.json({msg:"소켓석을 장착할 자리가 없습니다. 무기강화 상인에게 소켓을 확장 하세요.", result:false});
+                    return false;
+                  }
+                  else if(itemInfo.kind == "socket2" && userInfo.mount.w.socket2==undefined){
+                    res.json({msg:"소켓석을 장착할 자리가 없습니다. 무기강화 상인에게 소켓을 확장 하세요.", result:false});
+                    return false;
+                  }
+
+
+                  let mPrice = itemInfo.mPrice;
+                  for(var count=0; count < mPrice.length; count++){
+                    let _mPrice =mPrice[count].id;
+                    let userMPrice = userInfo.itemCount[_mPrice];
+                    console.log("재료 확인");
+                    console.log(_mPrice + ":"+mPrice[count].name);
+                    console.log(userMPrice);
+                    if(userMPrice==undefined || userMPrice=="" || userMPrice < mPrice[count].count){
+                      res.json({msg:"소지하고 있는 ."+mPrice[count].name+"이 부족 합니다.", result:false});
+                      return false;
+                    }
+                    else{
+                      userInfo.itemCount[_mPrice] = userInfo.itemCount[_mPrice] - mPrice[count].count;
+                    }
+                  }
+
+
+                  if(itemInfo.kind == "socket1"){
+                    Item.update({id: userInfo.mount.w.id},{$set:{socket1:itemInfo}}, function(err, output){
+                      let resultMsg = req.session.loginInfo.username+"님의 ["+userInfo.mount.w.name+"]이(가) 소켓석 장착에 성공 하였습니다";
+                      res.json({msg:resultMsg, result:true});
+                    });
+
+                  }
+
+
+
+          });
+
+  });
+
+
+});
+
+
 /*무기 강화*/
 router.get('/enhancement/', (req, res) => {
     Account.find({username: req.session.loginInfo.username})
@@ -691,6 +818,10 @@ router.get('/enhancement/', (req, res) => {
 
         });
 });
+
+
+
+
 
 /*전투중 아이템 사용*/
 router.get('/fightUseItem/:itemID', (req, res) => {

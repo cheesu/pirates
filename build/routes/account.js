@@ -563,6 +563,101 @@ router.get('/changeOption/:grade', function (req, res) {
   });
 });
 
+router.get('/extendSocket/', function (req, res) {
+  console.log("서버 소켓 확장 요청");
+  _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+    if (err) throw err;
+    var userInfo = eval(accounts[0]);
+
+    console.log(userInfo);
+    console.log("test");
+    console.log(userInfo.mount.w.socket1);
+    if (userInfo.mount.w.type != 'private') {
+      res.json({ msg: "개인무기에만 소켓을 확장 할 수 있습니다.", result: false });
+      return false;
+    } else if (userInfo.lv < 50) {
+      res.json({ msg: "50레벨 이상 부터 개인무기에 소켓을 확장 할 수 있습니다..", result: false });
+      return false;
+    } else if (userInfo.mount.w.socket1 != undefined) {
+      res.json({ msg: "이미 소켓이 확장 되어 있습니다.", result: false });
+      return false;
+    } else if (userInfo.gold < 500000) {
+      res.json({ msg: "골드가 부족 합니다.", result: false });
+      return false;
+    } else if (userInfo.item.indexOf('ow2') == -1 || userInfo.itemCount.ow2 == undefined || userInfo.itemCount.ow2 < 5) {
+      res.json({ msg: "욕망의 돌이 부족 합니다.", result: false });
+      return false;
+    } else if (userInfo.item.indexOf('j1') == -1 || userInfo.itemCount.j1 == undefined || userInfo.itemCount.j1 < 20) {
+      res.json({ msg: "에메랄드가 부족 합니다.", result: false });
+      return false;
+    } else if (userInfo.item.indexOf('j2') == -1 || userInfo.itemCount.j2 == undefined || userInfo.itemCount.j2 < 10) {
+      res.json({ msg: "루비가 부족 합니다.", result: false });
+      return false;
+    } else {
+      console.log("소켓 확장 시작");
+      userInfo.itemCount.ow2 = userInfo.itemCount.ow2 - 5;
+      userInfo.itemCount.j1 = userInfo.itemCount.j1 - 20;
+      userInfo.itemCount.j2 = userInfo.itemCount.j2 - 10;
+      userInfo.gold = userInfo.gold - 500000;
+      _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, gold: userInfo.gold } }, function (err, output) {
+
+        console.log(userInfo.mount.w.id);
+        var socket1 = {};
+        _item2.default.update({ id: userInfo.mount.w.id }, { $set: { socket1: socket1 } }, function (err, output) {
+          var resultMsg = req.session.loginInfo.username + "님의 [" + userInfo.mount.w.name + "]이(가) 1단계 소켓 확장에 성공 하였습니다.";
+          res.json({ msg: resultMsg, result: true });
+        });
+      });
+    }
+  });
+});
+
+/*소켓석 박기*/
+router.post('/buySocketItem/', function (req, res) {
+  console.log("바이 소켓");
+  console.log(req.body);
+  var itemid = req.body.name;
+  _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {
+    if (err) throw err;
+    var userInfo = eval(accounts[0]);
+
+    _item2.default.find({ id: itemid }).exec(function (err, item) {
+      if (err) throw err;
+      var itemInfo = eval(item[0]);
+
+      if (itemInfo.kind == "socket1" && userInfo.mount.w.socket1 == undefined) {
+        res.json({ msg: "소켓석을 장착할 자리가 없습니다. 무기강화 상인에게 소켓을 확장 하세요.", result: false });
+        return false;
+      } else if (itemInfo.kind == "socket2" && userInfo.mount.w.socket2 == undefined) {
+        res.json({ msg: "소켓석을 장착할 자리가 없습니다. 무기강화 상인에게 소켓을 확장 하세요.", result: false });
+        return false;
+      }
+
+      var mPrice = itemInfo.mPrice;
+      for (var count = 0; count < mPrice.length; count++) {
+        var _mPrice = mPrice[count].id;
+        var userMPrice = userInfo.itemCount[_mPrice];
+        console.log("재료 확인");
+        console.log(_mPrice + ":" + mPrice[count].name);
+        console.log(userMPrice);
+        if (userMPrice == undefined || userMPrice == "" || userMPrice < mPrice[count].count) {
+          res.json({ msg: "소지하고 있는 ." + mPrice[count].name + "이 부족 합니다.", result: false });
+          return false;
+        } else {
+          userInfo.itemCount[_mPrice] = userInfo.itemCount[_mPrice] - mPrice[count].count;
+        }
+      }
+
+      if (itemInfo.kind == "socket1") {
+        _item2.default.update({ id: userInfo.mount.w.id }, { $set: { socket1: itemInfo } }, function (err, output) {
+          var resultMsg = req.session.loginInfo.username + "님의 [" + userInfo.mount.w.name + "]이(가) 소켓석 장착에 성공 하였습니다";
+          res.json({ msg: resultMsg, result: true });
+        });
+      }
+    });
+  });
+});
+
 /*무기 강화*/
 router.get('/enhancement/', function (req, res) {
   _account2.default.find({ username: req.session.loginInfo.username }).exec(function (err, accounts) {

@@ -17,8 +17,12 @@ class Game extends React.Component {
 
           this.socket =io({'forceNew': true});
           this.setLocalMonster = this.setLocalMonster.bind(this);
-
+          this.handleKeyPress = this.handleKeyPress.bind(this);
       }
+
+  handleKeyPress(e) {
+    $("#contrillerContainer").focus();
+  }
 
       componentWillUnmount(){
         console.log("home 윌 언마운트 소켓 디스커넥트 고침");
@@ -83,7 +87,7 @@ class Game extends React.Component {
       const homeText = (<HomeText />)
 
         return (
-            <div className="wrapper">
+            <div className="wrapper" onKeyPress={this.handleKeyPress}>
                 { this.props.status.currentUser != "" && typeof this.props.username === "undefined" ? game :homeText }
             </div>
         );

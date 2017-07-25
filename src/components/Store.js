@@ -32,6 +32,19 @@ class Store extends React.Component {
 
   }
 
+
+  buySocketItem(item){
+    axios.post('/api/account/buySocketItem/', { name:item.id})
+       .then((response) => {
+         this.props.getStatusRequest();
+         this.props.userItemRequest();
+         alert(response.data.msg);
+        //  Materialize.toast(eqItem+"을( 를) 구매 하였습니다.", 1000);
+       }).catch((error) => {
+           console.log(error);
+       });
+  }
+
   buyItem(item, count){
 
     let selePer = 1;
@@ -272,7 +285,29 @@ class Store extends React.Component {
                         </li>
                       );
 
+                }
+                else if(item.kind == "socket1"&&tabType==item.kind){
+                  return (
+                        <li key={i}>
+                          <div className="collapsible-header"><span className="badge">  보유개수 {count} </span>{item.name}</div>
+                          <div className="collapsible-body item-msg">
+                            <p>가격</p>
+                            <p><span>{item.mPrice[0].name} : {item.mPrice[0].count} </span></p>
+                            <p><span>{item.mPrice[1].name} : {item.mPrice[1].count} </span></p>
+                            <p><span>{item.mPrice[2].name} : {item.mPrice[2].count} </span></p>
+                            <p><span>{item.mPrice[3].name} : {item.mPrice[3].count} </span></p>
+                            <p><span>{item.mPrice[4].name} : {item.mPrice[4].count} </span></p>
+                            <p><span>{item.mPrice[5].name} : {item.mPrice[5].count} </span></p>
+                            <span>{item.msg}</span>
+                            <p>
+                                <a onClick={this.buySocketItem.bind(this,item,1)}  className="waves-effect waves-light btn">세공</a>
+                            </p>
+                          </div>
+                        </li>
+                      );
+
                     }
+
 
 
 
@@ -312,7 +347,7 @@ class Store extends React.Component {
 
       const normalStore = (
         <div className="container item-container">
-          <span>해적들이나 민간인들이 거래를 하는 암시장이다. 가끔씩 흔히 볼 수 없는 물품들도 들어 온다고 한다.</span>
+          <span>해적들이나 민간인들이 거래를 하는 암시장이다.</span>
           <p>소지금 : <span></span>{this.props.userInfo.gold} Gold</p>
             <ul id="tabs-swipe-demo" className="tabs">
               <li className="tab col s3"><a className="active" href="#test-swipe-1">Weapon</a></li>
@@ -351,7 +386,9 @@ class Store extends React.Component {
 
       const shipStore = (
         <div className="container item-container">
-          <span>흐흐 자네 혹시 좋은 보석 가지고 있나? 내가 더 좋은걸 보여주도록 하지 이래뵈도 내가 이바닥에선 어마어마한 밀수꾼이라고 .</span>
+          <span>흐흐 자네 혹시 좋은 보석이나 희귀한 물건 가지고 있나? 내가 더 좋은걸 보여주도록 하지 이래뵈도 내가 이바닥에선 어마어마한 밀수꾼이라고.
+            불법이긴 하지만 마력석세공 같은 것도 해주지
+          </span>
           <p>소지금 : <span></span>{this.props.userInfo.gold} Gold</p>
           <p>보석 : <span>에메랄드</span>{this.props.userInfo.itemCount.j1} 개
           <span>루비</span>{this.props.userInfo.itemCount.j2} 개
@@ -363,6 +400,7 @@ class Store extends React.Component {
               <li className="tab col s3"><a href="#test-swipe-2">반지</a></li>
               <li className="tab col s3"><a href="#test-swipe-3">목걸이</a></li>
               <li className="tab col s3"><a href="#test-swipe-4">고급포션</a></li>
+              <li className="tab col s3"><a href="#test-swipe-5">소켓석 lv.1</a></li>
             </ul>
             <div id="test-swipe-1" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
@@ -382,6 +420,11 @@ class Store extends React.Component {
             <div id="test-swipe-4" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
                 { mapDataToLinksShip(this.props.items,"rp") }
+              </ul>
+            </div>
+            <div id="test-swipe-5" className="col s12 tab-in-container">
+              <ul className="collapsible item-list" data-collapsible="accordion">
+                { mapDataToLinksShip(this.props.items,"socket1") }
               </ul>
             </div>
         </div>

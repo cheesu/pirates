@@ -21,6 +21,7 @@ class Header extends React.Component {
       this.setState({
           search: !this.state.search
       });
+        $("#contrillerContainer").focus();
   }
 
   toggleRightMenu(){
@@ -28,6 +29,7 @@ class Header extends React.Component {
       this.setState({
           rightMenu: !this.state.rightMenu
       });
+        $("#contrillerContainer").focus();
   }
 
     render() {

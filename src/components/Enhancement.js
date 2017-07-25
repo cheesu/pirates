@@ -84,7 +84,31 @@ class Enhancement extends React.Component {
   }
 
 extendSocket(userInfo){
+  console.log("소켓 확장 요청");
+  axios.get('/api/account/extendSocket/')
+     .then((response) => {
 
+       console.log("요청 응압");
+       let job2 = userInfo.job2;
+       if(userInfo.job2==undefined){
+         job2 = "일반 여행자 ";
+       }
+
+        if(!response.data.result){
+          alert(response.data.msg);
+        }
+        else{
+          alert(response.data.msg);
+          alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
+          this.props.socket.emit('Gchat', "[강화] "+job2 +response.data.msg);
+        }
+
+      //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+
+      this.props.getStatusRequest();
+     }).catch((error) => {
+         console.log(error);
+     });
 }
 
   requestEnhancement(userInfo){
@@ -208,7 +232,7 @@ extendSocket(userInfo){
                         <p>욕망의돌 10개가 소모됩니다.</p>
                         <p>에메랄드 20개가 소모 됩니다.</p>
                         <p>루비 10개가 소모됩니다.</p>
-                        <p><a onClick={this.extendSocket.bind(this,this.props.userInfo,5)}  className="waves-effect waves-light btn">소켓 확장(미구현)</a></p>
+                        <p><a onClick={this.extendSocket.bind(this,this.props.userInfo)}  className="waves-effect waves-light btn">소켓 확장</a></p>
                       </div>
                     </li>
 

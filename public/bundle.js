@@ -25092,11 +25092,37 @@ var Enhancement = function (_React$Component) {
     }
   }, {
     key: 'extendSocket',
-    value: function extendSocket(userInfo) {}
+    value: function extendSocket(userInfo) {
+      var _this3 = this;
+
+      console.log("소켓 확장 요청");
+      _axios2.default.get('/api/account/extendSocket/').then(function (response) {
+
+        console.log("요청 응압");
+        var job2 = userInfo.job2;
+        if (userInfo.job2 == undefined) {
+          job2 = "일반 여행자 ";
+        }
+
+        if (!response.data.result) {
+          alert(response.data.msg);
+        } else {
+          alert(response.data.msg);
+          alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
+          _this3.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
+        }
+
+        //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+
+        _this3.props.getStatusRequest();
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
   }, {
     key: 'requestEnhancement',
     value: function requestEnhancement(userInfo) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.props.userInfo.mount.w.type != 'private') {
         alert("개인전용 무기를 착용한 상태에서만 강화 할 수 있습니다. 개인무기는 레벨 15를 달성후 운영자에게 요청하시면 얻을 수 있습니다.");
@@ -25124,16 +25150,16 @@ var Enhancement = function (_React$Component) {
 
           if (!response.data.result) {
             alert(response.data.msg);
-            _this3.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
+            _this4.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
           } else {
             alert(response.data.msg);
             alert("무기를 다시 장착하셔야 강화 효과가 적용 됩니다.");
-            _this3.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
+            _this4.props.socket.emit('Gchat', "[강화] " + job2 + response.data.msg);
           }
 
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
 
-          _this3.props.getStatusRequest();
+          _this4.props.getStatusRequest();
         }).catch(function (error) {
           console.log(error);
         });
@@ -25395,8 +25421,8 @@ var Enhancement = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.extendSocket.bind(this, this.props.userInfo, 5), className: 'waves-effect waves-light btn' },
-                    '\uC18C\uCF13 \uD655\uC7A5(\uBBF8\uAD6C\uD604)'
+                    { onClick: this.extendSocket.bind(this, this.props.userInfo), className: 'waves-effect waves-light btn' },
+                    '\uC18C\uCF13 \uD655\uC7A5'
                   )
                 )
               )
@@ -26638,6 +26664,7 @@ var Header = function (_React$Component) {
             this.setState({
                 search: !this.state.search
             });
+            $("#contrillerContainer").focus();
         }
     }, {
         key: 'toggleRightMenu',
@@ -26646,6 +26673,7 @@ var Header = function (_React$Component) {
             this.setState({
                 rightMenu: !this.state.rightMenu
             });
+            $("#contrillerContainer").focus();
         }
     }, {
         key: 'render',
@@ -27838,9 +27866,23 @@ var Store = function (_React$Component) {
       $('ul.tabs').tabs();
     }
   }, {
+    key: 'buySocketItem',
+    value: function buySocketItem(item) {
+      var _this2 = this;
+
+      _axios2.default.post('/api/account/buySocketItem/', { name: item.id }).then(function (response) {
+        _this2.props.getStatusRequest();
+        _this2.props.userItemRequest();
+        alert(response.data.msg);
+        //  Materialize.toast(eqItem+"을( 를) 구매 하였습니다.", 1000);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }, {
     key: 'buyItem',
     value: function buyItem(item, count) {
-      var _this2 = this;
+      var _this3 = this;
 
       var selePer = 1;
       if (count > 50) {
@@ -27855,23 +27897,6 @@ var Store = function (_React$Component) {
       var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
       if (con_test) {
         _axios2.default.post('/api/account/buyItem/', { name: item.id, count: count }).then(function (response) {
-          _this2.props.getStatusRequest();
-          _this2.props.userItemRequest();
-          alert(response.data.msg);
-          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
-        }).catch(function (error) {
-          console.log(error);
-        });
-      }
-    }
-  }, {
-    key: 'buyJItem',
-    value: function buyJItem(item, count) {
-      var _this3 = this;
-
-      var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
-      if (con_test) {
-        _axios2.default.post('/api/account/buyJItem/', { name: item.id, count: count }).then(function (response) {
           _this3.props.getStatusRequest();
           _this3.props.userItemRequest();
           alert(response.data.msg);
@@ -27882,15 +27907,32 @@ var Store = function (_React$Component) {
       }
     }
   }, {
+    key: 'buyJItem',
+    value: function buyJItem(item, count) {
+      var _this4 = this;
+
+      var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
+      if (con_test) {
+        _axios2.default.post('/api/account/buyJItem/', { name: item.id, count: count }).then(function (response) {
+          _this4.props.getStatusRequest();
+          _this4.props.userItemRequest();
+          alert(response.data.msg);
+          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  }, {
     key: 'sellItem',
     value: function sellItem(item) {
-      var _this4 = this;
+      var _this5 = this;
 
       var con_test = confirm(item.name + "을(를) 판매 하시겠습니까?");
       if (con_test) {
         _axios2.default.get('/api/account/sellItem/' + item.id).then(function (response) {
-          _this4.props.getStatusRequest();
-          _this4.props.userItemRequest();
+          _this5.props.getStatusRequest();
+          _this5.props.userItemRequest();
           alert(response.data.msg);
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
         }).catch(function (error) {
@@ -27929,7 +27971,7 @@ var Store = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
       var mapDataToLinks = function mapDataToLinks(data, tabType) {
         if (data == undefined) {
@@ -27958,7 +28000,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this5.countItem(item);
+          var count = _this6.countItem(item);
           if (item.kind == "p" && tabType == item.kind) {
             return _react2.default.createElement(
               'li',
@@ -28001,17 +28043,17 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uAC1C\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 50), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 50), className: 'waves-effect waves-light btn' },
                     '50\uAC1C\uAD6C\uB9E4 [10% \uD560\uC778 ',
                     item.price * 50 * 0.9,
                     '\uACE8\uB4DC]'
@@ -28019,7 +28061,7 @@ var Store = function (_React$Component) {
                 )
               )
             );
-          } else if (item.kind == "w" && tabType == item.kind && _this5.props.userInfo.job == item.job) {
+          } else if (item.kind == "w" && tabType == item.kind && _this6.props.userInfo.job == item.job) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28075,13 +28117,13 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
               )
             );
-          } else if (item.kind == "d" && tabType == item.kind && _this5.props.userInfo.job == item.job) {
+          } else if (item.kind == "d" && tabType == item.kind && _this6.props.userInfo.job == item.job) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28137,7 +28179,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28186,7 +28228,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 ),
@@ -28195,7 +28237,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uC7A5 \uAD6C\uB9E4'
                   )
                 )
@@ -28233,7 +28275,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this5.countItem(item);
+          var count = _this6.countItem(item);
           if (item.kind == "elixir" && tabType == item.kind) {
             return _react2.default.createElement(
               'li',
@@ -28306,7 +28348,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyJItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyJItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28388,7 +28430,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyJItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyJItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28470,7 +28512,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyJItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyJItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28519,20 +28561,132 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uAC1C\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.buyItem.bind(_this5, item, 50), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.buyItem.bind(_this6, item, 50), className: 'waves-effect waves-light btn' },
                     '50\uAC1C\uAD6C\uB9E4 [10% \uD560\uC778 ',
                     item.price * 50 * 0.9,
                     '\uACE8\uB4DC]'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "socket1" && tabType == item.kind) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '  \uBCF4\uC720\uAC1C\uC218 ',
+                  count,
+                  ' '
+                ),
+                item.name
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uAC00\uACA9'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[0].name,
+                    ' : ',
+                    item.mPrice[0].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[1].name,
+                    ' : ',
+                    item.mPrice[1].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[2].name,
+                    ' : ',
+                    item.mPrice[2].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[3].name,
+                    ' : ',
+                    item.mPrice[3].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[4].name,
+                    ' : ',
+                    item.mPrice[4].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[5].name,
+                    ' : ',
+                    item.mPrice[5].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this6.buySocketItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    '\uC138\uACF5'
                   )
                 )
               )
@@ -28569,7 +28723,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this5.countItem(item);
+          var count = _this6.countItem(item);
           if (count != 0) {
             return _react2.default.createElement(
               'li',
@@ -28612,7 +28766,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this5.sellItem.bind(_this5, item), className: 'waves-effect waves-light btn' },
+                    { onClick: _this6.sellItem.bind(_this6, item), className: 'waves-effect waves-light btn' },
                     '\uD310\uB9E4'
                   )
                 )
@@ -28628,7 +28782,7 @@ var Store = function (_React$Component) {
         _react2.default.createElement(
           'span',
           null,
-          '\uD574\uC801\uB4E4\uC774\uB098 \uBBFC\uAC04\uC778\uB4E4\uC774 \uAC70\uB798\uB97C \uD558\uB294 \uC554\uC2DC\uC7A5\uC774\uB2E4. \uAC00\uB054\uC529 \uD754\uD788 \uBCFC \uC218 \uC5C6\uB294 \uBB3C\uD488\uB4E4\uB3C4 \uB4E4\uC5B4 \uC628\uB2E4\uACE0 \uD55C\uB2E4.'
+          '\uD574\uC801\uB4E4\uC774\uB098 \uBBFC\uAC04\uC778\uB4E4\uC774 \uAC70\uB798\uB97C \uD558\uB294 \uC554\uC2DC\uC7A5\uC774\uB2E4.'
         ),
         _react2.default.createElement(
           'p',
@@ -28740,7 +28894,7 @@ var Store = function (_React$Component) {
         _react2.default.createElement(
           'span',
           null,
-          '\uD750\uD750 \uC790\uB124 \uD639\uC2DC \uC88B\uC740 \uBCF4\uC11D \uAC00\uC9C0\uACE0 \uC788\uB098? \uB0B4\uAC00 \uB354 \uC88B\uC740\uAC78 \uBCF4\uC5EC\uC8FC\uB3C4\uB85D \uD558\uC9C0 \uC774\uB798\uBD48\uB3C4 \uB0B4\uAC00 \uC774\uBC14\uB2E5\uC5D0\uC120 \uC5B4\uB9C8\uC5B4\uB9C8\uD55C \uBC00\uC218\uAFBC\uC774\uB77C\uACE0 .'
+          '\uD750\uD750 \uC790\uB124 \uD639\uC2DC \uC88B\uC740 \uBCF4\uC11D\uC774\uB098 \uD76C\uADC0\uD55C \uBB3C\uAC74 \uAC00\uC9C0\uACE0 \uC788\uB098? \uB0B4\uAC00 \uB354 \uC88B\uC740\uAC78 \uBCF4\uC5EC\uC8FC\uB3C4\uB85D \uD558\uC9C0 \uC774\uB798\uBD48\uB3C4 \uB0B4\uAC00 \uC774\uBC14\uB2E5\uC5D0\uC120 \uC5B4\uB9C8\uC5B4\uB9C8\uD55C \uBC00\uC218\uAFBC\uC774\uB77C\uACE0. \uBD88\uBC95\uC774\uAE34 \uD558\uC9C0\uB9CC \uB9C8\uB825\uC11D\uC138\uACF5 \uAC19\uC740 \uAC83\uB3C4 \uD574\uC8FC\uC9C0'
         ),
         _react2.default.createElement(
           'p',
@@ -28821,6 +28975,15 @@ var Store = function (_React$Component) {
               { href: '#test-swipe-4' },
               '\uACE0\uAE09\uD3EC\uC158'
             )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-5' },
+              '\uC18C\uCF13\uC11D lv.1'
+            )
           )
         ),
         _react2.default.createElement(
@@ -28857,6 +29020,15 @@ var Store = function (_React$Component) {
             'ul',
             { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
             mapDataToLinksShip(this.props.items, "rp")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-5', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinksShip(this.props.items, "socket1")
           )
         )
       );
@@ -29171,6 +29343,26 @@ var UserItem = function (_React$Component) {
               optionName = item.option.optionName;
             }
 
+            var socket1 = "없음";
+            var socket1Msg = "미확장";
+            if (item.socket1 != undefined) {
+              socket1Msg = "미장착";
+              if (item.socket1.name != undefined) {
+                socket1 = item.socket1.name;
+                socket1Msg = item.socket1.msg;
+              }
+            }
+
+            var socket2 = "없음";
+            var socket2Msg = "미확장";
+            if (item.socket2 != undefined) {
+              socket1Msg = "미장착";
+              if (item.socket2.name != undefined) {
+                socket2 = item.socket2.name;
+                socket2Msg = item.socket2.msg;
+              }
+            }
+
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -29221,6 +29413,34 @@ var UserItem = function (_React$Component) {
                     { className: 'item-option-name' },
                     ' ',
                     optionName,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  ' \uC18C\uCF131[',
+                  socket1,
+                  '] : ',
+                  _react2.default.createElement(
+                    'span',
+                    { className: 'item-option-name' },
+                    ' ',
+                    socket1Msg,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  ' \uC18C\uCF132[',
+                  socket2,
+                  '] : ',
+                  _react2.default.createElement(
+                    'span',
+                    { className: 'item-option-name' },
+                    ' ',
+                    socket2Msg,
                     ' '
                   )
                 ),
@@ -29406,6 +29626,46 @@ var UserItem = function (_React$Component) {
               )
             );
           } else if ((item.kind == "o" || item.kind == "j") && count != 0) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uBCF4\uC720\uAC1C\uC218 ',
+                  count
+                ),
+                item.name
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uB4F1\uAE09 : ',
+                  item.type
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { className: 'waves-effect waves-light btn' },
+                    '\uC0AC\uC6A9\uBD88\uAC00'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "m" && count != 0) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -29734,11 +29994,16 @@ var Game = function (_React$Component) {
 
         _this.socket = io({ 'forceNew': true });
         _this.setLocalMonster = _this.setLocalMonster.bind(_this);
-
+        _this.handleKeyPress = _this.handleKeyPress.bind(_this);
         return _this;
     }
 
     _createClass(Game, [{
+        key: 'handleKeyPress',
+        value: function handleKeyPress(e) {
+            $("#contrillerContainer").focus();
+        }
+    }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
             console.log("home 윌 언마운트 소켓 디스커넥트 고침");
@@ -29808,7 +30073,7 @@ var Game = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                { className: 'wrapper' },
+                { className: 'wrapper', onKeyPress: this.handleKeyPress },
                 this.props.status.currentUser != "" && typeof this.props.username === "undefined" ? game : homeText
             );
         }

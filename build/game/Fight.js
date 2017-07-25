@@ -67,6 +67,7 @@ function loadMonsterList() {
         monObj.area = monsters[monCount].mapName + "-" + monLocalArr[localCount];
         monObj.dropItem = monsters[monCount].dropItem;
         monObj.dropPer = monsters[monCount].dropPer;
+        monObj.debuff = {};
 
         if (!initServer) {
 
@@ -183,6 +184,12 @@ var useSkill = function useSkill(io, info) {
         fightInterval[userInfo.username + "skill"] = true;
         var coolDown = userInfo.int;
 
+        if (userInfo.mount.w.socket1 != undefined && userInfo.mount.w.socket1.name != undefined) {
+          if (userInfo.mount.w.socket1.option.option == "casting") {
+            coolDown = coolDown + 1000 / 100 * userInfo.mount.w.socket1.option.per;
+          }
+        }
+
         if (userInfo.job2 == "깨달은 현자") {
           coolDown = coolDown * 1.5;
         }
@@ -230,6 +237,11 @@ var useSkill = function useSkill(io, info) {
             var randomAP = Math.floor(Math.random() * wMaxAP) + 1;
 
             var wAP = wMinAP + randomAP;
+
+            // 소켓 무기 공격력 추가
+            if (userInfo.mount.w.socket1 != undefined && userInfo.mount.w.socket1.name != undefined) {
+              wAP = wAP + userInfo.mount.w.socket1.min;
+            }
 
             if (userInfo.job2 == '검의 달인') {
               var passive = Math.floor(Math.random() * 1000) + 1;
@@ -466,6 +478,22 @@ var useSkill = function useSkill(io, info) {
               //  io.emit(info.ch+"fight", monHPMsg);
             }
 
+            // 디버프 옵션
+            // 소켓 1 효과 발동
+            if (userInfo.mount.w.socket1 != undefined && userInfo.mount.w.socket1.name != undefined) {
+              var socketPer = Math.floor(Math.random() * 100);
+
+              if (userInfo.mount.w.socket1.option.option == "stone" && userInfo.mount.w.socket1.option.per > socketPer) {
+
+                localMonsterList[monNum].debuff = { name: "stone" };
+
+                setTimeout(function () {
+                  localMonsterList[monNum].debuff = {};
+                  io.emit(info.ch + "fight", "석화가 해제 되었습니다.");
+                }, 1000 * userInfo.mount.w.socket1.option.time);
+              }
+            }
+
             io.emit(info.ch + "monsterHP", targetCurrentHP + "-" + localMonsterList[monNum].maxHP);
             io.emit(userInfo.username + "[SkillEnd]", "");
             // 몬스터 처치
@@ -534,6 +562,12 @@ var fight = function fight(io, info) {
 
       // 몬스터가 공격 인터벌 시작
       fightInterval[userInfo.username + "monsterAttack"] = setInterval(function () {
+
+        // 석화
+        if (localMonsterList[monNum].debuff.name == "stone") {
+          io.emit(info.ch + "fight", "[피격] " + localMonsterList[monNum].name + "이(가) '석화되어 움직이지 못합니다.");
+          return false;
+        }
 
         //어그로 기여도 계산
 
@@ -804,7 +838,10 @@ var fight = function fight(io, info) {
         var randomAP = Math.floor(Math.random() * wMaxAP) + 1;
 
         var wAP = wMinAP + randomAP;
-
+        // 소켓 무기 공격력 추가
+        if (userInfo.mount.w.socket1 != undefined && userInfo.mount.w.socket1.name != undefined) {
+          wAP = wAP + userInfo.mount.w.socket1.min;
+        }
         var ring = userInfo.mount.r;
         var necklace = userInfo.mount.n;
         // 목걸이 추가 뎀지
@@ -1048,7 +1085,6 @@ function expLevelup(userInfo, io, monNum, info, kind) {
       var dropItems = localMonsterList[monNum].dropItem;
       var itemIndex = Math.floor(Math.random() * dropItems.length);
       var getItem = dropItems[itemIndex];
-
       if (userInfo.item.indexOf(getItem) == -1) {
         userInfo.item.push(getItem);
       }
@@ -1057,8 +1093,6 @@ function expLevelup(userInfo, io, monNum, info, kind) {
       } else {
         userInfo.itemCount[getItem] = userInfo.itemCount[getItem] + 1;
       }
-
-      userInfo.item.push(getItem);
       io.emit(userInfo.username, "[시스템] 축하드립니다 전리품을 획득 하였습니다.");
     }
   } catch (e) {
@@ -1128,8 +1162,6 @@ function expLevelup(userInfo, io, monNum, info, kind) {
         } else {
           userInfo.itemCount[_getItem] = userInfo.itemCount[_getItem] + 1;
         }
-
-        userInfo.item.push(_getItem);
         io.emit(userInfo.username, "[시스템] 축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
         io.emit(userInfo.username + "fight", "[시스템]  축하드립니다 보스를 쓰러뜨려 엄청난 전리품을 획득 하였습니다.");
       }
