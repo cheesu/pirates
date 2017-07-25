@@ -298,6 +298,7 @@ class Store extends React.Component {
                             <p><span>{item.mPrice[3].name} : {item.mPrice[3].count} </span></p>
                             <p><span>{item.mPrice[4].name} : {item.mPrice[4].count} </span></p>
                             <p><span>{item.mPrice[5].name} : {item.mPrice[5].count} </span></p>
+                            <p><span>{item.mPrice[6].name} : {item.mPrice[6].count} </span></p>
                             <span>{item.msg}</span>
                             <p>
                                 <a onClick={this.buySocketItem.bind(this,item,1)}  className="waves-effect waves-light btn">세공</a>

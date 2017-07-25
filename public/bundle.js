@@ -28676,6 +28676,18 @@ var Store = function (_React$Component) {
                   )
                 ),
                 _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[6].name,
+                    ' : ',
+                    item.mPrice[6].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
                   'span',
                   null,
                   item.msg

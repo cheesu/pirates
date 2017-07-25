@@ -735,16 +735,14 @@ router.post('/buySocketItem/', (req, res) => {
                     }
                   }
 
-
+                Account.update({username: userInfo.username},{$set:{itemCount:userInfo.itemCount}}, function(err, output){
                   if(itemInfo.kind == "socket1"){
                     Item.update({id: userInfo.mount.w.id},{$set:{socket1:itemInfo}}, function(err, output){
                       let resultMsg = req.session.loginInfo.username+"님의 ["+userInfo.mount.w.name+"]이(가) 소켓석 장착에 성공 하였습니다";
                       res.json({msg:resultMsg, result:true});
                     });
-
                   }
-
-
+                });
 
           });
 
