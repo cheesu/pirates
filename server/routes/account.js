@@ -676,7 +676,7 @@ router.get('/extendSocket/', (req, res) => {
           Account.update({username: userInfo.username},{$set:{itemCount:userInfo.itemCount, gold:userInfo.gold}}, function(err, output){
 
             console.log(userInfo.mount.w.id);
-            let socket1 = {};
+            let socket1 = {test:1};
             Item.update({id:userInfo.mount.w.id},{$set:{socket1:socket1}},function(err, output){
               let resultMsg = req.session.loginInfo.username+"님의 ["+userInfo.mount.w.name+"]이(가) 1단계 소켓 확장에 성공 하였습니다.";
               res.json({msg:resultMsg, result:true});
@@ -1041,7 +1041,7 @@ router.get('/sellItem/:itemID', (req, res) => {
                       }
 
 
-                      userInfo.gold = userInfo.gold + Math.round(itemInfo.price/3);
+                      userInfo.gold = userInfo.gold + Math.round(itemInfo.price/2);
 
                       userInfo.itemCount[itemInfo.id] = haveCheck-1;
                       Account.update({username: userInfo.username},{$set:{itemCount:userInfo.itemCount,item:userInfo.item, gold:userInfo.gold }}, function(err, output){

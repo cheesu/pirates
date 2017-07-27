@@ -602,7 +602,7 @@ router.get('/extendSocket/', function (req, res) {
       _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, gold: userInfo.gold } }, function (err, output) {
 
         console.log(userInfo.mount.w.id);
-        var socket1 = {};
+        var socket1 = { test: 1 };
         _item2.default.update({ id: userInfo.mount.w.id }, { $set: { socket1: socket1 } }, function (err, output) {
           var resultMsg = req.session.loginInfo.username + "님의 [" + userInfo.mount.w.name + "]이(가) 1단계 소켓 확장에 성공 하였습니다.";
           res.json({ msg: resultMsg, result: true });
@@ -908,7 +908,7 @@ router.get('/sellItem/:itemID', function (req, res) {
           userInfo.item.splice(userInfo.item.indexOf(itemInfo.id), 1);
         }
 
-        userInfo.gold = userInfo.gold + Math.round(itemInfo.price / 3);
+        userInfo.gold = userInfo.gold + Math.round(itemInfo.price / 2);
 
         userInfo.itemCount[itemInfo.id] = haveCheck - 1;
         _account2.default.update({ username: userInfo.username }, { $set: { itemCount: userInfo.itemCount, item: userInfo.item, gold: userInfo.gold } }, function (err, output) {

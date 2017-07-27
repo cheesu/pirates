@@ -418,7 +418,6 @@ var useSkill = function useSkill(io, info) {
               }
 
               // 피흡 마나흡 옵션
-              console.log(ring);
               if (ring != undefined && ring != null && ring != "") {
                 if (ring.option.option == 'lifeDrain') {
                   var drainHP = dmg / 100 * ring.option.per;
@@ -655,12 +654,13 @@ var fight = function fight(io, info) {
         if (reDmg < 0) {
           reDmg = 1;
         }
-
+        reDmg = Math.round(reDmg);
         // 패시브 발동 확률(렙 격차 따라서 발동확률은 낮아진다.)
         var passive = Math.floor(Math.random() * 1000) + lvGap * 10;
 
         if (userInfo.job2 == '깨달은 현자' && fightInterval[userInfo.username + "skill"]) {
           reDmg = reDmg * 0.8;
+          reDmg = Math.round(reDmg);
           io.emit(userInfo.username + "fight", "[passive] 캐스팅중인 깨달은 현자  " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 빛이나며 보호막이 생성됩니다. 주문보호의 영향으로 데미지가 감소합니다.");
         }
 
@@ -700,6 +700,7 @@ var fight = function fight(io, info) {
           }
           if (_passiveLimit2 > passive) {
             localMonsterList[monNum].hp = localMonsterList[monNum].hp - reDmg * 10;
+            reDmg = Math.round(reDmg);
             io.emit(userInfo.username + "fight", "[passive] 그림자 살귀 " + userInfo.username + "님의 " + userInfo.mount.w.name + "이(가) 적의 공격을 타고 흘러 반격합니다. [" + reDmg * 10 + "]");
           }
         }
@@ -707,7 +708,7 @@ var fight = function fight(io, info) {
         if (userInfo.job == '검사') {
           var _reDmg = _reDmg * 0.85;
         }
-
+        reDmg = Math.round(reDmg);
         try {
           if (userInfo.mount.d.type == "unique") {
             var ud = userInfo.mount.d;
@@ -750,7 +751,7 @@ var fight = function fight(io, info) {
           console.log(e);
         }
 
-        reDmg = Math.floor(reDmg);
+        reDmg = Math.round(reDmg);
 
         var userHP = fightInterval[userInfo.username + "HP"] - reDmg;
         fightInterval[userInfo.username + "HP"] -= reDmg;
@@ -969,6 +970,7 @@ var fight = function fight(io, info) {
         //  let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
         io.emit(info.ch + "fight", result);
         //  io.emit(info.ch+"fight", monHPMsg);
+        targetCurrentHP = Math.round(targetCurrentHP);
         io.emit(info.ch + "monsterHP", targetCurrentHP + "-" + localMonsterList[monNum].maxHP);
 
         if (localMonsterList[monNum].name == "성기사 정찰대 대장") {
