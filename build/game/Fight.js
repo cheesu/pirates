@@ -184,17 +184,32 @@ var useSkill = function useSkill(io, info) {
         fightInterval[userInfo.username + "skill"] = true;
         var coolDown = userInfo.int;
 
-        if (userInfo.mount.w.socket1 != undefined && userInfo.mount.w.socket1.name != undefined) {
-          if (userInfo.mount.w.socket1.option.option == "casting") {
-            coolDown = coolDown + 1000 / 100 * userInfo.mount.w.socket1.option.per;
-          }
-        }
-
         if (userInfo.job2 == "깨달은 현자") {
           coolDown = coolDown * 1.5;
         }
         if (coolDown > 700) {
           coolDown = 700;
+        }
+
+        // 소켓 1
+        if (userInfo.mount.w.socket1 != undefined && userInfo.mount.w.socket1.name != undefined) {
+          if (userInfo.mount.w.socket1.option.option == "casting") {
+            coolDown = coolDown + 1000 / 100 * userInfo.mount.w.socket1.option.per;
+          }
+
+          if (coolDown > 950) {
+            coolDown = 950;
+          }
+        }
+
+        // 소켓2
+        if (userInfo.mount.w.socket2 != undefined && userInfo.mount.w.socket2.name != undefined) {
+          if (userInfo.mount.w.socket2.option.option == "casting") {
+            coolDown = coolDown + 1000 / 100 * userInfo.mount.w.socket2.option.per;
+          }
+          if (coolDown > 950) {
+            coolDown = 950;
+          }
         }
 
         // 스킬 캐스팅 인터벌
@@ -379,6 +394,25 @@ var useSkill = function useSkill(io, info) {
                 dmg = (userInfo.int + userInfo.str + userInfo.dex + (userInfo.int + userInfo.str + userInfo.dex + wAP) * lvBonus) * skillInfo.dmg * buffDmg - (localMonsterList[monNum].dp - downDpVal);
               }
 
+              // 소켓 스킬공격 옵션
+              // 소켓 2 효과 발동
+              if (userInfo.mount.w.socket2 != undefined && userInfo.mount.w.socket2.name != undefined) {
+                var socketPer = Math.floor(Math.random() * 100);
+                // 확률로 엠피 회복
+                if (userInfo.mount.w.socket2.option.option == "healM" && userInfo.mount.w.socket2.option.per > socketPer) {
+                  var healMP = userInfo.max_mp / 100 * 30;
+                  healMP = Math.round(healMP);
+                  fightInterval[userInfo.username + "MP"] = fightInterval[userInfo.username + "MP"] + healMP;
+                  io.emit(userInfo.username + "userMP", fightInterval[userInfo.username + "MP"] + "-" + userInfo.max_mp);
+                  if (fightInterval[userInfo.username + "MP"] > userInfo.max_mp) {
+                    fightInterval[userInfo.username + "MP"] = userInfo.max_mp;
+                  }
+                }
+                if (userInfo.mount.w.socket2.option.option == "normalM_skill" && localMonsterList[monNum].type > "normal") {
+                  dmg = dmg + dmg / 100 * userInfo.mount.w.socket2.option.per;
+                }
+              }
+
               dmg = Math.round(dmg * upSkillDmg);
               var _skillAttackMsg = "";
 
@@ -480,9 +514,9 @@ var useSkill = function useSkill(io, info) {
             // 디버프 옵션
             // 소켓 1 효과 발동
             if (userInfo.mount.w.socket1 != undefined && userInfo.mount.w.socket1.name != undefined) {
-              var socketPer = Math.floor(Math.random() * 100);
+              var _socketPer = Math.floor(Math.random() * 100);
 
-              if (userInfo.mount.w.socket1.option.option == "stone" && userInfo.mount.w.socket1.option.per > socketPer) {
+              if (userInfo.mount.w.socket1.option.option == "stone" && userInfo.mount.w.socket1.option.per > _socketPer) {
 
                 localMonsterList[monNum].debuff = { name: "stone" };
 

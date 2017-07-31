@@ -158,10 +158,20 @@ class UserItem extends React.Component {
               let socket2 = "없음";
               let socket2Msg = "미확장";
               if(item.socket2!=undefined){
-                socket1Msg = "미장착";
+                socket2Msg = "미장착";
                 if(item.socket2.name != undefined){
                   socket2 = item.socket2.name;
                   socket2Msg = item.socket2.msg;
+                }
+              }
+
+              let socket3 = "없음";
+              let socket3Msg = "미확장";
+              if(item.socket3!=undefined){
+                socket3Msg = "미장착";
+                if(item.socket3.name != undefined){
+                  socket3 = item.socket3.name;
+                  socket3Msg = item.socket3.msg;
                 }
               }
 
@@ -176,6 +186,7 @@ class UserItem extends React.Component {
                         <p>특수능력 : <span className="item-option-name"> {optionName} </span></p>
                         <p> 소켓1[{socket1}] : <span className="item-option-name"> {socket1Msg} </span></p>
                         <p> 소켓2[{socket2}] : <span className="item-option-name"> {socket2Msg} </span></p>
+                        <p> 소켓3[{socket3}] : <span className="item-option-name"> {socket3Msg} </span></p>
                         <p><a onClick={this.userEqMount.bind(this,item.id)}  className="waves-effect waves-light btn">장착</a></p>
                       </div>
                     </li>

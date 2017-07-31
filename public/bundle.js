@@ -25092,11 +25092,11 @@ var Enhancement = function (_React$Component) {
     }
   }, {
     key: 'extendSocket',
-    value: function extendSocket(userInfo) {
+    value: function extendSocket(userInfo, lv) {
       var _this3 = this;
 
       console.log("소켓 확장 요청");
-      _axios2.default.get('/api/account/extendSocket/').then(function (response) {
+      _axios2.default.get('/api/account/extendSocket/' + lv).then(function (response) {
 
         console.log("요청 응압");
         var job2 = userInfo.job2;
@@ -25421,7 +25421,131 @@ var Enhancement = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.extendSocket.bind(this, this.props.userInfo), className: 'waves-effect waves-light btn' },
+                    { onClick: this.extendSocket.bind(this, this.props.userInfo, 1), className: 'waves-effect waves-light btn' },
+                    '\uC18C\uCF13 \uD655\uC7A5'
+                  )
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uC694\uAD6C\uB808\uBCA8 100\uC774\uC0C1'
+                ),
+                '\uC18C\uCF13 \uD655\uC7A5 lv.2'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '"\uAC1C\uC778\uBB34\uAE30\uC758 \uC18C\uCF13\uC744 \uD655\uC7A5 \uD569\uB2C8\uB2E4.."'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uD2B9\uC218 \uC635\uC158\uC774 \uBD80\uC5EC\uB41C \uBCF4\uC11D\uC744 \uC7A5\uCC29\uD560 \uC18C\uCF13\uC744 \uCD94\uAC00 \uD569\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'lv.2 \uC18C\uCF13\uC740 \uD55C\uBC88\uB9CC \uD655\uC7A5\uC774 \uAC00\uB2A5 \uD569\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '100\uB9CC \uACE8\uB4DC\uAC00 \uC18C\uBAA8 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC695\uB9DD\uC758\uB3CC 20\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC0AC\uD30C\uC774\uC5B4 20\uAC1C\uAC00 \uC18C\uBAA8 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uB8E8\uBCA8\uB77C\uC774\uD2B8 5\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.extendSocket.bind(this, this.props.userInfo, 2), className: 'waves-effect waves-light btn' },
+                    '\uC18C\uCF13 \uD655\uC7A5'
+                  )
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '\uC694\uAD6C\uB808\uBCA8 101\uC774\uC0C1'
+                ),
+                '\uC18C\uCF13 \uD655\uC7A5 lv.3'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '"\uAC1C\uC778\uBB34\uAE30\uC758 \uC18C\uCF13\uC744 \uD655\uC7A5 \uD569\uB2C8\uB2E4.."'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uD2B9\uC218 \uC635\uC158\uC774 \uBD80\uC5EC\uB41C \uBCF4\uC11D\uC744 \uC7A5\uCC29\uD560 \uC18C\uCF13\uC744 \uCD94\uAC00 \uD569\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'lv.3 \uC18C\uCF13\uC740 \uD55C\uBC88\uB9CC \uD655\uC7A5\uC774 \uAC00\uB2A5 \uD569\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '100\uB9CC \uACE8\uB4DC\uAC00 \uC18C\uBAA8 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC695\uB9DD\uC758\uB3CC 20\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC0AC\uD30C\uC774\uC5B4 20\uAC1C\uAC00 \uC18C\uBAA8 \uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uB8E8\uBCA8\uB77C\uC774\uD2B8 20\uAC1C\uAC00 \uC18C\uBAA8\uB429\uB2C8\uB2E4.'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.extendSocket.bind(this, this.props.userInfo, 3), className: 'waves-effect waves-light btn' },
                     '\uC18C\uCF13 \uD655\uC7A5'
                   )
                 )
@@ -28589,9 +28713,129 @@ var Store = function (_React$Component) {
                 _react2.default.createElement(
                   'span',
                   { className: 'badge' },
-                  '  \uBCF4\uC720\uAC1C\uC218 ',
-                  count,
-                  ' '
+                  '   '
+                ),
+                item.name
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uAC00\uACA9'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[0].name,
+                    ' : ',
+                    item.mPrice[0].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[1].name,
+                    ' : ',
+                    item.mPrice[1].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[2].name,
+                    ' : ',
+                    item.mPrice[2].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[3].name,
+                    ' : ',
+                    item.mPrice[3].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[4].name,
+                    ' : ',
+                    item.mPrice[4].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[5].name,
+                    ' : ',
+                    item.mPrice[5].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    item.mPrice[6].name,
+                    ' : ',
+                    item.mPrice[6].count,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this6.buySocketItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    '\uC138\uACF5'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "socket2" && tabType == item.kind) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '   '
                 ),
                 item.name
               ),
@@ -28996,6 +29240,15 @@ var Store = function (_React$Component) {
               { href: '#test-swipe-5' },
               '\uC18C\uCF13\uC11D lv.1'
             )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-6' },
+              '\uC18C\uCF13\uC11D lv.2'
+            )
           )
         ),
         _react2.default.createElement(
@@ -29041,6 +29294,15 @@ var Store = function (_React$Component) {
             'ul',
             { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
             mapDataToLinksShip(this.props.items, "socket1")
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-6', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinksShip(this.props.items, "socket2")
           )
         )
       );
@@ -29368,10 +29630,20 @@ var UserItem = function (_React$Component) {
             var socket2 = "없음";
             var socket2Msg = "미확장";
             if (item.socket2 != undefined) {
-              socket1Msg = "미장착";
+              socket2Msg = "미장착";
               if (item.socket2.name != undefined) {
                 socket2 = item.socket2.name;
                 socket2Msg = item.socket2.msg;
+              }
+            }
+
+            var socket3 = "없음";
+            var socket3Msg = "미확장";
+            if (item.socket3 != undefined) {
+              socket3Msg = "미장착";
+              if (item.socket3.name != undefined) {
+                socket3 = item.socket3.name;
+                socket3Msg = item.socket3.msg;
               }
             }
 
@@ -29453,6 +29725,20 @@ var UserItem = function (_React$Component) {
                     { className: 'item-option-name' },
                     ' ',
                     socket2Msg,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  ' \uC18C\uCF133[',
+                  socket3,
+                  '] : ',
+                  _react2.default.createElement(
+                    'span',
+                    { className: 'item-option-name' },
+                    ' ',
+                    socket3Msg,
                     ' '
                   )
                 ),

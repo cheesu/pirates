@@ -289,7 +289,7 @@ class Store extends React.Component {
                 else if(item.kind == "socket1"&&tabType==item.kind){
                   return (
                         <li key={i}>
-                          <div className="collapsible-header"><span className="badge">  보유개수 {count} </span>{item.name}</div>
+                          <div className="collapsible-header"><span className="badge">   </span>{item.name}</div>
                           <div className="collapsible-body item-msg">
                             <p>가격</p>
                             <p><span>{item.mPrice[0].name} : {item.mPrice[0].count} </span></p>
@@ -308,6 +308,28 @@ class Store extends React.Component {
                       );
 
                     }
+                    else if(item.kind == "socket2"&&tabType==item.kind){
+                      return (
+                            <li key={i}>
+                              <div className="collapsible-header"><span className="badge">   </span>{item.name}</div>
+                              <div className="collapsible-body item-msg">
+                                <p>가격</p>
+                                <p><span>{item.mPrice[0].name} : {item.mPrice[0].count} </span></p>
+                                <p><span>{item.mPrice[1].name} : {item.mPrice[1].count} </span></p>
+                                <p><span>{item.mPrice[2].name} : {item.mPrice[2].count} </span></p>
+                                <p><span>{item.mPrice[3].name} : {item.mPrice[3].count} </span></p>
+                                <p><span>{item.mPrice[4].name} : {item.mPrice[4].count} </span></p>
+                                <p><span>{item.mPrice[5].name} : {item.mPrice[5].count} </span></p>
+                                <p><span>{item.mPrice[6].name} : {item.mPrice[6].count} </span></p>
+                                <span>{item.msg}</span>
+                                <p>
+                                    <a onClick={this.buySocketItem.bind(this,item,1)}  className="waves-effect waves-light btn">세공</a>
+                                </p>
+                              </div>
+                            </li>
+                          );
+
+                        }
 
 
 
@@ -402,6 +424,7 @@ class Store extends React.Component {
               <li className="tab col s3"><a href="#test-swipe-3">목걸이</a></li>
               <li className="tab col s3"><a href="#test-swipe-4">고급포션</a></li>
               <li className="tab col s3"><a href="#test-swipe-5">소켓석 lv.1</a></li>
+              <li className="tab col s3"><a href="#test-swipe-6">소켓석 lv.2</a></li>
             </ul>
             <div id="test-swipe-1" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
@@ -426,6 +449,11 @@ class Store extends React.Component {
             <div id="test-swipe-5" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
                 { mapDataToLinksShip(this.props.items,"socket1") }
+              </ul>
+            </div>
+            <div id="test-swipe-6" className="col s12 tab-in-container">
+              <ul className="collapsible item-list" data-collapsible="accordion">
+                { mapDataToLinksShip(this.props.items,"socket2") }
               </ul>
             </div>
         </div>

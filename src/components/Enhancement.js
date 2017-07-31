@@ -83,9 +83,9 @@ class Enhancement extends React.Component {
     }
   }
 
-extendSocket(userInfo){
+extendSocket(userInfo, lv){
   console.log("소켓 확장 요청");
-  axios.get('/api/account/extendSocket/')
+  axios.get('/api/account/extendSocket/'+ lv)
      .then((response) => {
 
        console.log("요청 응압");
@@ -232,10 +232,37 @@ extendSocket(userInfo){
                         <p>욕망의돌 10개가 소모됩니다.</p>
                         <p>에메랄드 20개가 소모 됩니다.</p>
                         <p>루비 10개가 소모됩니다.</p>
-                        <p><a onClick={this.extendSocket.bind(this,this.props.userInfo)}  className="waves-effect waves-light btn">소켓 확장</a></p>
+                        <p><a onClick={this.extendSocket.bind(this,this.props.userInfo,1)}  className="waves-effect waves-light btn">소켓 확장</a></p>
                       </div>
                     </li>
 
+                    <li>
+                      <div className="collapsible-header"><span className="badge">요구레벨 100이상</span>소켓 확장 lv.2</div>
+                      <div className="collapsible-body item-msg">
+                        <span>"개인무기의 소켓을 확장 합니다.."</span>
+                        <p>특수 옵션이 부여된 보석을 장착할 소켓을 추가 합니다.</p>
+                        <p>lv.2 소켓은 한번만 확장이 가능 합니다.</p>
+                        <p>100만 골드가 소모 됩니다.</p>
+                        <p>욕망의돌 20개가 소모됩니다.</p>
+                        <p>사파이어 20개가 소모 됩니다.</p>
+                        <p>루벨라이트 5개가 소모됩니다.</p>
+                        <p><a onClick={this.extendSocket.bind(this,this.props.userInfo,2)}  className="waves-effect waves-light btn">소켓 확장</a></p>
+                      </div>
+                    </li>
+
+                    <li>
+                      <div className="collapsible-header"><span className="badge">요구레벨 101이상</span>소켓 확장 lv.3</div>
+                      <div className="collapsible-body item-msg">
+                        <span>"개인무기의 소켓을 확장 합니다.."</span>
+                        <p>특수 옵션이 부여된 보석을 장착할 소켓을 추가 합니다.</p>
+                        <p>lv.3 소켓은 한번만 확장이 가능 합니다.</p>
+                        <p>100만 골드가 소모 됩니다.</p>
+                        <p>욕망의돌 20개가 소모됩니다.</p>
+                        <p>사파이어 20개가 소모 됩니다.</p>
+                        <p>루벨라이트 20개가 소모됩니다.</p>
+                        <p><a onClick={this.extendSocket.bind(this,this.props.userInfo,3)}  className="waves-effect waves-light btn">소켓 확장</a></p>
+                      </div>
+                    </li>
 
                   </ul>
 
