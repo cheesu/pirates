@@ -395,6 +395,30 @@ var useSkill = function(io,info){
 
                   let targetCurrentHP=9999;
                   let criCount = 1;
+
+
+
+                  // 소켓 스킬공격 옵션
+                  // 소켓 2 효과 발동
+                  if(userInfo.mount.w.socket2 != undefined && userInfo.mount.w.socket2.name != undefined){
+                      let socketPer = Math.floor(Math.random() * 100);
+                      // 확률로 엠피 회복
+                    if(userInfo.mount.w.socket2.option.option == "healM" && userInfo.mount.w.socket2.option.per > socketPer){
+                      let healMP = userInfo.max_mp/100*30;
+                      healMP = Math.round(healMP);
+                      fightInterval[userInfo.username+"MP"] = fightInterval[userInfo.username+"MP"]+healMP;
+                      if(fightInterval[userInfo.username+"MP"] > userInfo.max_mp){
+                        fightInterval[userInfo.username+"MP"] = userInfo.max_mp;
+                      }
+                      io.emit(userInfo.username+"userMP", fightInterval[userInfo.username+"MP"]+"-"+userInfo.max_mp);
+                    }
+
+                  }
+
+
+
+
+
                   // hit 연타 시작
                   for(var count=0; count < skillInfo.hit; count++){
 
@@ -411,16 +435,6 @@ var useSkill = function(io,info){
                   // 소켓 2 효과 발동
                   if(userInfo.mount.w.socket2 != undefined && userInfo.mount.w.socket2.name != undefined){
                       let socketPer = Math.floor(Math.random() * 100);
-                      // 확률로 엠피 회복
-                    if(userInfo.mount.w.socket2.option.option == "healM" && userInfo.mount.w.socket2.option.per > socketPer){
-                      let healMP = userInfo.max_mp/100*30;
-                      healMP = Math.round(healMP);
-                      fightInterval[userInfo.username+"MP"] = fightInterval[userInfo.username+"MP"]+healMP;
-                      io.emit(userInfo.username+"userMP", fightInterval[userInfo.username+"MP"]+"-"+userInfo.max_mp);
-                      if(fightInterval[userInfo.username+"MP"] > userInfo.max_mp){
-                        fightInterval[userInfo.username+"MP"] = userInfo.max_mp;
-                      }
-                    }
                     if(userInfo.mount.w.socket2.option.option == "normalM_skill" && localMonsterList[monNum].type > "normal"){
                       dmg = dmg + (dmg/100*userInfo.mount.w.socket2.option.per);
                     }
@@ -482,7 +496,6 @@ var useSkill = function(io,info){
                         if(fightInterval[userInfo.username+"HP"] > userInfo.max_hp){
                           fightInterval[userInfo.username+"HP"] = userInfo.max_hp;
                         }
-
                       }
                       else if(ring.option.option=='manaDrain'){
                         let drainMP = (dmg/100)*ring.option.per;
@@ -566,7 +579,6 @@ var useSkill = function(io,info){
 
 
 
-
                   io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
                   io.emit(userInfo.username+"[SkillEnd]", "");
                   // 몬스터 처치
@@ -588,6 +600,14 @@ var useSkill = function(io,info){
                   io.emit(userInfo.username+"userHP", fightInterval[userInfo.username+"HP"]+"-"+userInfo.max_hp);
                   io.emit(userInfo.username+"currentUserHP", fightInterval[userInfo.username+"HP"]+"-"+userInfo.max_hp);
                   io.emit(userInfo.username+"[SkillEnd]", "");
+                  if(fightInterval[userInfo.username+"MP"] > userInfo.max_mp){
+                    fightInterval[userInfo.username+"MP"] = userInfo.max_mp;
+                  }
+                  Account.update({username: userInfo.username},{$set:{hp:fightInterval[userInfo.username+"HP"],mp:fightInterval[userInfo.username+"MP"]}}, function(err, output){
+
+                  });
+
+
                   criCount = 0;
                   clearInterval(fightInterval[userInfo.username+"skillInterval"]);
                   fightInterval[userInfo.username+"CastingCount"] = null;
@@ -620,8 +640,6 @@ var fightUseItem = function(io,info){
 }
 
 var fight = function (io,info){
-  console.log("전투 시작");
-  console.log(info);
    Account.find({username: info.userName})
       .exec((err, account) => {
           if(err) throw err;
@@ -995,7 +1013,6 @@ var fight = function (io,info){
               }
 
               // 피흡 마나흡 옵션
-              console.log(ring);
               if(ring!=undefined && ring!=null && ring!=""){
                 if(ring.option.option=='lifeDrain'){
                   let drainHP = (dmg/100)*ring.option.per;

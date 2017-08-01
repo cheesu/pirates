@@ -19,6 +19,8 @@ const Item = new Schema({
    mapName:String,
    socket1:Object,
    socket2:Object,
+   socket3:Object,
+   socket4:Object,
    option:Object(),
    enhancementCount:Number(),
    changeOptionCount:Number(),
