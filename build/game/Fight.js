@@ -59,7 +59,7 @@ function loadMonsterList() {
         monObj.appearMsg = monsters[monCount].appearMsg;
         monObj.attackMsg = monsters[monCount].attackMsg;
         monObj.dieMsg = monsters[monCount].dieMsg;
-        monObj.exp = monsters[monCount].exp;
+        monObj.exp = monsters[monCount].exp * 2;
         monObj.gold = monsters[monCount].gold;
         monObj.sp = []; // 디버프 담아놓는 그릇
         monObj.Aggravation = []; // 기여도 담아놓는 그릇
@@ -1164,16 +1164,17 @@ function expLevelup(userInfo, io, monNum, info, kind) {
         userInfo.item.push(jname);
       }
 
+      // 이벤트 보석 드랍 상승
       if (userInfo.itemCount[jname] == undefined) {
-        userInfo.itemCount[jname] = 1;
+        userInfo.itemCount[jname] = 2;
       } else {
-        userInfo.itemCount[jname] = userInfo.itemCount[jname] + 1;
+        userInfo.itemCount[jname] = userInfo.itemCount[jname] + 2;
       }
 
       var _dropPer = Math.floor(Math.random() * 100) + 1;
       if (_dropPer < 70) {
-        if (userInfo.item.indexOf('ph3') == -1) {
-          userInfo.item.push('ph3');
+        if (userInfo.item.indexOf('ph4') == -1) {
+          userInfo.item.push('ph4');
         }
         if (userInfo.itemCount.ph3 == undefined) {
           userInfo.itemCount.ph3 = 5;
@@ -1181,8 +1182,8 @@ function expLevelup(userInfo, io, monNum, info, kind) {
           userInfo.itemCount.ph3 = userInfo.itemCount.ph3 + 5;
         }
 
-        if (userInfo.item.indexOf('pm3') == -1) {
-          userInfo.item.push('pm3');
+        if (userInfo.item.indexOf('pm4') == -1) {
+          userInfo.item.push('pm4');
         }
         if (userInfo.itemCount.pm3 == undefined) {
           userInfo.itemCount.pm3 = 5;
