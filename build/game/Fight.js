@@ -59,7 +59,7 @@ function loadMonsterList() {
         monObj.appearMsg = monsters[monCount].appearMsg;
         monObj.attackMsg = monsters[monCount].attackMsg;
         monObj.dieMsg = monsters[monCount].dieMsg;
-        monObj.exp = monsters[monCount].exp * 2;
+        monObj.exp = monsters[monCount].exp;
         monObj.gold = monsters[monCount].gold;
         monObj.sp = []; // 디버프 담아놓는 그릇
         monObj.Aggravation = []; // 기여도 담아놓는 그릇
@@ -1164,11 +1164,10 @@ function expLevelup(userInfo, io, monNum, info, kind) {
         userInfo.item.push(jname);
       }
 
-      // 이벤트 보석 드랍 상승
       if (userInfo.itemCount[jname] == undefined) {
-        userInfo.itemCount[jname] = 2;
+        userInfo.itemCount[jname] = 1;
       } else {
-        userInfo.itemCount[jname] = userInfo.itemCount[jname] + 2;
+        userInfo.itemCount[jname] = userInfo.itemCount[jname] + 1;
       }
 
       var _dropPer = Math.floor(Math.random() * 100) + 1;
