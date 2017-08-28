@@ -254,14 +254,14 @@ io.on('connection', function (socket) {
 
     if (idArr != undefined) {
 
-      var _userId = idArr[0].replace(/ /gi, "");
-      console.log("유저 아이디 :" + _userId + ":");
-      _slave2.default.find({ master: _userId }).exec(function (err, slave) {
+      var userId = idArr[0].replace(/ /gi, "");
+      console.log("유저 아이디 :" + userId + ":");
+      _slave2.default.find({ master: userId }).exec(function (err, slave) {
         if (err) throw err;
         var slaveInfo = slave;
         slaveInfo = eval(slaveInfo[0]);
 
-        if (slave == "" || slave == null || slave == undefined || _userId == "") {
+        if (slave == "" || slave == null || slave == undefined || userId == "") {
           return false;
         }
         console.log(slaveInfo);
@@ -391,9 +391,10 @@ io.on('connection', function (socket) {
       if (err) throw err;
       var slaveInfo = slave;
       slaveInfo = eval(slaveInfo[0]);
-      if (slave == "" || slave == null || slave == undefined || userId == "") {
+      if (slave == "" || slave == null || slave == undefined || userID == "") {
         return false;
       }
+
       console.log(slaveInfo);
       io.emit("slaveInfoChat", "------------------------------------------");
       io.emit("slaveInfoChat", "이름:" + slaveInfo.name);
