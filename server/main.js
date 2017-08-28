@@ -383,6 +383,9 @@ socket.on('slaveInfo', function(userID){
              if(err) throw err;
              let slaveInfo = slave;
              slaveInfo = eval(slaveInfo[0]);
+             if(slave=="" || slave==null || slave==undefined || userId==""){
+               return false;
+             }
              console.log(slaveInfo);
              io.emit("slaveInfoChat","------------------------------------------");
              io.emit("slaveInfoChat","이름:"+slaveInfo.name);
