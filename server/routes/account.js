@@ -1223,7 +1223,7 @@ router.post('/buySlave/', (req, res) => {
                   if(itemInfo.price > userInfo.gold){
                     res.json({msg:"소지 금액이 부족합니다.", result:false});
                   }
-
+                  else{
                   let gold = userInfo.gold - itemInfo.price;
 
                   Account.update({username: req.session.loginInfo.username},{$set:{gold:gold}}, function(err, output){
@@ -1300,6 +1300,7 @@ router.post('/buySlave/', (req, res) => {
                           });
 
                   });
+                }
 
           });
 

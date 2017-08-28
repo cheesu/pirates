@@ -1061,52 +1061,19 @@ router.post('/buySlave/', function (req, res) {
       //금액 확인
       if (itemInfo.price > userInfo.gold) {
         res.json({ msg: "소지 금액이 부족합니다.", result: false });
-      }
+      } else {
+        var gold = userInfo.gold - itemInfo.price;
 
-      var gold = userInfo.gold - itemInfo.price;
-
-      _account2.default.update({ username: req.session.loginInfo.username }, { $set: { gold: gold } }, function (err, output) {
-        if (err) throw err;
-
-        _slave2.default.find({ master: req.session.loginInfo.username }).exec(function (err, slaves) {
+        _account2.default.update({ username: req.session.loginInfo.username }, { $set: { gold: gold } }, function (err, output) {
           if (err) throw err;
-          var slaveInfo = eval(slaves[0]);
 
-          if (slaveInfo == "" || slaveInfo == null || slaveInfo == undefined) {
-            var slave = new _slave2.default({
-              name: slaveName,
-              id: slaveName + req.session.loginInfo.username,
-              master: req.session.loginInfo.username,
-              kind: itemInfo.kind,
-              tribe: itemInfo.tribe,
-              job: itemInfo.job,
-              lv: itemInfo.lv,
-              hp: itemInfo.hp,
-              mp: itemInfo.mp,
-              str: itemInfo.str,
-              int: itemInfo.int,
-              dex: itemInfo.dex,
-              exp: itemInfo.exp,
-              max_hp: itemInfo.max_hp,
-              max_mp: itemInfo.max_mp,
-              upStr: itemInfo.upStr,
-              upInt: itemInfo.upInt,
-              upDex: itemInfo.upDex,
-              mount: itemInfo.mount,
-              msg: itemInfo.msg,
-              chat: itemInfo.chat,
-              skill: itemInfo.skill
-            });
+          _slave2.default.find({ master: req.session.loginInfo.username }).exec(function (err, slaves) {
+            if (err) throw err;
+            var slaveInfo = eval(slaves[0]);
 
-            // 노예 등록
-            slave.save(function (err) {
-              if (err) throw err;
-              var resultMsg = req.session.loginInfo.username + "님께서  [" + itemInfo.tribe + "  " + slaveName + "]을(를) 구매 하였습니다.";
-              res.json({ msg: resultMsg, result: true });
-            });
-          } else {
-            // 기존노예에 새로운 노예로 업데이트
-            _slave2.default.update({ master: req.session.loginInfo.username }, { $set: { name: slaveName,
+            if (slaveInfo == "" || slaveInfo == null || slaveInfo == undefined) {
+              var slave = new _slave2.default({
+                name: slaveName,
                 id: slaveName + req.session.loginInfo.username,
                 master: req.session.loginInfo.username,
                 kind: itemInfo.kind,
@@ -1127,14 +1094,47 @@ router.post('/buySlave/', function (req, res) {
                 mount: itemInfo.mount,
                 msg: itemInfo.msg,
                 chat: itemInfo.chat,
-                skill: itemInfo.skill } }, function (err, output) {
-              if (err) throw err;
-              var resultMsg = req.session.loginInfo.username + "님께서  [" + itemInfo.tribe + "  " + slaveName + "]을(를) 구매 하였습니다.";
-              res.json({ msg: resultMsg, result: true });
-            });
-          }
+                skill: itemInfo.skill
+              });
+
+              // 노예 등록
+              slave.save(function (err) {
+                if (err) throw err;
+                var resultMsg = req.session.loginInfo.username + "님께서  [" + itemInfo.tribe + "  " + slaveName + "]을(를) 구매 하였습니다.";
+                res.json({ msg: resultMsg, result: true });
+              });
+            } else {
+              // 기존노예에 새로운 노예로 업데이트
+              _slave2.default.update({ master: req.session.loginInfo.username }, { $set: { name: slaveName,
+                  id: slaveName + req.session.loginInfo.username,
+                  master: req.session.loginInfo.username,
+                  kind: itemInfo.kind,
+                  tribe: itemInfo.tribe,
+                  job: itemInfo.job,
+                  lv: itemInfo.lv,
+                  hp: itemInfo.hp,
+                  mp: itemInfo.mp,
+                  str: itemInfo.str,
+                  int: itemInfo.int,
+                  dex: itemInfo.dex,
+                  exp: itemInfo.exp,
+                  max_hp: itemInfo.max_hp,
+                  max_mp: itemInfo.max_mp,
+                  upStr: itemInfo.upStr,
+                  upInt: itemInfo.upInt,
+                  upDex: itemInfo.upDex,
+                  mount: itemInfo.mount,
+                  msg: itemInfo.msg,
+                  chat: itemInfo.chat,
+                  skill: itemInfo.skill } }, function (err, output) {
+                if (err) throw err;
+                var resultMsg = req.session.loginInfo.username + "님께서  [" + itemInfo.tribe + "  " + slaveName + "]을(를) 구매 하였습니다.";
+                res.json({ msg: resultMsg, result: true });
+              });
+            }
+          });
         });
-      });
+      }
     });
   });
 });
