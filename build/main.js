@@ -391,7 +391,7 @@ io.on('connection', function (socket) {
       if (err) throw err;
       var slaveInfo = slave;
       slaveInfo = eval(slaveInfo[0]);
-
+      console.log(slaveInfo);
       io.emit("slaveInfoChat", "------------------------------------------");
       io.emit("slaveInfoChat", "이름:" + slaveInfo.name);
       io.emit("slaveInfoChat", "종족:" + slaveInfo.tribe + "     레벨:" + slaveInfo.lv);
