@@ -12,6 +12,8 @@ class Store extends React.Component {
         this.state = {
             keyword: '',
             userItem:false,
+            buySlave:false,
+            slaveInfo:null,
         };
 
         this.handleClose = this.handleClose.bind(this);
@@ -44,6 +46,39 @@ class Store extends React.Component {
            console.log(error);
        });
   }
+
+  buyCheckSlave(item){
+    var con_test = confirm("노예를 구입하시면 기존에 있던 노예는 풀려나 다시는 만날 수 없습니다. 그래도 구매 하시겠습니까?");
+    if(con_test){
+      this.setState({
+          buySlave: true,
+          slaveInfo: item,
+      });
+    }
+  }
+
+  requestBuySlave(){
+
+    let slaveName = $("#slaveName").val();
+    let slaveId = this.state.slaveInfo.id;
+
+    
+    axios.post('/api/account/buySlave/', { name:slaveId, slaveName : slaveName})
+       .then((response) => {
+         this.props.getStatusRequest();
+         this.props.userItemRequest();
+         alert(response.data.msg);
+       }).catch((error) => {
+           console.log(error);
+       });
+  }
+
+cancleSlave(){
+  this.setState({
+      buySlave: false,
+      slaveInfo: null,
+  });
+}
 
   buyItem(item, count){
 
@@ -119,11 +154,13 @@ class Store extends React.Component {
           let current = {
               user: this.props.userInfo,
               store: this.props.items,
+              name: this.state.buySlave,
 
           };
         let next = {
             user: nextProps.userInfo,
             store: nextProps.items,
+            name: nextState.buySlave,
         };
         let update = JSON.stringify(current) !== JSON.stringify(next);
           return update;
@@ -331,6 +368,38 @@ class Store extends React.Component {
 
                         }
 
+                    else if(item.kind == "slave"&&tabType==item.kind){
+                      return (
+                          <li key={i}>
+                            <div className="collapsible-header"><span className="badge">   </span>{item.tribe}</div>
+                            <div className="collapsible-body item-msg">
+                              <p>종족 : {item.tribe} <span>가격 :{item.price} </span></p>
+                              <span>{item.msg}</span>
+                              <p>lv: {item.lv}</p>
+                              <p>hp: {item.hp}</p>
+                              <p>mp: {item.mp}</p>
+                              <p>str: {item.str}</p>
+                              <p>dex: {item.dex}</p>
+                              <p>int: {item.int}</p>
+                              <p>skill: {item.skill}</p>
+
+                              <p> 레벨업 상승 능력치</p>
+                              <p>str: {item.upStr}</p>
+                              <p>dex: {item.upDex}</p>
+                              <p>int: {item.upInt}</p>
+
+                              <p>대화</p>
+                              <span>
+                                {item.chat}
+                              </span>
+                                <p>
+                                  <a onClick={this.buyCheckSlave.bind(this,item)}  className="waves-effect waves-light btn">구매</a>
+                                </p>
+                            </div>
+                          </li>
+                          );
+                      }
+
 
 
 
@@ -338,7 +407,6 @@ class Store extends React.Component {
       };
 
       const mapDataToUserItemLinks = (data) => {
-        console.log(data);
         if(data==undefined){
           return (<li>
             <div className="collapsible-header"><span className="badge">none</span>loading...</div>
@@ -410,7 +478,7 @@ class Store extends React.Component {
       const shipStore = (
         <div className="container item-container">
           <span>흐흐 자네 혹시 좋은 보석이나 희귀한 물건 가지고 있나? 내가 더 좋은걸 보여주도록 하지 이래뵈도 내가 이바닥에선 어마어마한 밀수꾼이라고.
-            불법이긴 하지만 마력석세공 같은 것도 해주지
+            불법이긴 하지만 마력석세공 같은 것도 해주지. 아니면 혹시 노예를 찾고 있나? 힘좋고 쭉쭉빵빵한 노예들도 있지 흐흐흐...
           </span>
           <p>소지금 : <span></span>{this.props.userInfo.gold} Gold</p>
           <p>보석 : <span>에메랄드</span>{this.props.userInfo.itemCount.j1} 개
@@ -425,6 +493,7 @@ class Store extends React.Component {
               <li className="tab col s3"><a href="#test-swipe-4">고급포션</a></li>
               <li className="tab col s3"><a href="#test-swipe-5">소켓석 lv.1</a></li>
               <li className="tab col s3"><a href="#test-swipe-6">소켓석 lv.2</a></li>
+              <li className="tab col s3"><a href="#test-swipe-7">노예</a></li>
             </ul>
             <div id="test-swipe-1" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
@@ -456,8 +525,30 @@ class Store extends React.Component {
                 { mapDataToLinksShip(this.props.items,"socket2") }
               </ul>
             </div>
+            <div id="test-swipe-7" className="col s12 tab-in-container">
+              <ul className="collapsible item-list" data-collapsible="accordion">
+                { mapDataToLinksShip(this.props.items,"slave") }
+              </ul>
+            </div>
         </div>
       );
+
+        const createName = (
+          <div className="row createName">
+            <div className="col s12 m2">
+              <div className="card blue-grey">
+                <div className="card-content white-text">
+                  <span className="card-title">노예 이름 부여</span>
+                  <input id="slaveName" type="text"></input>
+                </div>
+                <div className="card-action">
+                  <a onClick={this.requestBuySlave.bind(this)} >구매확정</a>
+                  <a onClick={this.cancleSlave.bind(this)} >취소</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
 
 
 
@@ -469,6 +560,7 @@ class Store extends React.Component {
                 </div>
 
                 {this.props.storeKind=='ship' ? shipStore : normalStore }
+                {this.state.buySlave ? createName : undefined }
 
 
             </div>

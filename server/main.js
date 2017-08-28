@@ -15,7 +15,7 @@ var RedisStore = require("connect-redis")(session);
 import api from './routes';
 
 import Systemnotice from './models/systemnotice';
-
+import Slave from './models/slave';
 import { fight, run,localMonsterList, checkMonster ,useSkill, rest, restEnd, fightUseItem} from './game/Fight';
 import { alarmNotice} from './game/Alarm';
 
@@ -130,6 +130,8 @@ let notice= setInterval(function(){
 
 
 
+
+
 var chatUserList = []; // 채팅 소켓 접속자 목록
 
 io.on('connection', (socket) => {
@@ -227,8 +229,61 @@ io.on('connection', (socket) => {
 
       let ch = msg.split(":ch:");
       io.emit(ch[0], ch[1]);
+      let idArr = ch[1].split(":");
+
+        if(idArr!=undefined){
+
+          let userId = idArr[0].replace( / /gi,"");
+          console.log("유저 아이디 :"+userId+":");
+          Slave.find({master: userId})
+             .exec((err, slave) => {
+                 if(err) throw err;
+                 let slaveInfo = slave;
+                 slaveInfo = eval(slaveInfo[0]);
+
+                 if(slave=="" || slave==null || slave==undefined || userId==""){
+                   return false;
+                 }
+                 console.log(slaveInfo);
+                 let chatCount = slaveInfo.chat.length;
+                 console.log(chatCount);
+                 let randomNo = Math.floor(Math.random() * chatCount);
+                 console.log("랜덤번호:"+randomNo);
+                 console.log(slaveInfo.chat);
+                 let slaveChat = slaveInfo.chat[randomNo];
+                   io.emit(ch[0], slaveInfo.tribe+" ["+slaveInfo.name+"] : "+slaveChat);
+
+
+              });
+        }
+
     });
 
+
+  socket.on('slaveChat', function(msg){
+    let ch = msg.split(":ch:");
+    let userId = ch[1];
+
+      if(userId!=undefined){
+
+        console.log("유저 아이디 :"+userId+":");
+        Slave.find({master: userId})
+           .exec((err, slave) => {
+               if(err) throw err;
+               let slaveInfo = slave;
+               slaveInfo = eval(slaveInfo[0]);
+
+               if(slave=="" || slave==null || slave==undefined || userId==""){
+                 return false;
+               }
+               let chatCount = slaveInfo.chat.length;
+               let randomNo = Math.floor(Math.random() * chatCount);
+               let slaveChat = slaveInfo.chat[randomNo];
+                 io.emit(ch[0], slaveInfo.tribe+" ["+slaveInfo.name+"] : "+slaveChat);
+            });
+      }
+
+  });
 
     socket.on('addUser', function(addUserName, userLV){
       console.log("유저 접속 :"+addUserName);
@@ -319,6 +374,28 @@ io.on('connection', (socket) => {
     });
 
 
+// 노예 정보
+
+socket.on('slaveInfo', function(userID){
+
+      Slave.find({master: userID})
+         .exec((err, slave) => {
+             if(err) throw err;
+             let slaveInfo = slave;
+             slaveInfo = eval(slaveInfo[0]);
+
+             io.emit("slaveInfoChat","------------------------------------------");
+             io.emit("slaveInfoChat","이름:"+slaveInfo.name);
+             io.emit("slaveInfoChat","종족:"+slaveInfo.tribe+"     레벨:"+slaveInfo.lv);
+             io.emit("slaveInfoChat","힘:"+slaveInfo.str+"  민첩:"+slaveInfo.dex+"    지력:"+slaveInfo.int);
+             io.emit("slaveInfoChat","스킬:"+slaveInfo.skill);
+             io.emit("slaveInfoChat","-----------------------------------------");
+          //   io.emit("slaveInfoChat",slaveInfoArr);
+             io.emit("slaveInfoChat", slaveInfo.tribe+" ["+slaveInfo.name+"] : 뭘 그렇게 보는 겁니까?");
+          });
+
+});
+
     // 초대
     socket.on('invite', function(wObj){
       let sedMsg = "[귓속말] "+ wObj.sendUser + ": "+wObj.msg;
@@ -338,7 +415,6 @@ io.on('connection', (socket) => {
       for(var count = 0; count < partyArr.length; count++){
           io.emit(partyArr[count], msg);
       }
-
     });
 
 

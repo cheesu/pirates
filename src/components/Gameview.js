@@ -48,6 +48,9 @@ class Gameview extends React.Component {
       this.props.socket.on('NoticeChat', function(data){ //공지
         addChat(data);
       });
+      this.props.socket.on('slaveInfoChat', function(data){ //노예정보
+        addChat(data);
+      });
 
       let setSocketCh = this.setSocketCh.bind(this);
       this.props.socket.on('setLocalCh', function(data){ //채널 셋팅

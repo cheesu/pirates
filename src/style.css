@@ -1180,6 +1180,13 @@ ul.item-store-results {
     animation-name: item-store-leave;
 }
 
+
+.createName
+{
+  position: absolute;
+  top:3em;
+}
+
 @media only screen and (min-width: 300px){
   html {
     font-size: 12px;

@@ -29,6 +29,13 @@ class Chat extends React.Component {
         this.props.socket.on('setLocalCh', function(data){
           setSocketCh(data);
         });
+
+
+        // 시간당 노예 채팅
+        let inter =  setInterval(function(){
+          this.props.socket.emit( 'slaveChat', this.state.socketCh+":ch:"+addUserName);
+        }.bind(this), 1000*60*3);
+
       }
 
       setSocketCh(ch){
@@ -79,6 +86,15 @@ class Chat extends React.Component {
       if(this.props.username == "운영자" && this.state.msg.indexOf('/알림')==0){
         let sendMG ="[알림] : " +this.state.msg.substring(3,this.state.msg.length);
         this.props.socket.emit('alarmNoticeChat', sendMG); // 요청
+        this.setState({
+            msg: ''
+        });
+        return false;
+      }
+
+      if(this.state.msg.indexOf('/노예정보')==0){
+
+        this.props.socket.emit('slaveInfo', this.props.username); // 요청
         this.setState({
             msg: ''
         });

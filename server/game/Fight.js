@@ -1,6 +1,7 @@
 
 import express from 'express';
 import Account from '../models/account';
+import Slave from '../models/slave';
 import Monster from '../models/monster';
 import Skill from '../models/skill';
 const router = express.Router();
@@ -105,6 +106,18 @@ var run = function (io,info){
   fightInterval[info.userName+"fighting"] = false;
   clearInterval(fightInterval[info.userName+"monsterAttack"]);
   clearInterval(fightInterval[info.userName+"userAttack"]);
+
+
+
+  Slave.find({master: info.userName})
+     .exec((err, slave) => {
+         if(err) throw err;
+         let slaveInfo = slave;
+         slaveInfo = eval(slaveInfo[0]);
+         clearInterval(fightInterval[slaveInfo.id+"monsterAttack"]);
+         clearInterval(fightInterval[slaveInfo.id+"userAttack"]);
+       });
+
   io.emit(info.ch, info.userName+"님이 도망갑니다.");
 
 }
@@ -590,7 +603,7 @@ var useSkill = function(io,info){
                     io.emit(info.ch, "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
                     io.emit(info.ch+"fight", "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
 
-                    expLevelup(userInfo,io,monNum,info,"스킬"); // 렙업인지 경치만 획득인지 계산한다
+                    expLevelup(userInfo,io,monNum,info,"스킬","user"); // 렙업인지 경치만 획득인지 계산한다
 
                     Account.update({username: userInfo.username},{$set:{hp:fightInterval[userInfo.username+"HP"],mp:fightInterval[userInfo.username+"MP"]}}, function(err, output){
 
@@ -644,12 +657,237 @@ var fight = function (io,info){
       .exec((err, account) => {
           if(err) throw err;
           let userInfo = account;
-          userInfo =   eval(userInfo[0])
+          userInfo =   eval(userInfo[0]);
           let monNum = checkFightMonster(info.ch);
 
           if(monNum==null){
             return false;
           }
+
+          /*************노예가 공격*************/
+          Slave.find({master: info.userName})
+             .exec((err, slave) => {
+                 if(err) throw err;
+
+
+                 if(slave=="" || slave==null || slave==undefined){
+                   return false;
+                 }
+
+                 let slaveInfo = slave;
+                 slaveInfo = eval(slaveInfo[0]);
+
+                 if(fightInterval[slaveInfo.id+"fighting"]){
+                   fightInterval[slaveInfo.id+"fighting"] = null;
+                   console.log("노예가 이미 전투중임");
+                   return false;
+                 }
+
+
+                 // 유저 공격 속도
+                 let attackSpeed = 1800 - (slaveInfo.dex*3);
+                 if(attackSpeed < 800){
+                   attackSpeed = 800;
+                 }
+
+                 fightInterval[slaveInfo.id+"fighting"] = true; // 몬스터 처치후 발동되는 인터벌 막기위한 변수
+
+                 // 노예 공격 인터벌
+                 fightInterval[slaveInfo.id+"userAttack"] = setInterval(function(){
+
+
+
+                   // 몬스터 처치후 발동되는 인터벌 막기위한 판단
+                  if(!fightInterval[slaveInfo.id+"fighting"]){
+                       console.log(slaveInfo.id+"전투 중단");
+                       return false;
+                   }
+
+                   console.log(slaveInfo.name+"공격");
+
+                   // 무기 이름
+                   var wName = slaveInfo.mount.w.name;
+                   if(wName==NaN || wName==null|| wName==""||wName==undefined){
+                     wName = "맨손";
+                   }
+
+                   // 무기 최소 데미지
+                   var wMinAP = slaveInfo.mount.w.min;
+                   if(wMinAP==NaN || wMinAP==null|| wMinAP==""||wMinAP==undefined){
+                     wMinAP = 0;
+                   }
+
+                   // 무기 최대 데미지
+                   var wMaxAP = slaveInfo.mount.w.max;
+                   if(wMaxAP==NaN || wMaxAP==null|| wMaxAP==""||wMaxAP==undefined){
+                     wMaxAP = 0;
+                   }
+
+                   let randomAP = Math.floor(Math.random() * wMaxAP) + 1;
+
+                   var wAP = wMinAP+randomAP;
+
+
+                   if(slaveInfo.job2=='검의 달인'){
+                     let passive = Math.floor(Math.random() * 1000)+1;
+                     if(slaveInfo.str > passive){
+                       wAP = wAP*2;
+                       io.emit(info.ch+"fight", "[passive] 검의 달인 "+slaveInfo.name+"님의 "+slaveInfo.mount.w.name+"에서 푸른 검기가 생성됩니다. 공격력이 증가 합니다.");
+                     }
+                   }
+
+
+                   console.log("무기 공격력"+wMinAP+"+"+randomAP+"="+wAP);
+                   let lvGap = localMonsterList[monNum].lv - slaveInfo.lv;
+                   if(lvGap < -4){
+                     lvGap = -4;
+                   }
+                   let lvBonus = slaveInfo.lv/(20+lvGap);
+
+
+
+                   let dmg =  ((slaveInfo.int+slaveInfo.str)+((slaveInfo.int+slaveInfo.str+wAP)*lvBonus)) - localMonsterList[monNum].dp ;
+
+
+                   /*스킬 발동!*/
+                  let skillRandom = Math.floor(Math.random() * 100) + 1;
+                  let skillPer = slaveInfo.lv/4;
+                  console.log("노예 스킬 랜덤:"+skillRandom + "노예 스킬 퍼센트:"+skillPer);
+                  if(skillRandom < skillPer){
+                    console.log("노예 스킬 발동 :");
+
+                    let skillCount = slaveInfo.chat.length; // 보유 스킬 개수
+                    console.log("노예 스킬 개수:"+skillCount);
+                    if(skillCount!=0){
+                      let randomNo = Math.floor(Math.random() * skillCount);
+                      let slaveSkill = slaveInfo.skill[randomNo];
+                      let skillMsg = "";
+                      let skillAddLvDmg = (slaveInfo.lv/10)+1;
+                      let skillDmg = 1;
+                      console.log("노예스킬 랜덤 번호:"+randomNo);
+                      console.log(slaveSkill);
+                      if(slaveSkill == "그림자 기습"){
+                        skillDmg = 6;
+                        skillMsg = slaveInfo.name+"이(가) 적의 등뒤로 돌아 강력한 일격을 날립니다. ";
+                      }
+                      else if(slaveSkill == "매직 에로우"){
+                        skillDmg = 6;
+                        skillMsg = slaveInfo.name+"이(가) 마나를 응축해 푸른색 화살을 날립니다. ";
+                      }
+                      else if(slaveSkill == "크러쉬"){
+                        skillDmg = 3;
+                        skillMsg = slaveInfo.name+"이(가) 온몸의 힘을 모아 적을 부숴버릴듯 공격 합니다. ";
+                      }
+                      else if(slaveSkill == "힐"){
+                        skillDmg = 0;
+                        let healUp =  (slaveInfo.int)*(slaveInfo.lv/2);
+                            // 같은 맵에 있으면 분배
+                            Account.findOne({ username: slaveInfo.master}, (err, masterAccount) => {
+                                if(err) throw err;
+                                let masterInfo = eval(masterAccount);
+                                if(masterInfo.mapName == info.mapName){
+                                  if((fightInterval[masterInfo.username+"HP"]+healUp) > masterInfo.max_hp){
+                                    healUp =masterInfo.max_hp - fightInterval[masterInfo.username+"HP"];
+                                  }
+                                  fightInterval[masterInfo.username+"HP"] = fightInterval[masterInfo.username+"HP"]+healUp;
+                                  io.emit(masterInfo.username+"userHP", fightInterval[masterInfo.username+"HP"]+"-"+masterInfo.max_hp);
+                                  io.emit(masterInfo.username+"fight", "[skill] "+slaveInfo.name+"이(가) 사랑의 힐을 주었습니다. 체력이 ["+healUp+"] 회복 됩니다.");
+                                }
+                              });
+
+                              return false;
+                      }
+
+                      dmg =  ((slaveInfo.int+slaveInfo.str)+((slaveInfo.int+slaveInfo.str+wAP)*lvBonus))*skillDmg*skillAddLvDmg - localMonsterList[monNum].dp;
+                      io.emit(info.ch+"fight", "[skill]"+skillMsg);
+                    }
+                  }
+                  /*스킬 발동 종료*/
+
+
+                   dmg = Math.round(dmg);
+
+                   if(dmg < 0){
+                     dmg = 1;
+                   }
+
+                   if(lvGap < 1){
+                     lvGap = 1;
+                   }
+
+                   var critical = checkCritical(slaveInfo.dex/lvGap);
+                   var upCriDmg = 1.7;
+                   let result="";
+
+
+
+
+                   if(critical){
+                     dmg = dmg*upCriDmg;
+                     dmg = Math.round(dmg);
+                     result =  "Critical!!!! "+slaveInfo.name+"이(가) "+info.target+"에게 "+wName+"을(를) 휘둘러"+dmg+"의 공격을 하였습니다.";
+                     localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+                     io.emit(slaveInfo.name+"[Cri]", "");
+                   }else{
+                     result =  slaveInfo.name+"이(가) "+info.target+"에게 "+wName+"을(를) 휘둘러"+dmg+"의 공격을 하였습니다.";
+                     localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
+                   }
+
+                   let aggro = localMonsterList[monNum].Aggravation; // 어그로
+
+                   if(aggro.length==0){
+                     // 선빵 친놈 등록
+                     let _aggroObj = {};
+                     _aggroObj.name = slaveInfo.name;
+                     _aggroObj.dmg = dmg;
+                     localMonsterList[monNum].Aggravation.push(_aggroObj);
+                   }
+                   else{
+
+                     let checkAggro = false;
+                     // 이미 치고 있을떄 뎀지 누적
+                     for(var aggrocount =0; aggrocount < aggro.length; aggrocount++ ){
+                       if(aggro[aggrocount].name==slaveInfo.name){
+                         localMonsterList[monNum].Aggravation[aggrocount].dmg = localMonsterList[monNum].Aggravation[aggrocount].dmg+dmg;
+                         checkAggro = true;
+                       }
+                     }
+
+                     // 딴놈이 치고 있을떄 들어옴
+                     if(!checkAggro){
+                       let _aggroObj = {};
+                       _aggroObj.name = slaveInfo.name;
+                       _aggroObj.dmg = dmg;
+                       localMonsterList[monNum].Aggravation.push(_aggroObj);
+                     }
+                   }
+
+                   let targetCurrentHP = localMonsterList[monNum].hp;
+                   if(localMonsterList[monNum].hp < 0){
+                     targetCurrentHP = 0;
+                   }
+
+                 //  let monHPMsg = localMonsterList[monNum].name+"의 남은 체력 : "+targetCurrentHP;
+                   io.emit(info.ch+"fight", result);
+                 //  io.emit(info.ch+"fight", monHPMsg);
+                   targetCurrentHP = Math.round(targetCurrentHP);
+                   io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
+
+                   // 몬스터 처치
+                   if(localMonsterList[monNum].hp<=0){
+                     fightInterval[slaveInfo.id+"fighting"] = false;// 몬스터 처치후 발동되는 인터벌 막기위한 변수
+                     clearInterval(fightInterval[slaveInfo.id+"monsterAttack"]);
+                     clearInterval(fightInterval[slaveInfo.id+"userAttack"]);
+                    // localMonsterList[monNum].exist = false;
+
+                     expLevelup(slaveInfo,io,monNum,info,"평타","slave"); // 렙업인지 경치만 획득인지 계산한다
+                   }
+
+                 },attackSpeed);
+
+
+               });
+          /**************노예가 공격 끝******************/
 
           if(!info.fighting && (fightInterval[userInfo.username+"fighting"]==undefined || !fightInterval[userInfo.username+"fighting"])){
             // 몬스터가 유저를 공격하는 인터벌
@@ -916,6 +1154,16 @@ var fight = function (io,info){
                   clearInterval(fightInterval[userInfo.username+"monsterAttack"]);
                   clearInterval(fightInterval[userInfo.username+"userAttack"]);
 
+                  Slave.find({master: info.userName})
+                     .exec((err, slave) => {
+                         if(err) throw err;
+                         let slaveInfo = slave;
+                         slaveInfo = eval(slaveInfo[0]);
+                         clearInterval(fightInterval[slaveInfo.id+"monsterAttack"]);
+                         clearInterval(fightInterval[slaveInfo.id+"userAttack"]);
+                       });
+
+
                   Account.update({username: userInfo.username},{$set:{hp:userInfo.max_hp}}, function(err, output){
                     if(err) console.log(err);
                     io.emit(info.ch+"fight", localMonsterList[monNum].name+"의 일격을 맞고 "+userInfo.username+"님이 정신을 잃고 쓰러집니다.");
@@ -1127,7 +1375,7 @@ var fight = function (io,info){
                 localMonsterList[monNum].exist = false;
                 io.emit(info.ch, "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
                 io.emit(info.ch+"fight", "[monsterDieMsg]"+localMonsterList[monNum].dieMsg);
-                expLevelup(userInfo,io,monNum,info,"평타"); // 렙업인지 경치만 획득인지 계산한다
+                expLevelup(userInfo,io,monNum,info,"평타","user"); // 렙업인지 경치만 획득인지 계산한다
               }
 
             },attackSpeed);
@@ -1152,7 +1400,9 @@ function checkCritical(dex){
 }
 
 //경험치 획득 &
-  function expLevelup(userInfo,io,monNum,info,kind){
+  function expLevelup(userInfo,io,monNum,info,kind,userSlave){
+
+    console.log(userSlave +"렙업 판단 시작");
 
     //어그로 기여도 계산
     let aggro =   localMonsterList[monNum].Aggravation;
@@ -1175,7 +1425,13 @@ function checkCritical(dex){
 
 
     // 경험치 계산
+
     let upExp =  Math.round((localMonsterList[monNum].exp*aggroPer)/100);
+
+    if(userSlave=="slave"){
+      upExp = Math.round(upExp+ localMonsterList[monNum].exp*0.4);
+    }
+
     let random = Math.floor(Math.random() * 100) + 1;
     let getGold = Math.round(((localMonsterList[monNum].gold+random)*aggroPer)/100);
 
@@ -1335,14 +1591,68 @@ function checkCritical(dex){
     // 경험치 업데이트
 
 
+if(userSlave=="slave"){
+  console.log("현재 노예 경치 : " +userInfo.exp);
+  console.log("현재 노예 토탈 경치 : "+ totalExp);
+  Slave.update({id: userInfo.id},{$set:{exp:totalExp}}, function(err, output){
+    if(err) console.log(err);
+    io.emit(userInfo.master, "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 "+userInfo.name+"이(가) 경험치 "+upExp+"을 획득 하였습니다.");
+    io.emit(userInfo.master+"fight", "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 "+userInfo.name+"이(가)  경험치 "+upExp+"을 획득 하였습니다.");
 
-    Account.update({username: userInfo.username},{$set:{exp:totalExp, gold:setGold, item:userInfo.item, itemCount:userInfo.itemCount}}, function(err, output){
-      if(err) console.log(err);
-      io.emit(userInfo.username, "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+upExp+"과 "+getGold +"골드를 획득 하였습니다.");
-      io.emit(userInfo.username+"fight", "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+upExp+"과 "+getGold +"골드를 획득 하였습니다.");
-      io.emit(userInfo.username+"전투", "endFight");
-      io.emit(userInfo.username+"endFight", "");
-    });
+    let addLV = Math.floor(userInfo.lv/10);
+    if(addLV==0){
+      addLV = 1;
+    }
+    console.log("버그 확인");
+    console.log(totalExp);
+    console.log(userInfo.lv);
+    console.log(addLV);
+    console.log(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV);
+
+    // 레벨업 판단
+
+let over100 = 1;
+
+if(userInfo.lv > 99){
+  over100 = userInfo.lv  - 98
+}
+
+    if(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV*over100 < totalExp){
+
+
+      let lvUp = userInfo.lv+1;
+      let strUP = userInfo.str+userInfo.upStr;
+      let dexUP = userInfo.dex+userInfo.upDex;
+      let intUP = userInfo.int+userInfo.upInt;
+      let max_mpUP = userInfo.max_mp;
+      let max_hpUP = userInfo.max_hp;
+
+      max_mpUP += Math.floor((userInfo.lv*10)*0.5);
+      max_hpUP += Math.floor((userInfo.lv*10)*0.7);
+
+
+
+      console.log(userInfo.name +"레벨업");
+      Slave.update({id: userInfo.id},{$set:{lv:lvUp, str:strUP, int:intUP, dex:dexUP, max_hp:max_hpUP, max_mp:max_mpUP, mp:max_mpUP, hp:max_hpUP}}, function(err, output){
+        if(err) console.log(err);
+        io.emit("Gchat", "[LEVEL UP!!] "+userInfo.master+"의 노예 ["+userInfo.name+"] 이(가) 레벨업 하였습니다. ");
+      });
+    }
+    // 레벨업 판단 끝
+
+
+  });
+}
+else{
+  Account.update({username: userInfo.username},{$set:{exp:totalExp, gold:setGold, item:userInfo.item, itemCount:userInfo.itemCount}}, function(err, output){
+    if(err) console.log(err);
+    io.emit(userInfo.username, "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+upExp+"과 "+getGold +"골드를 획득 하였습니다.");
+    io.emit(userInfo.username+"fight", "[시스템] "+localMonsterList[monNum].name+"을 쓰러뜨려 경험치 "+upExp+"과 "+getGold +"골드를 획득 하였습니다.");
+    io.emit(userInfo.username+"전투", "endFight");
+    io.emit(userInfo.username+"endFight", "");
+  });
+}
+
 
 
     /*파티 경험치 돈 분배*/
@@ -1396,7 +1706,7 @@ if(userInfo.lv > 99){
   over100 = userInfo.lv  - 98
 }
 
-    if(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV*over100 < totalExp){
+    if(((logB(userInfo.lv, 20)*1000)*userInfo.lv*userInfo.lv/6)*addLV*over100 < totalExp && userSlave!="slave"){
       let lvUp = userInfo.lv+1;
       let strUP = userInfo.str+2;
       let dexUP = userInfo.dex+2;

@@ -145,9 +145,6 @@ toggleOpenEnhancement(){
         this.getMapAxio();
 
 
-
-
-
         // 몬스터 셋팅
         let setLocalMonster = this.setLocalMonster.bind(this);
         this.props.socket.on("setMonster", function(data){ //몹 채팅

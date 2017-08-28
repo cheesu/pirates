@@ -23770,6 +23770,11 @@ var Chat = function (_React$Component) {
                   this.props.socket.on('setLocalCh', function (data) {
                         setSocketCh(data);
                   });
+
+                  // 시간당 노예 채팅
+                  var inter = setInterval(function () {
+                        this.props.socket.emit('slaveChat', this.state.socketCh + ":ch:" + addUserName);
+                  }.bind(this), 1000 * 60 * 3);
             }
       }, {
             key: 'setSocketCh',
@@ -23822,6 +23827,15 @@ var Chat = function (_React$Component) {
                   if (this.props.username == "운영자" && this.state.msg.indexOf('/알림') == 0) {
                         var _sendMG = "[알림] : " + this.state.msg.substring(3, this.state.msg.length);
                         this.props.socket.emit('alarmNoticeChat', _sendMG); // 요청
+                        this.setState({
+                              msg: ''
+                        });
+                        return false;
+                  }
+
+                  if (this.state.msg.indexOf('/노예정보') == 0) {
+
+                        this.props.socket.emit('slaveInfo', this.props.username); // 요청
                         this.setState({
                               msg: ''
                         });
@@ -26246,6 +26260,10 @@ var Gameview = function (_React$Component) {
         //공지
         addChat(data);
       });
+      this.props.socket.on('slaveInfoChat', function (data) {
+        //노예정보
+        addChat(data);
+      });
 
       var setSocketCh = this.setSocketCh.bind(this);
       this.props.socket.on('setLocalCh', function (data) {
@@ -27967,7 +27985,9 @@ var Store = function (_React$Component) {
 
     _this.state = {
       keyword: '',
-      userItem: false
+      userItem: false,
+      buySlave: false,
+      slaveInfo: null
     };
 
     _this.handleClose = _this.handleClose.bind(_this);
@@ -28004,9 +28024,44 @@ var Store = function (_React$Component) {
       });
     }
   }, {
+    key: 'buyCheckSlave',
+    value: function buyCheckSlave(item) {
+      var con_test = confirm("노예를 구입하시면 기존에 있던 노예는 풀려나 다시는 만날 수 없습니다. 그래도 구매 하시겠습니까?");
+      if (con_test) {
+        this.setState({
+          buySlave: true,
+          slaveInfo: item
+        });
+      }
+    }
+  }, {
+    key: 'requestBuySlave',
+    value: function requestBuySlave() {
+      var _this3 = this;
+
+      var slaveName = $("#slaveName").val();
+      var slaveId = this.state.slaveInfo.id;
+
+      _axios2.default.post('/api/account/buySlave/', { name: slaveId, slaveName: slaveName }).then(function (response) {
+        _this3.props.getStatusRequest();
+        _this3.props.userItemRequest();
+        alert(response.data.msg);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: 'cancleSlave',
+    value: function cancleSlave() {
+      this.setState({
+        buySlave: false,
+        slaveInfo: null
+      });
+    }
+  }, {
     key: 'buyItem',
     value: function buyItem(item, count) {
-      var _this3 = this;
+      var _this4 = this;
 
       var selePer = 1;
       if (count > 50) {
@@ -28021,23 +28076,6 @@ var Store = function (_React$Component) {
       var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
       if (con_test) {
         _axios2.default.post('/api/account/buyItem/', { name: item.id, count: count }).then(function (response) {
-          _this3.props.getStatusRequest();
-          _this3.props.userItemRequest();
-          alert(response.data.msg);
-          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
-        }).catch(function (error) {
-          console.log(error);
-        });
-      }
-    }
-  }, {
-    key: 'buyJItem',
-    value: function buyJItem(item, count) {
-      var _this4 = this;
-
-      var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
-      if (con_test) {
-        _axios2.default.post('/api/account/buyJItem/', { name: item.id, count: count }).then(function (response) {
           _this4.props.getStatusRequest();
           _this4.props.userItemRequest();
           alert(response.data.msg);
@@ -28048,15 +28086,32 @@ var Store = function (_React$Component) {
       }
     }
   }, {
+    key: 'buyJItem',
+    value: function buyJItem(item, count) {
+      var _this5 = this;
+
+      var con_test = confirm(item.name + "을(를) " + count + "개 구매 하시겠습니까?");
+      if (con_test) {
+        _axios2.default.post('/api/account/buyJItem/', { name: item.id, count: count }).then(function (response) {
+          _this5.props.getStatusRequest();
+          _this5.props.userItemRequest();
+          alert(response.data.msg);
+          //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  }, {
     key: 'sellItem',
     value: function sellItem(item) {
-      var _this5 = this;
+      var _this6 = this;
 
       var con_test = confirm(item.name + "을(를) 판매 하시겠습니까?");
       if (con_test) {
         _axios2.default.get('/api/account/sellItem/' + item.id).then(function (response) {
-          _this5.props.getStatusRequest();
-          _this5.props.userItemRequest();
+          _this6.props.getStatusRequest();
+          _this6.props.userItemRequest();
           alert(response.data.msg);
           //  Materialize.toast(eqItem+"을(를) 구매 하였습니다.", 1000);
         }).catch(function (error) {
@@ -28082,12 +28137,14 @@ var Store = function (_React$Component) {
     value: function shouldComponentUpdate(nextProps, nextState) {
       var current = {
         user: this.props.userInfo,
-        store: this.props.items
+        store: this.props.items,
+        name: this.state.buySlave
 
       };
       var next = {
         user: nextProps.userInfo,
-        store: nextProps.items
+        store: nextProps.items,
+        name: nextState.buySlave
       };
       var update = JSON.stringify(current) !== JSON.stringify(next);
       return update;
@@ -28095,7 +28152,7 @@ var Store = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this6 = this;
+      var _this7 = this;
 
       var mapDataToLinks = function mapDataToLinks(data, tabType) {
         if (data == undefined) {
@@ -28124,7 +28181,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this6.countItem(item);
+          var count = _this7.countItem(item);
           if (item.kind == "p" && tabType == item.kind) {
             return _react2.default.createElement(
               'li',
@@ -28167,17 +28224,17 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uAC1C\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 50), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 50), className: 'waves-effect waves-light btn' },
                     '50\uAC1C\uAD6C\uB9E4 [10% \uD560\uC778 ',
                     item.price * 50 * 0.9,
                     '\uACE8\uB4DC]'
@@ -28185,7 +28242,7 @@ var Store = function (_React$Component) {
                 )
               )
             );
-          } else if (item.kind == "w" && tabType == item.kind && _this6.props.userInfo.job == item.job) {
+          } else if (item.kind == "w" && tabType == item.kind && _this7.props.userInfo.job == item.job) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28241,13 +28298,13 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
               )
             );
-          } else if (item.kind == "d" && tabType == item.kind && _this6.props.userInfo.job == item.job) {
+          } else if (item.kind == "d" && tabType == item.kind && _this7.props.userInfo.job == item.job) {
             return _react2.default.createElement(
               'li',
               { key: i },
@@ -28303,7 +28360,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28352,7 +28409,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 ),
@@ -28361,7 +28418,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uC7A5 \uAD6C\uB9E4'
                   )
                 )
@@ -28399,7 +28456,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this6.countItem(item);
+          var count = _this7.countItem(item);
           if (item.kind == "elixir" && tabType == item.kind) {
             return _react2.default.createElement(
               'li',
@@ -28472,7 +28529,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyJItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyJItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28554,7 +28611,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyJItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyJItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28636,7 +28693,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyJItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyJItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   )
                 )
@@ -28685,17 +28742,17 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 10), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 10), className: 'waves-effect waves-light btn' },
                     '10\uAC1C\uAD6C\uB9E4'
                   ),
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buyItem.bind(_this6, item, 50), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buyItem.bind(_this7, item, 50), className: 'waves-effect waves-light btn' },
                     '50\uAC1C\uAD6C\uB9E4 [10% \uD560\uC778 ',
                     item.price * 50 * 0.9,
                     '\uACE8\uB4DC]'
@@ -28819,7 +28876,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buySocketItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buySocketItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uC138\uACF5'
                   )
                 )
@@ -28941,8 +28998,130 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.buySocketItem.bind(_this6, item, 1), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.buySocketItem.bind(_this7, item, 1), className: 'waves-effect waves-light btn' },
                     '\uC138\uACF5'
+                  )
+                )
+              )
+            );
+          } else if (item.kind == "slave" && tabType == item.kind) {
+            return _react2.default.createElement(
+              'li',
+              { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-header' },
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge' },
+                  '   '
+                ),
+                item.tribe
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'collapsible-body item-msg' },
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uC885\uC871 : ',
+                  item.tribe,
+                  ' ',
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '\uAC00\uACA9 :',
+                    item.price,
+                    ' '
+                  )
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.msg
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'lv: ',
+                  item.lv
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'hp: ',
+                  item.hp
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'mp: ',
+                  item.mp
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'str: ',
+                  item.str
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'dex: ',
+                  item.dex
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'int: ',
+                  item.int
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'skill: ',
+                  item.skill
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  ' \uB808\uBCA8\uC5C5 \uC0C1\uC2B9 \uB2A5\uB825\uCE58'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'str: ',
+                  item.upStr
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'dex: ',
+                  item.upDex
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'int: ',
+                  item.upInt
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  '\uB300\uD654'
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  item.chat
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: _this7.buyCheckSlave.bind(_this7, item), className: 'waves-effect waves-light btn' },
+                    '\uAD6C\uB9E4'
                   )
                 )
               )
@@ -28952,7 +29131,6 @@ var Store = function (_React$Component) {
       };
 
       var mapDataToUserItemLinks = function mapDataToUserItemLinks(data) {
-        console.log(data);
         if (data == undefined) {
           return _react2.default.createElement(
             'li',
@@ -28979,7 +29157,7 @@ var Store = function (_React$Component) {
           );
         }
         return data.map(function (item, i) {
-          var count = _this6.countItem(item);
+          var count = _this7.countItem(item);
           if (count != 0) {
             return _react2.default.createElement(
               'li',
@@ -29022,7 +29200,7 @@ var Store = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: _this6.sellItem.bind(_this6, item), className: 'waves-effect waves-light btn' },
+                    { onClick: _this7.sellItem.bind(_this7, item), className: 'waves-effect waves-light btn' },
                     '\uD310\uB9E4'
                   )
                 )
@@ -29150,7 +29328,7 @@ var Store = function (_React$Component) {
         _react2.default.createElement(
           'span',
           null,
-          '\uD750\uD750 \uC790\uB124 \uD639\uC2DC \uC88B\uC740 \uBCF4\uC11D\uC774\uB098 \uD76C\uADC0\uD55C \uBB3C\uAC74 \uAC00\uC9C0\uACE0 \uC788\uB098? \uB0B4\uAC00 \uB354 \uC88B\uC740\uAC78 \uBCF4\uC5EC\uC8FC\uB3C4\uB85D \uD558\uC9C0 \uC774\uB798\uBD48\uB3C4 \uB0B4\uAC00 \uC774\uBC14\uB2E5\uC5D0\uC120 \uC5B4\uB9C8\uC5B4\uB9C8\uD55C \uBC00\uC218\uAFBC\uC774\uB77C\uACE0. \uBD88\uBC95\uC774\uAE34 \uD558\uC9C0\uB9CC \uB9C8\uB825\uC11D\uC138\uACF5 \uAC19\uC740 \uAC83\uB3C4 \uD574\uC8FC\uC9C0'
+          '\uD750\uD750 \uC790\uB124 \uD639\uC2DC \uC88B\uC740 \uBCF4\uC11D\uC774\uB098 \uD76C\uADC0\uD55C \uBB3C\uAC74 \uAC00\uC9C0\uACE0 \uC788\uB098? \uB0B4\uAC00 \uB354 \uC88B\uC740\uAC78 \uBCF4\uC5EC\uC8FC\uB3C4\uB85D \uD558\uC9C0 \uC774\uB798\uBD48\uB3C4 \uB0B4\uAC00 \uC774\uBC14\uB2E5\uC5D0\uC120 \uC5B4\uB9C8\uC5B4\uB9C8\uD55C \uBC00\uC218\uAFBC\uC774\uB77C\uACE0. \uBD88\uBC95\uC774\uAE34 \uD558\uC9C0\uB9CC \uB9C8\uB825\uC11D\uC138\uACF5 \uAC19\uC740 \uAC83\uB3C4 \uD574\uC8FC\uC9C0. \uC544\uB2C8\uBA74 \uD639\uC2DC \uB178\uC608\uB97C \uCC3E\uACE0 \uC788\uB098? \uD798\uC88B\uACE0 \uCB49\uCB49\uBE75\uBE75\uD55C \uB178\uC608\uB4E4\uB3C4 \uC788\uC9C0 \uD750\uD750\uD750...'
         ),
         _react2.default.createElement(
           'p',
@@ -29249,6 +29427,15 @@ var Store = function (_React$Component) {
               { href: '#test-swipe-6' },
               '\uC18C\uCF13\uC11D lv.2'
             )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'tab col s3' },
+            _react2.default.createElement(
+              'a',
+              { href: '#test-swipe-7' },
+              '\uB178\uC608'
+            )
           )
         ),
         _react2.default.createElement(
@@ -29304,6 +29491,52 @@ var Store = function (_React$Component) {
             { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
             mapDataToLinksShip(this.props.items, "socket2")
           )
+        ),
+        _react2.default.createElement(
+          'div',
+          { id: 'test-swipe-7', className: 'col s12 tab-in-container' },
+          _react2.default.createElement(
+            'ul',
+            { className: 'collapsible item-list', 'data-collapsible': 'accordion' },
+            mapDataToLinksShip(this.props.items, "slave")
+          )
+        )
+      );
+
+      var createName = _react2.default.createElement(
+        'div',
+        { className: 'row createName' },
+        _react2.default.createElement(
+          'div',
+          { className: 'col s12 m2' },
+          _react2.default.createElement(
+            'div',
+            { className: 'card blue-grey' },
+            _react2.default.createElement(
+              'div',
+              { className: 'card-content white-text' },
+              _react2.default.createElement(
+                'span',
+                { className: 'card-title' },
+                '\uB178\uC608 \uC774\uB984 \uBD80\uC5EC'
+              ),
+              _react2.default.createElement('input', { id: 'slaveName', type: 'text' })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'card-action' },
+              _react2.default.createElement(
+                'a',
+                { onClick: this.requestBuySlave.bind(this) },
+                '\uAD6C\uB9E4\uD655\uC815'
+              ),
+              _react2.default.createElement(
+                'a',
+                { onClick: this.cancleSlave.bind(this) },
+                '\uCDE8\uC18C'
+              )
+            )
+          )
         )
       );
 
@@ -29320,7 +29553,8 @@ var Store = function (_React$Component) {
             'CLOSE'
           )
         ),
-        this.props.storeKind == 'ship' ? shipStore : normalStore
+        this.props.storeKind == 'ship' ? shipStore : normalStore,
+        this.state.buySlave ? createName : undefined
       );
     }
   }]);
@@ -35731,7 +35965,7 @@ exports = module.exports = __webpack_require__(508)(undefined);
 
 
 // module
-exports.push([module.i, "\r\nhtml ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n.shine, .chrome {\r\n  font-size: 1em;\r\n  margin: 0 auto;\r\n  margin-bottom: 1em;\r\n}\r\n\r\n.shine {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n.chrome {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  background-image: -webkit-linear-gradient(-40deg, transparent 0%, transparent 40%, #fff 50%, transparent 60%, transparent 100%);\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 5s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n.home-text\r\n{\r\n  color: #FFF;\r\n  text-align: center;\r\n}\r\n\r\n@-webkit-keyframes shine {\r\n  0%, 10% {\r\n    background-position: -100px;\r\n  }\r\n  20% {\r\n    background-position: top left;\r\n  }\r\n  90% {\r\n    background-position: top right;\r\n  }\r\n  100% {\r\n    background-position: 100px;\r\n  }\r\n}\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 20em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.game-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n.blocking-chat\r\n{\r\n  color: #BBB;\r\n}\r\n.mon-die-chat\r\n{\r\n  color: #A00909;\r\n}\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 1.5em;\r\n}\r\n\r\n.whisper-chat{\r\n  color:#B0FFFF;\r\n}\r\n\r\n.cri-chat\r\n{\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 20px;\r\n  color: rgba(255, 50, 52, 0.4);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n.chat-green{\r\n  color:#0F0;\r\n}\r\n\r\n.chat-map-effect-span\r\n{\r\n\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 16px;\r\n}\r\n\r\n.chat-map-effect{\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n    position: relative;\r\n    margin: 0;\r\n    color: #fff;\r\n    text-transform: uppercase;\r\n}\r\n\r\n\r\n\r\n.chat-setmonster{\r\n    color: #fff;\r\n}\r\n\r\n.chat-skill{\r\n  color:#E0E0E0;\r\n  font-weight: bold;\r\n  text-shadow: 0 0 0.5em #fefcc9,\r\n0.1em -0.1em 0.3em #feec85,\r\n  0.5em -0.4em 0.5em #ec760c,\r\n-0.4em -0.9em 0.9em #cd4606,\r\n0.2em -1.1em 1.3em #451b0e;\r\n}\r\n\r\n\r\n\r\n.chat-item\r\n{\r\n  color:#A0F0F0;\r\n}\r\n.chat-Shoot\r\n{\r\n  color:#ff1d1d;\r\n}\r\n.system-chat\r\n{\r\n  color:#1da0ff;\r\n  font-weight: bold;\r\n}\r\n\r\n.levelup-chat\r\n{\r\n  animation-duration: 1s;\r\n  animation-name: levelup;\r\n  animation-iteration-count: infinite;\r\n}\r\n\r\n@keyframes levelup {\r\n  10%\r\n  {\r\n    text-shadow: 0.3em 0.1em 0.3em #F0FF00;\r\n    color:#ff1d1d;\r\n  }\r\n  20%\r\n  {\r\n    text-shadow: 0.2em 0.2em 0.3em #00FFA0;\r\n    color:#1da0ff;\r\n  }\r\n  30%\r\n  {\r\n    text-shadow: 0.1em 0.3em 0.3em #D0D6FF;\r\n    color:#E0E0E0;\r\n  }\r\n  40%\r\n  {\r\n    text-shadow: 0em 0.2em 0.3em #00FFA0;\r\n    color:#0F0;\r\n  }\r\n  50%\r\n  {\r\n    text-shadow: -0.1em 0.1em 0.3em #FFA0A0;\r\n    color:#F0FF00;\r\n  }\r\n  60%\r\n  {\r\n    text-shadow: -0.2em 0em 0.3em #F0A000;\r\n    color:#1da0ff;\r\n  }\r\n  70%\r\n  {\r\n    text-shadow: -0.3em -0.1em 0.3em #00FFFF;\r\n    color:#FF00FF;\r\n  }\r\n  80%\r\n  {\r\n    text-shadow: -0.2em -0.2em 0.3em #FF00FF;\r\n    color:#FFA0A0;\r\n  }\r\n  90%\r\n  {\r\n    text-shadow: -0.1em -0.3em 0.3em #F0A0D0;\r\n    color:#00FFA0;\r\n  }\r\n  100%\r\n  {\r\n    text-shadow: 0.1em 0.1em 0.15em #079A00;\r\n    color:#ff1d1d;\r\n  }\r\n}\r\n\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: auto;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 1.2em;\r\n    margin-top: 0px;\r\n}\r\n\r\n.stat-li{\r\n  width: 30%;\r\n  display: inline-block;\r\n\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n\r\n.mode-btn-ul\r\n{\r\n  display: inline-block;\r\n}\r\n.mode-btn\r\n{\r\n  float: left;\r\n  display: inline-block;\r\n}\r\n\r\n.inven-btn\r\n{\r\n  width: 40%;\r\n  line-height: 20px;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n\r\n.collapsible-header\r\n{\r\n  color: #000;\r\n  font-weight: bold;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 20%;\r\n  width: 100%;\r\n  outline: none;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n.controller-btn.rest-btn{\r\n  right: 11rem;\r\n  top: 0rem;\r\n}\r\n\r\n\r\n/*mapview*/\r\n.map-view\r\n{\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n}\r\n.map-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n\r\n\r\n\r\n/* fight-container */\r\n\r\n.fight-container-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 1);\r\n    z-index: 99;\r\n}\r\n\r\n.fight-container-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.fight-container-screen .btn {\r\n    margin-top: 14px;\r\n    margin-left: 1em;\r\n    margin-right: 1em;\r\n    padding-left: 0.5em;\r\n    padding-right: 0.5em;\r\n}\r\n\r\n\r\n@-webkit-keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.fight-container-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-enter;\r\n    animation-name: fight-container-enter;\r\n}\r\n\r\n@-webkit-keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.fight-container-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-leave;\r\n    animation-name: fight-container-leave;\r\n}\r\n\r\n.fight-comp-wrapper\r\n{\r\n  height: 100%;\r\n}\r\n\r\n/*HP-veiw*/\r\n\r\n.HP-view\r\n{\r\n  background: #000;\r\n  height: 10%;\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n  z-index: 9;\r\n}\r\n.HP-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n.hp-bar\r\n{\r\n      letter-spacing: -3px;\r\n}\r\n\r\n\r\n.hp-vibration\r\n{\r\n  animation-duration: 0.5s;\r\n  animation-name: vibration;\r\n}\r\n@keyframes vibration {\r\n  0%    {margin-left: 5px; margin-top: 5px;}\r\n  10%    {margin-left: 0px; margin-top: 0px;}\r\n  20%    {margin-left: 5px; margin-top: 5px;}\r\n  30%    {margin-left: 0px; margin-top: 0px;}\r\n  40%    {margin-left: 5px; margin-top: 5px;}\r\n  50%    {margin-left: 0px; margin-top: 0px;}\r\n  60%    {margin-left: 5px; margin-top: 5px;}\r\n  70%    {margin-left: 0px; margin-top: 0px;}\r\n  80%    {margin-left: 0px; margin-top: 0px;}\r\n  90%    {margin-left: 5px; margin-top: 5px;}\r\n  100%    {margin-left: 0px; margin-top: 0px;}\r\n}\r\n\r\n.cri-no{\r\n  display: none;\r\n}\r\n\r\n\r\n.cri-span{\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\r\n}\r\n\r\n.cri-yes\r\n{\r\n  display: inline-block;\r\n  position: absolute;\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n  position: relative;\r\n  margin: 0;\r\n  color: #fff;\r\n  text-transform: uppercase;\r\n  animation-duration: 0.1s;\r\n  margin-top:50%;\r\n  animation-name: criEffect;\r\n}\r\n\r\n@keyframes criEffect {\r\n  0%    {\r\n    font-size: 1em;\r\n    transform: rotate(-90deg);\r\n  }\r\n  10%    {\r\n    font-size: 3em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  20%    {\r\n    font-size: 4em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  30%    {\r\n    font-size: 5em;\r\n    transform: rotate(-20deg);\r\n  }\r\n  40%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  50%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  60%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  70%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  80%    {\r\n    font-size: 5em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  90%    {\r\n    font-size: 4em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  100%    {\r\n    font-size: 3em;\r\n    transform: rotate(-90deg);\r\n  }\r\n\r\n}\r\n\r\n/*fight-view*/\r\n\r\n.fight-view\r\n{\r\n  color:#fff;\r\n  height: calc(90% - 12em);\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.fight-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n\r\n/*fight-controller*/\r\n\r\n\r\n.fight-controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 7em;\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.fight-btn-ul\r\n{\r\n  display: inline-block;\r\n  *display: inline;\r\n  zoom:1;\r\n}\r\n.fight-btn-li\r\n{\r\n  float: left;\r\n  margin-left: -1px;\r\n  z-index: 1;\r\n  width: 50%;\r\n  height: 8em;\r\n  text-align: left;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.fight-btn-li  > a{\r\n  float: left;\r\n}\r\n\r\n.skill-btn\r\n{\r\n  font-size: 0.6em;\r\n}\r\n\r\n\r\n\r\n/*user Item0*/\r\n/* user-item */\r\n.user-item-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 20%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.user-item-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.user-item-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.user-item-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.user-item-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.user-item-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.user-item-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n.user-inven-ul{\r\n  overflow: auto;\r\n  max-height: 20em;\r\n}\r\n\r\n\r\n.ad-container\r\n{\r\n  height: 100%;\r\n}\r\n\r\n@-webkit-keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n}\r\n\r\n.user-item-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-enter;\r\n    animation-name: user-item-enter;\r\n}\r\n\r\n@-webkit-keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.user-item-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-leave;\r\n    animation-name: user-item-leave;\r\n}\r\n\r\n\r\n.item-container\r\n{\r\n  margin-top: 53px;\r\n}\r\n\r\n.item-msg\r\n{\r\n  color: #000;\r\n  padding: 10px;\r\n}\r\n\r\n.tab-in-container\r\n{\r\n  max-height: 300px;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.use-scroll-msg\r\n{\r\n  font-size: 1em;\r\n  color: #FFF;\r\n  text-align: center;\r\n}\r\n\r\n.item-option-name\r\n{\r\n  color: #C802D0;\r\n  font-weight: bold;\r\n}\r\n\r\n/* item-store */\r\n.item-store-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 10%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.item-store-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.item-store-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.item-store-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.item-store-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.item-store-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.item-store-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        top: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        top: 20%;\r\n    }\r\n}\r\n\r\n.item-store-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-enter;\r\n    animation-name: item-store-enter;\r\n}\r\n\r\n@-webkit-keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.item-store-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-leave;\r\n    animation-name: item-store-leave;\r\n}\r\n\r\n@media only screen and (min-width: 300px){\r\n  html {\r\n    font-size: 12px;\r\n}\r\n\r\nnav .brand-logo {\r\n    font-size: 1.5rem;\r\n}\r\n}\r\n@media only screen and (min-width: 350px){\r\n  html {\r\n    font-size: 14px;\r\n}\r\nnav .brand-logo {\r\n    font-size: 1.8rem;\r\n}\r\n}\r\n\r\n@media only screen and (min-width: 400px){\r\n  html {\r\n    font-size: 15px;\r\n}\r\nnav .brand-logo {\r\n    font-size: 2.1rem;\r\n}\r\n}\r\n", ""]);
+exports.push([module.i, "\r\nhtml ,body{\r\n  height: 100%;\r\n}\r\n\r\nbody {\r\n    background-color: #000;\r\n}\r\n\r\n.shine, .chrome {\r\n  font-size: 1em;\r\n  margin: 0 auto;\r\n  margin-bottom: 1em;\r\n}\r\n\r\n.shine {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n.chrome {\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  background-image: -webkit-linear-gradient(-40deg, transparent 0%, transparent 40%, #fff 50%, transparent 60%, transparent 100%);\r\n  -webkit-background-size: 100px;\r\n  color: rgba(255, 255, 255, 0.3);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 5s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n.home-text\r\n{\r\n  color: #FFF;\r\n  text-align: center;\r\n}\r\n\r\n@-webkit-keyframes shine {\r\n  0%, 10% {\r\n    background-position: -100px;\r\n  }\r\n  20% {\r\n    background-position: top left;\r\n  }\r\n  90% {\r\n    background-position: top right;\r\n  }\r\n  100% {\r\n    background-position: 100px;\r\n  }\r\n}\r\n\r\n\r\n/* Authentication */\r\n.auth {\r\n  margin-top: 50px;\r\n    text-align: center;\r\n}\r\n\r\n.logo {\r\n    text-align: center;\r\n    font-weight: 100;\r\n    font-size: 80px;\r\n    -webkit-user-select: none;\r\n    /* Chrome all / Safari all */\r\n    -moz-user-select: none;\r\n    /* Firefox all */\r\n    -ms-user-select: none;\r\n    /* IE 10+ */\r\n    user-select: none;\r\n    /* Likely future */\r\n}\r\n\r\na.logo {\r\n    color: #5B5B5B;\r\n}\r\n\r\na {\r\n    cursor: pointer;\r\n}\r\n\r\n.auth .card {\r\n    width: 400px;\r\n    margin: 0 auto;\r\n}\r\n\r\n\r\n@media screen and (max-width: 480px) {\r\n  .auth .card {\r\n    width: 100%;\r\n  }\r\n\r\n  .logo {\r\n    font-size: 60px;\r\n  }\r\n}\r\n\r\n\r\n\r\n.auth .header {\r\n    font-size: 18px;\r\n}\r\n\r\n.auth .row {\r\n    margin-bottom: 0px;\r\n}\r\n\r\n.auth .username {\r\n  margin-top: 0px;\r\n}\r\n\r\n.auth .btn {\r\n    width: 90%;\r\n}\r\n\r\n.auth .footer {\r\n    border-top: 1px solid #E9E9E9;\r\n    padding-bottom: 21px;\r\n}\r\n\r\n/* /Authentication */\r\n\r\n\r\n\r\n/*Gameview*/\r\n\r\n.game-view\r\n{\r\n  color:#fff;\r\n  height: 20em;\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.game-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n.current-user-list-btn\r\n{\r\n  position: fixed;\r\n    right: 1em;\r\n    top: 0em;\r\n    margin-top: 4em;\r\n\r\n}\r\n\r\n.input-chat\r\n{\r\n  color:#fff;\r\n}\r\n.blocking-chat\r\n{\r\n  color: #BBB;\r\n}\r\n.mon-die-chat\r\n{\r\n  color: #A00909;\r\n}\r\n.notice-chat\r\n{\r\n  color:#F012FF;\r\n  font-size: 1.5em;\r\n}\r\n\r\n.whisper-chat{\r\n  color:#B0FFFF;\r\n}\r\n\r\n.cri-chat\r\n{\r\n  background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;\r\n  -webkit-background-size: 20px;\r\n  color: rgba(255, 50, 52, 0.4);\r\n  -webkit-background-clip: text;\r\n  -webkit-animation-name: shine;\r\n  -webkit-animation-duration: 3s;\r\n  -webkit-animation-iteration-count: infinite;\r\n  text-shadow: 0 0px 0px rgba(255, 255, 255, 0.5);\r\n}\r\n\r\n\r\n.chat-line\r\n{\r\n  border-top: solid;\r\n}\r\n.chat-green{\r\n  color:#0F0;\r\n}\r\n\r\n.chat-map-effect-span\r\n{\r\n\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 16px;\r\n}\r\n\r\n.chat-map-effect{\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n    position: relative;\r\n    margin: 0;\r\n    color: #fff;\r\n    text-transform: uppercase;\r\n}\r\n\r\n\r\n\r\n.chat-setmonster{\r\n    color: #fff;\r\n}\r\n\r\n.chat-skill{\r\n  color:#E0E0E0;\r\n  font-weight: bold;\r\n  text-shadow: 0 0 0.5em #fefcc9,\r\n0.1em -0.1em 0.3em #feec85,\r\n  0.5em -0.4em 0.5em #ec760c,\r\n-0.4em -0.9em 0.9em #cd4606,\r\n0.2em -1.1em 1.3em #451b0e;\r\n}\r\n\r\n\r\n\r\n.chat-item\r\n{\r\n  color:#A0F0F0;\r\n}\r\n.chat-Shoot\r\n{\r\n  color:#ff1d1d;\r\n}\r\n.system-chat\r\n{\r\n  color:#1da0ff;\r\n  font-weight: bold;\r\n}\r\n\r\n.levelup-chat\r\n{\r\n  animation-duration: 1s;\r\n  animation-name: levelup;\r\n  animation-iteration-count: infinite;\r\n}\r\n\r\n@keyframes levelup {\r\n  10%\r\n  {\r\n    text-shadow: 0.3em 0.1em 0.3em #F0FF00;\r\n    color:#ff1d1d;\r\n  }\r\n  20%\r\n  {\r\n    text-shadow: 0.2em 0.2em 0.3em #00FFA0;\r\n    color:#1da0ff;\r\n  }\r\n  30%\r\n  {\r\n    text-shadow: 0.1em 0.3em 0.3em #D0D6FF;\r\n    color:#E0E0E0;\r\n  }\r\n  40%\r\n  {\r\n    text-shadow: 0em 0.2em 0.3em #00FFA0;\r\n    color:#0F0;\r\n  }\r\n  50%\r\n  {\r\n    text-shadow: -0.1em 0.1em 0.3em #FFA0A0;\r\n    color:#F0FF00;\r\n  }\r\n  60%\r\n  {\r\n    text-shadow: -0.2em 0em 0.3em #F0A000;\r\n    color:#1da0ff;\r\n  }\r\n  70%\r\n  {\r\n    text-shadow: -0.3em -0.1em 0.3em #00FFFF;\r\n    color:#FF00FF;\r\n  }\r\n  80%\r\n  {\r\n    text-shadow: -0.2em -0.2em 0.3em #FF00FF;\r\n    color:#FFA0A0;\r\n  }\r\n  90%\r\n  {\r\n    text-shadow: -0.1em -0.3em 0.3em #F0A0D0;\r\n    color:#00FFA0;\r\n  }\r\n  100%\r\n  {\r\n    text-shadow: 0.1em 0.1em 0.15em #079A00;\r\n    color:#ff1d1d;\r\n  }\r\n}\r\n\r\n\r\n/*chat*/\r\n.chat-input-wrapper\r\n{\r\n\r\n  bottom: 0;\r\n  width: 100%;\r\n}\r\n.input-chat\r\n{\r\n  display: inline-block;\r\n  width: 80% !important;\r\n  float:left;\r\n}\r\n.chat-send-btn\r\n{\r\n  display: inline-block;\r\n  width: 20%;\r\n  margin-top: 0.6em;\r\n}\r\n\r\n\r\n\r\n/* SEARCH */\r\n.search-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.search-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.search-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.search-results {\r\n    text-align: center;\r\n    font-size: 30px;\r\n    margin-top: 2em;\r\n}\r\n\r\n.search-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.search-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.search-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes search-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.search-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-enter;\r\n    animation-name: search-enter;\r\n}\r\n\r\n@-webkit-keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes search-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.search-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: search-leave;\r\n    animation-name: search-leave;\r\n}\r\n\r\n\r\n\r\n/* right-menu */\r\n.right-menu-screen {\r\n    position: fixed;\r\n    overflow-y: auto;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 0.70);\r\n    z-index: 99;\r\n}\r\n\r\n.right-menu-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.right-menu-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.right-menu-results {\r\n    text-align: center;\r\n    font-size: 1.2em;\r\n    margin-top: 0px;\r\n}\r\n\r\n.stat-li{\r\n  width: 30%;\r\n  display: inline-block;\r\n\r\n}\r\n\r\n.right-menu-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.right-menu-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.right-menu-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.right-menu-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-enter;\r\n    animation-name: right-menu-enter;\r\n}\r\n\r\n@-webkit-keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes right-menu-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.right-menu-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: right-menu-leave;\r\n    animation-name: right-menu-leave;\r\n}\r\n\r\n\r\n.mode-btn-ul\r\n{\r\n  display: inline-block;\r\n}\r\n.mode-btn\r\n{\r\n  float: left;\r\n  display: inline-block;\r\n}\r\n\r\n.inven-btn\r\n{\r\n  width: 40%;\r\n  line-height: 20px;\r\n}\r\n\r\n\r\nnav .brand-logo.center\r\n{\r\n  left: 35%;\r\n}\r\n\r\n\r\n.collapsible-header\r\n{\r\n  color: #000;\r\n  font-weight: bold;\r\n}\r\n\r\n/*controller*/\r\n\r\n.controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 20%;\r\n  width: 100%;\r\n  outline: none;\r\n}\r\n\r\n.controller-btn\r\n{\r\n  position: absolute;\r\n  border-radius: 2em;\r\n\r\n}\r\n\r\n.controller-btn.up\r\n{\r\n  margin-top: -1rem;\r\n  margin-left: 3rem;\r\n}\r\n.controller-btn.down\r\n{\r\n  margin-top: 5rem;\r\n  margin-left: 3rem;\r\n\r\n  -ms-transform: rotate(180deg);\r\n   -webkit-transform: rotate(180deg);\r\n   transform: rotate(180deg);\r\n}\r\n.controller-btn.left\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 0rem;\r\n\r\n  -ms-transform: rotate(270deg);\r\n   -webkit-transform: rotate(270deg);\r\n   transform: rotate(270deg);\r\n}\r\n.controller-btn.right\r\n{\r\n  margin-top: 2rem;\r\n  margin-left: 6rem;\r\n\r\n  -ms-transform: rotate(90deg);\r\n   -webkit-transform: rotate(90deg);\r\n   transform: rotate(90deg);\r\n}\r\n.controller-btn.map-location\r\n{\r\n  right: 2rem;\r\n  top: 6rem;\r\n}\r\n.controller-btn.attack-btn\r\n{\r\n  right: 2rem;\r\n  top: 0rem;\r\n}\r\n.controller-btn.rest-btn{\r\n  right: 11rem;\r\n  top: 0rem;\r\n}\r\n\r\n\r\n/*mapview*/\r\n.map-view\r\n{\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n}\r\n.map-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n\r\n\r\n\r\n/* fight-container */\r\n\r\n.fight-container-screen {\r\n    position: fixed;\r\n    overflow-y: none;\r\n    left: 0px;\r\n    top: 0px;\r\n    height:100%;\r\n    width:100%;\r\n    background-color: rgba(0, 0, 0, 1);\r\n    z-index: 99;\r\n}\r\n\r\n.fight-container-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.fight-container-screen .btn {\r\n    margin-top: 14px;\r\n    margin-left: 1em;\r\n    margin-right: 1em;\r\n    padding-left: 0.5em;\r\n    padding-right: 0.5em;\r\n}\r\n\r\n\r\n@-webkit-keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-enter {\r\n    0% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n}\r\n\r\n.fight-container-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-enter;\r\n    animation-name: fight-container-enter;\r\n}\r\n\r\n@-webkit-keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n@keyframes fight-container-leave {\r\n    0% {\r\n        opacity: 1;\r\n        height: 100%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        height: 0%;\r\n    }\r\n}\r\n\r\n.fight-container-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: fight-container-leave;\r\n    animation-name: fight-container-leave;\r\n}\r\n\r\n.fight-comp-wrapper\r\n{\r\n  height: 100%;\r\n}\r\n\r\n/*HP-veiw*/\r\n\r\n.HP-view\r\n{\r\n  background: #000;\r\n  height: 10%;\r\n  color: #FFF;\r\n  font-size: 0.8em;\r\n  text-align: center;\r\n  z-index: 9;\r\n}\r\n.HP-view > p{\r\n  margin: 0px;\r\n  line-height: 1em;\r\n}\r\n\r\n.hp-bar\r\n{\r\n      letter-spacing: -3px;\r\n}\r\n\r\n\r\n.hp-vibration\r\n{\r\n  animation-duration: 0.5s;\r\n  animation-name: vibration;\r\n}\r\n@keyframes vibration {\r\n  0%    {margin-left: 5px; margin-top: 5px;}\r\n  10%    {margin-left: 0px; margin-top: 0px;}\r\n  20%    {margin-left: 5px; margin-top: 5px;}\r\n  30%    {margin-left: 0px; margin-top: 0px;}\r\n  40%    {margin-left: 5px; margin-top: 5px;}\r\n  50%    {margin-left: 0px; margin-top: 0px;}\r\n  60%    {margin-left: 5px; margin-top: 5px;}\r\n  70%    {margin-left: 0px; margin-top: 0px;}\r\n  80%    {margin-left: 0px; margin-top: 0px;}\r\n  90%    {margin-left: 5px; margin-top: 5px;}\r\n  100%    {margin-left: 0px; margin-top: 0px;}\r\n}\r\n\r\n.cri-no{\r\n  display: none;\r\n}\r\n\r\n\r\n.cri-span{\r\n  background: url(http://www.webdesignerwall.com/demo/css-gradient-text/images/pattern-zebra.png);\r\n      background-size: contain;\r\n  position: absolute;\r\n  display: block;\r\n  width: 100%;\r\n  height: 100%;\r\n}\r\n\r\n.cri-yes\r\n{\r\n  display: inline-block;\r\n  position: absolute;\r\n  font: bold 600%/100% \"Lucida Grande\", Arial, sans-serif;\r\n  position: relative;\r\n  margin: 0;\r\n  color: #fff;\r\n  text-transform: uppercase;\r\n  animation-duration: 0.1s;\r\n  margin-top:50%;\r\n  animation-name: criEffect;\r\n}\r\n\r\n@keyframes criEffect {\r\n  0%    {\r\n    font-size: 1em;\r\n    transform: rotate(-90deg);\r\n  }\r\n  10%    {\r\n    font-size: 3em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  20%    {\r\n    font-size: 4em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  30%    {\r\n    font-size: 5em;\r\n    transform: rotate(-20deg);\r\n  }\r\n  40%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  50%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  60%    {\r\n    font-size: 7em;\r\n    transform: rotate(10deg);\r\n  }\r\n  70%    {\r\n    font-size: 6em;\r\n    transform: rotate(-10deg);\r\n  }\r\n  80%    {\r\n    font-size: 5em;\r\n    transform: rotate(-50deg);\r\n  }\r\n  90%    {\r\n    font-size: 4em;\r\n    transform: rotate(-70deg);\r\n  }\r\n  100%    {\r\n    font-size: 3em;\r\n    transform: rotate(-90deg);\r\n  }\r\n\r\n}\r\n\r\n/*fight-view*/\r\n\r\n.fight-view\r\n{\r\n  color:#fff;\r\n  height: calc(90% - 12em);\r\n  overflow: scroll;\r\n  word-break: break-all;\r\n  overflow-x: hidden;\r\n}\r\n.fight-view > p{\r\n  margin: 0.5em;\r\n  font-size: 1em;\r\n}\r\n\r\n\r\n/*fight-controller*/\r\n\r\n\r\n.fight-controller-container\r\n{\r\n  position: absolute;\r\n  margin-top: 1em;\r\n  height: 7em;\r\n  width: 100%;\r\n  text-align: center;\r\n}\r\n\r\n\r\n.fight-btn-ul\r\n{\r\n  display: inline-block;\r\n  *display: inline;\r\n  zoom:1;\r\n}\r\n.fight-btn-li\r\n{\r\n  float: left;\r\n  margin-left: -1px;\r\n  z-index: 1;\r\n  width: 50%;\r\n  height: 8em;\r\n  text-align: left;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.fight-btn-li  > a{\r\n  float: left;\r\n}\r\n\r\n.skill-btn\r\n{\r\n  font-size: 0.6em;\r\n}\r\n\r\n\r\n\r\n/*user Item0*/\r\n/* user-item */\r\n.user-item-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 20%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.user-item-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.user-item-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.user-item-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.user-item-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.user-item-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.user-item-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n.user-inven-ul{\r\n  overflow: auto;\r\n  max-height: 20em;\r\n}\r\n\r\n\r\n.ad-container\r\n{\r\n  height: 100%;\r\n}\r\n\r\n@-webkit-keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes user-item-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n}\r\n\r\n.user-item-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-enter;\r\n    animation-name: user-item-enter;\r\n}\r\n\r\n@-webkit-keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes user-item-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.user-item-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: user-item-leave;\r\n    animation-name: user-item-leave;\r\n}\r\n\r\n\r\n.item-container\r\n{\r\n  margin-top: 53px;\r\n}\r\n\r\n.item-msg\r\n{\r\n  color: #000;\r\n  padding: 10px;\r\n}\r\n\r\n.tab-in-container\r\n{\r\n  max-height: 300px;\r\n  overflow: auto;\r\n}\r\n\r\n\r\n.use-scroll-msg\r\n{\r\n  font-size: 1em;\r\n  color: #FFF;\r\n  text-align: center;\r\n}\r\n\r\n.item-option-name\r\n{\r\n  color: #C802D0;\r\n  font-weight: bold;\r\n}\r\n\r\n/* item-store */\r\n.item-store-screen {\r\n    position: fixed;\r\n    display: inline-block;\r\n    top: 10%;\r\n    min-height:20%;\r\n    width:100%;\r\n    background-color: rgba(255, 255, 255, 1);\r\n    color: #000;\r\n    z-index: 99;\r\n}\r\n\r\n.item-store-screen input {\r\n    text-align: center;\r\n    font-size: 50px;\r\n    line-height: 80px;\r\n    margin-top: 10vw;\r\n    height: 80px;\r\n    font-weight: 200;\r\n}\r\n\r\n.item-store-screen .btn {\r\n    margin-top: 14px;\r\n    margin-right: 20px;\r\n}\r\n\r\nul.item-store-results {\r\n    text-align: center;\r\n    font-size: 22px;\r\n    margin-top: 0px;\r\n}\r\n\r\n\r\n.item-store-results a {\r\n    padding: 10px;\r\n    display: block;\r\n    color: white;\r\n}\r\n\r\n.item-store-results a + a {\r\n    border-top: 1px solid #5F5F5F;\r\n}\r\n\r\n.item-store-results a:hover {\r\n    background-color: rgba(255, 255, 255, 0.10);\r\n}\r\n\r\n@-webkit-keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        left: 0px;\r\n    }\r\n}\r\n\r\n@keyframes item-store-enter {\r\n    0% {\r\n        opacity: 0;\r\n        top: 100%;\r\n    }\r\n    100% {\r\n        opacity: 1;\r\n        top: 20%;\r\n    }\r\n}\r\n\r\n.item-store-enter {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-enter;\r\n    animation-name: item-store-enter;\r\n}\r\n\r\n@-webkit-keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n@keyframes item-store-leave {\r\n    0% {\r\n        opacity: 1;\r\n        left: 0%;\r\n    }\r\n    100% {\r\n        opacity: 0;\r\n        left: 100%;\r\n    }\r\n}\r\n\r\n.item-store-leave {\r\n    -webkit-animation-duration: 0.3s;\r\n    animation-duration: 0.3s;\r\n    -webkit-animation-name: item-store-leave;\r\n    animation-name: item-store-leave;\r\n}\r\n\r\n\r\n.createName\r\n{\r\n  position: absolute;\r\n  top:3em;\r\n}\r\n\r\n@media only screen and (min-width: 300px){\r\n  html {\r\n    font-size: 12px;\r\n}\r\n\r\nnav .brand-logo {\r\n    font-size: 1.5rem;\r\n}\r\n}\r\n@media only screen and (min-width: 350px){\r\n  html {\r\n    font-size: 14px;\r\n}\r\nnav .brand-logo {\r\n    font-size: 1.8rem;\r\n}\r\n}\r\n\r\n@media only screen and (min-width: 400px){\r\n  html {\r\n    font-size: 15px;\r\n}\r\nnav .brand-logo {\r\n    font-size: 2.1rem;\r\n}\r\n}\r\n", ""]);
 
 // exports
 
