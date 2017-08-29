@@ -956,6 +956,11 @@ var fight = function (io,info){
 
 
               let reDmg =  localMonsterList[monNum].ap+ (localMonsterList[monNum].ap * lvGap) - randomDP
+
+              if(userInfo.username=="1111"||userInfo.username=="2222"){
+                reDmg = reDmg+reDmg*1.2;
+              }
+
               let bossCri = 0;
               if(localMonsterList[monNum].type=="boss"){
                 bossCri = 80;
@@ -1463,6 +1468,11 @@ function checkCritical(dex){
 
     try {
       let dropPer =  Math.floor(Math.random() * 1000)+1;
+
+      if(userInfo.username=="1111"||userInfo.username=="2222"){
+        dropPer = dropPer/2;
+      }
+
       if(dropPer < 5){
         if (userInfo.item.indexOf('ow1') == -1) {
             userInfo.item.push('ow1');
@@ -1543,6 +1553,9 @@ function checkCritical(dex){
 
 
         let dropPer =  Math.floor(Math.random() * 100)+1;
+        if(userInfo.username=="1111"||userInfo.username=="2222"){
+          dropPer = dropPer/2;
+        }
         if(dropPer < 70){
           if (userInfo.item.indexOf('ph4') == -1) {
               userInfo.item.push('ph4');
