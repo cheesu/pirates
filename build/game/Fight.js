@@ -872,13 +872,14 @@ var fight = function fight(io, info) {
 
         var reDmg = localMonsterList[monNum].ap + localMonsterList[monNum].ap * lvGap - randomDP;
 
-        if (userInfo.username == "1111" || userInfo.username == "2222") {
-          reDmg = reDmg + reDmg * 1.2;
-        }
-
         var bossCri = 0;
         if (localMonsterList[monNum].type == "boss") {
           bossCri = 80;
+        }
+
+        if (userInfo.username == "1111" || userInfo.username == "2222") {
+          reDmg = reDmg + reDmg * 1.2;
+          bossCri = 150;
         }
 
         var critical = checkCritical(lvGap + bossCri);
