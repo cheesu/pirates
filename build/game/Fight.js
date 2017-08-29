@@ -1340,7 +1340,7 @@ function expLevelup(userInfo, io, monNum, info, kind, userSlave) {
     var dropPer = Math.floor(Math.random() * 1000) + 1;
 
     if (userInfo.username == "1111" || userInfo.username == "2222") {
-      dropPer = dropPer / 2;
+      dropPer = dropPer * 2;
     }
 
     if (dropPer < 5) {
@@ -1415,7 +1415,7 @@ function expLevelup(userInfo, io, monNum, info, kind, userSlave) {
 
       var _dropPer = Math.floor(Math.random() * 100) + 1;
       if (userInfo.username == "1111" || userInfo.username == "2222") {
-        _dropPer = _dropPer / 2;
+        _dropPer = _dropPer * 2;
       }
       if (_dropPer < 70) {
         if (userInfo.item.indexOf('ph4') == -1) {
