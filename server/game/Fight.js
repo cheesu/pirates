@@ -1442,6 +1442,10 @@ function checkCritical(dex){
     // 경험치 계산
 
     let upExp =  Math.round((localMonsterList[monNum].exp*aggroPer)/100);
+    if(localMonsterList[monNum].exp < upExp){
+      upExp = localMonsterList[monNum].exp;
+    }
+    upExp = upExp*1;
 
     if(userSlave=="slave"){
       upExp = Math.round(upExp+ localMonsterList[monNum].exp*0.4);
@@ -1475,6 +1479,9 @@ function checkCritical(dex){
     let totalExp = Math.round((userInfo.exp*1) + (upExp*1));
     let setGold = Math.round(userInfo.gold + getGold);
 
+    if(totalExp>1000000000){
+      totalExp = userInfo.exp;
+    }
 
     try {
       let dropPer =  Math.floor(Math.random() * 1000)+1;

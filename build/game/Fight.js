@@ -1314,6 +1314,10 @@ function expLevelup(userInfo, io, monNum, info, kind, userSlave) {
   // 경험치 계산
 
   var upExp = Math.round(localMonsterList[monNum].exp * aggroPer / 100);
+  if (localMonsterList[monNum].exp < upExp) {
+    upExp = localMonsterList[monNum].exp;
+  }
+  upExp = upExp * 1;
 
   if (userSlave == "slave") {
     upExp = Math.round(upExp + localMonsterList[monNum].exp * 0.4);
@@ -1343,6 +1347,10 @@ function expLevelup(userInfo, io, monNum, info, kind, userSlave) {
 
   var totalExp = Math.round(userInfo.exp * 1 + upExp * 1);
   var setGold = Math.round(userInfo.gold + getGold);
+
+  if (totalExp > 1000000000) {
+    totalExp = userInfo.exp;
+  }
 
   try {
     var dropPer = Math.floor(Math.random() * 1000) + 1;
