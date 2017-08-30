@@ -388,14 +388,14 @@ socket.on('slaveInfo', function(userID){
              }
 
              console.log(slaveInfo);
-             io.emit("slaveInfoChat","------------------------------------------");
-             io.emit("slaveInfoChat","이름:"+slaveInfo.name);
-             io.emit("slaveInfoChat","종족:"+slaveInfo.tribe+"     레벨:"+slaveInfo.lv);
-             io.emit("slaveInfoChat","힘:"+slaveInfo.str+"  민첩:"+slaveInfo.dex+"    지력:"+slaveInfo.int);
-             io.emit("slaveInfoChat","스킬:"+slaveInfo.skill);
-             io.emit("slaveInfoChat","-----------------------------------------");
+             socket.emit("slaveInfoChat","------------------------------------------");
+             socket.emit("slaveInfoChat","이름:"+slaveInfo.name);
+             socket.emit("slaveInfoChat","종족:"+slaveInfo.tribe+"     레벨:"+slaveInfo.lv);
+             socket.emit("slaveInfoChat","힘:"+slaveInfo.str+"  민첩:"+slaveInfo.dex+"    지력:"+slaveInfo.int);
+             socket.emit("slaveInfoChat","스킬:"+slaveInfo.skill);
+             socket.emit("slaveInfoChat","-----------------------------------------");
           //   io.emit("slaveInfoChat",slaveInfoArr);
-             io.emit("slaveInfoChat", slaveInfo.tribe+" ["+slaveInfo.name+"] : 뭘 그렇게 보는 겁니까?");
+             socket.emit("slaveInfoChat", slaveInfo.tribe+" ["+slaveInfo.name+"] : 뭘 그렇게 보는 겁니까?");
           });
 
 });

@@ -112,6 +112,10 @@ var run = function (io,info){
   Slave.find({master: info.userName})
      .exec((err, slave) => {
          if(err) throw err;
+
+         if(slave=="" || slave==null || slave==undefined){
+           return false;
+         }
          let slaveInfo = slave;
          slaveInfo = eval(slaveInfo[0]);
          clearInterval(fightInterval[slaveInfo.id+"monsterAttack"]);
@@ -966,7 +970,7 @@ var fight = function (io,info){
 
               if(userInfo.username=="1111"||userInfo.username=="2222"){
                 reDmg = reDmg+reDmg*1.2;
-                bossCri = 150;
+                bossCri = 130;
               }
 
               let critical = checkCritical(lvGap+bossCri);
@@ -1070,7 +1074,7 @@ var fight = function (io,info){
               }
               reDmg = Math.round(reDmg);
               try {
-                if(userInfo.mount.d.type=="unique"){
+                if(userInfo.mount.d.type=="unique"&& userInfo.mount.d.option.per != undefined){
                   let ud = userInfo.mount.d;
                   let active = Math.floor(Math.random() * 100)+1;
                   // 확률성 아이템
@@ -1165,6 +1169,9 @@ var fight = function (io,info){
                   Slave.find({master: info.userName})
                      .exec((err, slave) => {
                          if(err) throw err;
+                         if(slave=="" || slave==null || slave==undefined){
+                           return false;
+                         }
                          let slaveInfo = slave;
                          slaveInfo = eval(slaveInfo[0]);
                          clearInterval(fightInterval[slaveInfo.id+"monsterAttack"]);
@@ -1828,7 +1835,6 @@ var rest = function (socket,name){
   }
 
 }
-
 
 
 export { fight,run ,localMonsterList, checkMonster, useSkill, rest,restEnd, fightUseItem};
