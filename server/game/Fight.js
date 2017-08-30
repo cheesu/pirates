@@ -1472,7 +1472,7 @@ function checkCritical(dex){
     }
 
 
-    let totalExp = Math.round(userInfo.exp + upExp);
+    let totalExp = Math.round((userInfo.exp*1) + (upExp*1));
     let setGold = Math.round(userInfo.gold + getGold);
 
 
@@ -1688,8 +1688,8 @@ else{
             let partyMember = eval(partyAccount);
             // 같은 맵에 있으면 분배
             if(partyMember.mapName == info.mapName){
-              let totalPartyExp = partyMember.exp + partyExp;
-              let totalPartyGold = partyMember.gold + partyGold;
+              let totalPartyExp = (partyMember.exp*1) + (partyExp*1);
+              let totalPartyGold = (partyMember.gold*1) + (partyGold*1);
 
 
               Account.update({username: partyMember.username},{$set:{exp:totalPartyExp, gold:totalPartyGold}}, function(err, output){

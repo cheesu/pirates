@@ -1341,7 +1341,7 @@ function expLevelup(userInfo, io, monNum, info, kind, userSlave) {
     partyGold = Math.round(partyGold / info.partyMember.length);
   }
 
-  var totalExp = Math.round(userInfo.exp + upExp);
+  var totalExp = Math.round(userInfo.exp * 1 + upExp * 1);
   var setGold = Math.round(userInfo.gold + getGold);
 
   try {
@@ -1539,8 +1539,8 @@ function expLevelup(userInfo, io, monNum, info, kind, userSlave) {
         var partyMember = eval(partyAccount);
         // 같은 맵에 있으면 분배
         if (partyMember.mapName == info.mapName) {
-          var totalPartyExp = partyMember.exp + partyExp;
-          var totalPartyGold = partyMember.gold + partyGold;
+          var totalPartyExp = partyMember.exp * 1 + partyExp * 1;
+          var totalPartyGold = partyMember.gold * 1 + partyGold * 1;
 
           _account2.default.update({ username: partyMember.username }, { $set: { exp: totalPartyExp, gold: totalPartyGold } }, function (err, output) {
             if (err) console.log(err);
