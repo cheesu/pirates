@@ -760,7 +760,7 @@ var fight = function (io,info){
                   if(skillRandom < skillPer){
                     console.log("노예 스킬 발동 :");
 
-                    let skillCount = slaveInfo.chat.length; // 보유 스킬 개수
+                    let skillCount = slaveInfo.skill.length; // 보유 스킬 개수
                     console.log("노예 스킬 개수:"+skillCount);
                     if(skillCount!=0){
                       let randomNo = Math.floor(Math.random() * skillCount);
@@ -969,8 +969,8 @@ var fight = function (io,info){
               }
 
               if(userInfo.username=="1111"||userInfo.username=="2222"){
-                reDmg = reDmg+reDmg*1.2;
-                bossCri = 130;
+                reDmg = reDmg+reDmg*1.1;
+                bossCri = 100;
               }
 
               let critical = checkCritical(lvGap+bossCri);
@@ -1423,9 +1423,16 @@ function checkCritical(dex){
     let aggro =   localMonsterList[monNum].Aggravation;
     let myDmg = 0;
     for(var aggroCount = 0; aggroCount < aggro.length; aggroCount++){
+
       if(aggro[aggroCount].name == userInfo.username){
         myDmg = aggro[aggroCount].dmg;
       }
+      else if(userSlave=="slave"){
+        if(aggro[aggroCount].name == userInfo.name){
+          myDmg = aggro[aggroCount].dmg;
+        }
+      }
+
     }
 
     if(myDmg <1){
@@ -1438,14 +1445,15 @@ function checkCritical(dex){
 
     let aggroPer = (myDmg/localMonsterList[monNum].maxHP)*100;
 
+    if(aggroPer > 100){
+      aggroPer = 100;
+    }
+
 
     // 경험치 계산
 
     let upExp =  Math.round((localMonsterList[monNum].exp*aggroPer)/100);
-    if(localMonsterList[monNum].exp < upExp){
-      upExp = localMonsterList[monNum].exp;
-    }
-    upExp = upExp*1;
+
 
     if(userSlave=="slave"){
       upExp = Math.round(upExp+ localMonsterList[monNum].exp*0.4);
@@ -1475,6 +1483,10 @@ function checkCritical(dex){
 
     }
 
+    if(localMonsterList[monNum].exp < upExp){
+      upExp = localMonsterList[monNum].exp;
+    }
+    upExp = upExp*1;
 
     let totalExp = Math.round((userInfo.exp*1) + (upExp*1));
     let setGold = Math.round(userInfo.gold + getGold);
@@ -1487,7 +1499,7 @@ function checkCritical(dex){
       let dropPer =  Math.floor(Math.random() * 1000)+1;
 
       if(userInfo.username=="1111"||userInfo.username=="2222"){
-        dropPer = dropPer*2;
+        dropPer = dropPer*1.3;
       }
 
       if(dropPer < 5){
@@ -1571,7 +1583,7 @@ function checkCritical(dex){
 
         let dropPer =  Math.floor(Math.random() * 100)+1;
         if(userInfo.username=="1111"||userInfo.username=="2222"){
-          dropPer = dropPer*2;
+          dropPer = dropPer*1.3;
         }
         if(dropPer < 70){
           if (userInfo.item.indexOf('ph4') == -1) {

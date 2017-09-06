@@ -1309,6 +1309,50 @@ router.post('/buySlave/', (req, res) => {
 
 });
 
+
+// 노예 경험치 구매
+router.post('/buySlaveExp/', (req, res) => {
+  console.log("노예 경험치 구매");
+  console.log(req.body);
+  var gold  = req.body.gold;
+  Account.find({username: req.session.loginInfo.username})
+      .exec((err, accounts) => {
+          if(err) throw err;
+          let userInfo = eval(accounts[0]);
+
+          Slave.find({master: userInfo.username})
+              .exec((err, slv) => {
+                  if(err) throw err;
+                  let slvInfo = eval(slv[0]);
+                  if(slvInfo=="" || slvInfo==null || slvInfo==undefined){
+                    res.json({msg:"소유하고 있는 노예가 없습니다.", result:false});
+                  }
+                  //금액 확인
+                  else if(gold > userInfo.gold){
+                    res.json({msg:"소지 금액이 부족합니다.", result:false});
+                  }
+                  else{
+                  let userGold = userInfo.gold - gold;
+                  Account.update({username: req.session.loginInfo.username},{$set:{gold:userGold}}, function(err, output){
+                      if(err) throw err;
+
+                      let slaveExp = slvInfo.exp + gold;
+                              // 기존노예에 새로운 노예로 업데이트
+                              Slave.update({master: req.session.loginInfo.username},{$set:{exp: slaveExp}}, function(err, output){
+                                if(err) throw err;
+                                let resultMsg = req.session.loginInfo.username+"님의 노예 ["+slvInfo.name+"]의 경험치를 "+gold+" 구매 하였습니다.";
+                                res.json({msg:resultMsg, result:true});
+                              });
+                  });
+                }
+
+          });
+
+  });
+
+
+});
+
 // 맵 이동시 위치 저장
 router.get('/saveMap/:mapName', (req, res) => {
   Account.update({username: req.session.loginInfo.username},{$set:{mapName:req.params.mapName}}, function(err, output){

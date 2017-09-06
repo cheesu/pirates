@@ -57,12 +57,24 @@ class Store extends React.Component {
     }
   }
 
+
+  buySlaveExp(gold){
+    axios.post('/api/account/buySlaveExp/', { gold:gold})
+       .then((response) => {
+         this.props.getStatusRequest();
+         this.props.userItemRequest();
+         alert(response.data.msg);
+       }).catch((error) => {
+           console.log(error);
+       });
+  }
+
   requestBuySlave(){
 
     let slaveName = $("#slaveName").val();
     let slaveId = this.state.slaveInfo.id;
 
-    
+
     axios.post('/api/account/buySlave/', { name:slaveId, slaveName : slaveName})
        .then((response) => {
          this.props.getStatusRequest();
@@ -253,6 +265,8 @@ cancleSlave(){
             </div>
           </li>);
         }
+
+
           return data.map((item, i) => {
             var count = this.countItem(item);
             if(item.kind == "elixir"&&tabType==item.kind){
@@ -401,8 +415,6 @@ cancleSlave(){
                       }
 
 
-
-
           });
       };
 
@@ -494,6 +506,7 @@ cancleSlave(){
               <li className="tab col s3"><a href="#test-swipe-5">소켓석 lv.1</a></li>
               <li className="tab col s3"><a href="#test-swipe-6">소켓석 lv.2</a></li>
               <li className="tab col s3"><a href="#test-swipe-7">노예</a></li>
+              <li className="tab col s3"><a href="#test-swipe-8">노예훈련</a></li>
             </ul>
             <div id="test-swipe-1" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
@@ -528,6 +541,28 @@ cancleSlave(){
             <div id="test-swipe-7" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
                 { mapDataToLinksShip(this.props.items,"slave") }
+              </ul>
+            </div>
+            <div id="test-swipe-8" className="col s12 tab-in-container">
+              <ul className="collapsible item-list" data-collapsible="accordion">
+                <li>
+                  <div className="collapsible-header"><span className="badge">   </span>백만경험치 구매</div>
+                  <div className="collapsible-body item-msg">
+                    <p>노예 획득 경험치 : 1000000 <span>가격 :1000000 gold </span></p>
+                      <p>
+                        <a onClick={this.buySlaveExp.bind(this,1000000)}  className="waves-effect waves-light btn">구매</a>
+                      </p>
+                  </div>
+                </li>
+                <li>
+                  <div className="collapsible-header"><span className="badge">   </span>천만 경험치 구매</div>
+                  <div className="collapsible-body item-msg">
+                    <p>노예 획득 경험치 : 10000000 <span>가격 :10000000 gold </span></p>
+                      <p>
+                        <a onClick={this.buySlaveExp.bind(this,10000000)}  className="waves-effect waves-light btn">구매</a>
+                      </p>
+                  </div>
+                </li>
               </ul>
             </div>
         </div>
