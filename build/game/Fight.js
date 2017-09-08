@@ -643,6 +643,8 @@ var fight = function fight(io, info) {
         // 몬스터 처치후 발동되는 인터벌 막기위한 판단
         if (!fightInterval[slaveInfo.id + "fighting"]) {
           console.log(slaveInfo.id + "전투 중단");
+          clearInterval(fightInterval[slaveInfo.id + "monsterAttack"]);
+          clearInterval(fightInterval[slaveInfo.id + "userAttack"]);
           return false;
         }
 
@@ -731,8 +733,24 @@ var fight = function fight(io, info) {
               });
 
               return false;
+            } else if (slaveSkill == "정기흡수") {
+              skillDmg = 3;
+              var _healUp = slaveInfo.int * (slaveInfo.lv / 5);
+              // 같은 맵에 있으면 분배
+              _account2.default.findOne({ username: slaveInfo.master }, function (err, masterAccount) {
+                if (err) throw err;
+                var masterInfo = eval(masterAccount);
+                if (masterInfo.mapName == info.mapName) {
+                  if (fightInterval[masterInfo.username + "HP"] + _healUp > masterInfo.max_hp) {
+                    _healUp = masterInfo.max_hp - fightInterval[masterInfo.username + "HP"];
+                  }
+                  fightInterval[masterInfo.username + "HP"] = fightInterval[masterInfo.username + "HP"] + _healUp;
+                  io.emit(masterInfo.username + "userHP", fightInterval[masterInfo.username + "HP"] + "-" + masterInfo.max_hp);
+                  io.emit(masterInfo.username + "fight", "[skill] 어머 오빠 몸이 너무 좋은데? 건강해 보여 체력 소모좀 해볼까?");
+                  io.emit(masterInfo.username + "fight", "[skill] " + slaveInfo.name + "이(가) " + localMonsterList[monNum].name + "의 정기를 흡수해 전달해 주었습니다. 체력이 [" + _healUp + "] 회복 됩니다.");
+                }
+              });
             }
-
             dmg = (slaveInfo.int + slaveInfo.str + (slaveInfo.int + slaveInfo.str + wAP) * lvBonus) * skillDmg * skillAddLvDmg - localMonsterList[monNum].dp;
             io.emit(info.ch + "fight", "[skill]" + skillMsg);
           }
