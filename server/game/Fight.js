@@ -286,7 +286,7 @@ var useSkill = function(io,info){
 
 
                   /*특수 스킬 */
-                  if(skillInfo.sp!=undefined){
+                  if(skillInfo.sp!=undefined&&skillInfo.sp.type!="fire"){
                     /***힐***/
                     if(skillInfo.sp.type=='heal'){
                       let healUp =  (userInfo.int+wAP)*skillInfo.sp.val;
@@ -319,9 +319,6 @@ var useSkill = function(io,info){
                       }else{
                         io.emit(userInfo.username+"fight", "[skill] 이미 동일한 스킬이 걸려 있습니다.");
                       }
-
-
-
                     }
                     /***공깍***/
                     else{
@@ -361,6 +358,29 @@ var useSkill = function(io,info){
                   }
                   /*특수 스킬 끝*/
                   console.log("특수 스킬 끝");
+
+
+                  //지속뎀
+                  if(skillInfo.sp!=undefined&&skillInfo.sp.type=='fire'){
+                    for(let spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
+                      if(localMonsterList[monNum].sp[spCount].type==skillInfo.sp.type){
+                        io.emit(userInfo.username+"fight", "[skill] 이미 동일한 스킬이 걸려 있습니다.");
+                        io.emit(userInfo.username+"[SkillEnd]", "");
+                        clearInterval(fightInterval[userInfo.username+"skillInterval"]);
+                        fightInterval[userInfo.username+"CastingCount"] = null;
+                        fightInterval[userInfo.username+"skillInterval"] = null;
+                        fightInterval[userInfo.username+"skill"] = false;
+                        return false;
+                      }
+                    }
+                    let spIndex = localMonsterList[monNum].sp.length;
+                    localMonsterList[monNum].sp.push(skillInfo.sp);
+                    setTimeout(function() {
+                       localMonsterList[monNum].sp.splice(spIndex, 1);
+                       io.emit(info.ch+"fight", "[skill]"+skillInfo.name+"의 효과가 끝났습니다.");
+                     }, 1000*skillInfo.sp.time);
+                  }
+
 
                   /*특수스킬 방깍*/
                   let downDpVal = 0;
@@ -805,7 +825,7 @@ var fight = function (io,info){
                       }
                       else if(slaveSkill == "정기흡수"){
                         skillDmg = 3;
-                        let healUp =  (slaveInfo.int)*(slaveInfo.lv/5);
+                        let healUp =  (slaveInfo.int)*(slaveInfo.lv/6);
                             // 같은 맵에 있으면 분배
                             Account.findOne({ username: slaveInfo.master}, (err, masterAccount) => {
                                 if(err) throw err;
@@ -1026,6 +1046,16 @@ var fight = function (io,info){
                 if(localMonsterList[monNum].sp[spCount].type=="downAp"){
                   let skillVal = localMonsterList[monNum].sp[spCount].val;
                   reDmg = Math.floor(reDmg*((100-skillVal)/100));
+                }
+
+                // 특수스킬 화염 지속뎀
+                if(localMonsterList[monNum].sp[spCount].type=="fire"){
+                  let skillDmg = localMonsterList[monNum].sp[spCount].val;
+                  localMonsterList[monNum].hp = localMonsterList[monNum].hp - skillDmg;
+                  io.emit(info.ch+"fight", "[미티어 스트라이크] 지옥같은 불길에 휩쌓여 데미지를 입습니다.["+skillDmg+"]");
+                  var targetCurrentHP = Math.round(localMonsterList[monNum].hp);
+                  io.emit(info.ch+"monsterHP", targetCurrentHP+"-"+localMonsterList[monNum].maxHP);
+
                 }
               }
 
