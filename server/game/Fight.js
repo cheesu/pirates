@@ -889,7 +889,7 @@ var fight = function (io,info){
                      localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
                    }
 
-                   let aggro = localMonsterList[monNum].Aggravation; // 어그로
+                  /* let aggro = localMonsterList[monNum].Aggravation; // 어그로
 
                    if(aggro.length==0){
                      // 선빵 친놈 등록
@@ -916,7 +916,7 @@ var fight = function (io,info){
                        _aggroObj.dmg = dmg;
                        localMonsterList[monNum].Aggravation.push(_aggroObj);
                      }
-                   }
+                   }*/
 
                    let targetCurrentHP = localMonsterList[monNum].hp;
                    if(localMonsterList[monNum].hp < 0){

@@ -815,33 +815,31 @@ var fight = function fight(io, info) {
           localMonsterList[monNum].hp = localMonsterList[monNum].hp - dmg;
         }
 
-        var aggro = localMonsterList[monNum].Aggravation; // 어그로
-
-        if (aggro.length == 0) {
-          // 선빵 친놈 등록
-          var _aggroObj = {};
-          _aggroObj.name = slaveInfo.name;
-          _aggroObj.dmg = dmg;
-          localMonsterList[monNum].Aggravation.push(_aggroObj);
-        } else {
-
-          var checkAggro = false;
-          // 이미 치고 있을떄 뎀지 누적
-          for (var aggrocount = 0; aggrocount < aggro.length; aggrocount++) {
-            if (aggro[aggrocount].name == slaveInfo.name) {
-              localMonsterList[monNum].Aggravation[aggrocount].dmg = localMonsterList[monNum].Aggravation[aggrocount].dmg + dmg;
-              checkAggro = true;
-            }
-          }
-
-          // 딴놈이 치고 있을떄 들어옴
-          if (!checkAggro) {
-            var _aggroObj3 = {};
-            _aggroObj3.name = slaveInfo.name;
-            _aggroObj3.dmg = dmg;
-            localMonsterList[monNum].Aggravation.push(_aggroObj3);
-          }
-        }
+        /* let aggro = localMonsterList[monNum].Aggravation; // 어그로
+           if(aggro.length==0){
+           // 선빵 친놈 등록
+           let _aggroObj = {};
+           _aggroObj.name = slaveInfo.name;
+           _aggroObj.dmg = dmg;
+           localMonsterList[monNum].Aggravation.push(_aggroObj);
+         }
+         else{
+             let checkAggro = false;
+           // 이미 치고 있을떄 뎀지 누적
+           for(var aggrocount =0; aggrocount < aggro.length; aggrocount++ ){
+             if(aggro[aggrocount].name==slaveInfo.name){
+               localMonsterList[monNum].Aggravation[aggrocount].dmg = localMonsterList[monNum].Aggravation[aggrocount].dmg+dmg;
+               checkAggro = true;
+             }
+           }
+             // 딴놈이 치고 있을떄 들어옴
+           if(!checkAggro){
+             let _aggroObj = {};
+             _aggroObj.name = slaveInfo.name;
+             _aggroObj.dmg = dmg;
+             localMonsterList[monNum].Aggravation.push(_aggroObj);
+           }
+         }*/
 
         var targetCurrentHP = localMonsterList[monNum].hp;
         if (localMonsterList[monNum].hp < 0) {
@@ -1333,10 +1331,10 @@ var fight = function fight(io, info) {
 
           // 딴놈이 치고 있을떄 들어옴
           if (!checkAggro) {
-            var _aggroObj4 = {};
-            _aggroObj4.name = userInfo.username;
-            _aggroObj4.dmg = dmg;
-            localMonsterList[monNum].Aggravation.push(_aggroObj4);
+            var _aggroObj3 = {};
+            _aggroObj3.name = userInfo.username;
+            _aggroObj3.dmg = dmg;
+            localMonsterList[monNum].Aggravation.push(_aggroObj3);
           }
         }
 
