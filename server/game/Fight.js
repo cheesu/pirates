@@ -10,6 +10,7 @@ const router = express.Router();
 var initServer = false;
 var regenMonster = setInterval(loadMonsterList, 1000*60*2);
 var bossGen = 0;
+var bossHeal = 0;
 var monsters;
 var localMonsterList=[];
 var fightInterval = new Object();
@@ -67,14 +68,26 @@ function loadMonsterList(){
                     monObj.dropPer = monsters[monCount].dropPer;
                     localMonsterList[listCount] = monObj;
                   }
+
+                  if(monObj.type=="boss"&&localMonsterList[listCount].name==monObj.name&&localMonsterList[listCount].area==monObj.area&&bossHeal==0){
+                    console.log("-------------BOSS 풀피 초기화!----------------------------");
+                    monObj.dropItem = monsters[monCount].dropItem;
+                    monObj.dropPer = monsters[monCount].dropPer;
+                    localMonsterList[listCount] = monObj;
+                  }
+
                 }
               }
            }
          }
          initServer = true;
          bossGen++;
+         bossHeal++;
          if(bossGen==4){
            bossGen =0;
+         }
+         if(bossHeal==60){
+           bossHeal =0;
          }
      });
 }
@@ -940,7 +953,6 @@ var fight = function (io,info){
             let distanceCount = 2; // 원거리 캐릭은 2타를 맞지 않는다.
 
 
-
             // 몬스터가 공격 인터벌 시작
             fightInterval[userInfo.username+"monsterAttack"] = setInterval(function(){
 
@@ -964,9 +976,32 @@ var fight = function (io,info){
                     maxCount= aggroCount;
                   }
                 }
-                if(aggro[maxCount].name != userInfo.username){
+
+                let wideAtk = true;
+
+                if(localMonsterList[monNum].name=="태초의 마수 베헤모스"){
+                  if(localMonsterList[monNum].hp<600000000 && localMonsterList[monNum].hp > 590000000){
+                    wideAtk = false;
+                  }
+
+                  if(localMonsterList[monNum].hp<500000000 && localMonsterList[monNum].hp > 490000000){
+                    wideAtk = false;
+                  }
+
+                  if(localMonsterList[monNum].hp<300000000 && localMonsterList[monNum].hp > 290000000){
+                    wideAtk = false;
+                  }
+
+                  if(!wideAtk){
+                    io.emit(info.ch+"fight", "[피격] '버러지들아 죽어 죽어 죽어 죽어!!!' 베히모스가 주변의 모든것을 파괴 합니다..");
+                  }
+
+                }
+
+                if(aggro[maxCount].name != userInfo.username && wideAtk){
                   return false;
                 }
+
               }
 
 
@@ -1040,6 +1075,17 @@ var fight = function (io,info){
                 }
               }
 
+              if(localMonsterList[monNum].name=="태초의 마수 베헤모스"){
+                if(localMonsterList[monNum].hp<444444444 && localMonsterList[monNum].hp > 400000000){
+                  reDmg = reDmg*1.8;
+                  io.emit(info.ch+"fight", "[피격] '버러지들아 죽어 죽어 죽어 죽어!!!' 베히모스의 눈이 붉게 타오릅니다.");
+                }
+                if(localMonsterList[monNum].hp<222222222 && localMonsterList[monNum].hp > 200000000){
+                  reDmg = reDmg*2;
+                  io.emit(info.ch+"fight", "[피격] '버러지들아 죽어 죽어 죽어 죽어!!!' 베히모스의 눈이 붉게 타오릅니다.");
+                }
+              }
+
 
               /*특수스킬 공깍*/
               for(var spCount = 0; spCount < localMonsterList[monNum].sp.length; spCount++){
@@ -1080,7 +1126,12 @@ var fight = function (io,info){
                 let berserker = false;
                 if(fightInterval[userInfo.username+"berserker"]){
                   berserker = true;
-                  reDmg = 1;
+                  if(localMonsterList[monNum].name=="태초의 마수 베헤모스"){
+                    io.emit(userInfo.username+"fight", "[passive] 강력한 태초의 마수 베헤모스의 공격에 금강에 엄청난 충격이 가해집니다. 원래 데미지의 10%피해를 입습니다.");
+                    reDmg = reDmg/10;
+                  }else{
+                    reDmg = 1;
+                  }
                 }
 
                 let passiveLimit = userInfo.str;
