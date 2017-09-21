@@ -1114,6 +1114,7 @@ ul.item-store-results {
     color: white;
 }
 
+
 .item-store-results a + a {
     border-top: 1px solid #5F5F5F;
 }
@@ -1122,6 +1123,9 @@ ul.item-store-results {
     background-color: rgba(255, 255, 255, 0.10);
 }
 
+.createName .s12{
+  width: 100% !important;
+}
 
 .developerBank
 {

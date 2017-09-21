@@ -487,12 +487,13 @@ cancleSlave(){
           <span>해적들이나 민간인들이 거래를 하는 암시장이다.</span>
           <p>소지금 : <span></span>{this.props.userInfo.gold} Gold</p>
             <ul id="tabs-swipe-demo" className="tabs">
+              <li className="tab col s3"><a href="#test-swipe-6">개발자 후원하기</a></li>
               <li className="tab col s3"><a className="active" href="#test-swipe-1">Weapon</a></li>
               <li className="tab col s3"><a href="#test-swipe-2">Armor</a></li>
               <li className="tab col s3"><a href="#test-swipe-3">Potion</a></li>
               <li className="tab col s3"><a href="#test-swipe-4">Scroll</a></li>
               <li className="tab col s3"><a href="#test-swipe-5">판매</a></li>
-              <li className="tab col s3"><a href="#test-swipe-6">개발자 후원하기</a></li>
+
             </ul>
             <div id="test-swipe-1" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
