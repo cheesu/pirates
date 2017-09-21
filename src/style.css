@@ -1122,6 +1122,23 @@ ul.item-store-results {
     background-color: rgba(255, 255, 255, 0.10);
 }
 
+
+.developerBank
+{
+
+}
+
+.developerBank select
+{
+  display: inline-block;
+  color: #000;
+}
+
+.developerBank input{
+  height: 40px;
+  margin-top: 10px;
+}
+
 @-webkit-keyframes item-store-enter {
     0% {
         opacity: 0;

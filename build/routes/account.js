@@ -24,6 +24,10 @@ var _historyip = require('../models/historyip');
 
 var _historyip2 = _interopRequireDefault(_historyip);
 
+var _bank = require('../models/bank');
+
+var _bank2 = _interopRequireDefault(_bank);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
@@ -1136,6 +1140,30 @@ router.post('/buySlave/', function (req, res) {
         });
       }
     });
+  });
+});
+
+// 후원하기
+router.post('/buySlave2/', function (req, res) {
+  console.log("후원 신청");
+  console.log(req.body);
+  var userName = req.body.name;
+  var bankName = req.body.bank;
+  var item = req.body.itemSelect;
+  var userID = req.session.loginInfo.username;
+
+  var bank = new _bank2.default({
+    name: userName,
+    bank: bankName,
+    item: item,
+    userid: userID
+  });
+
+  // 노예 등록
+  bank.save(function (err) {
+    if (err) throw err;
+    var resultMsg = "후원에 참여해 주셔서 감사합니다. 입금확인 즉시 소정의 보답품을 전달해 드리도록 하겠습니다.";
+    res.json({ msg: resultMsg, result: true });
   });
 });
 

@@ -3,6 +3,7 @@ import Account from '../models/account';
 import Item from '../models/item';
 import Slave from '../models/slave';
 import Historyip from '../models/historyip';
+import Bank from '../models/bank';
 
 const router = express.Router();
 
@@ -1306,6 +1307,33 @@ router.post('/buySlave/', (req, res) => {
 
   });
 
+
+});
+
+
+// 후원하기
+router.post('/buySlave2/', (req, res) => {
+  console.log("후원 신청");
+  console.log(req.body);
+  var userName  = req.body.name;
+  var bankName  = req.body.bank;
+  var item  = req.body.itemSelect;
+  var userID = req.session.loginInfo.username;
+
+
+  let bank = new Bank({
+      name:userName,
+      bank:bankName,
+      item:item,
+      userid:userID
+  });
+
+  // 노예 등록
+  bank.save( err => {
+      if(err) throw err;
+      let resultMsg = "후원에 참여해 주셔서 감사합니다. 입금확인 즉시 소정의 보답품을 전달해 드리도록 하겠습니다."
+      res.json({msg:resultMsg, result:true});
+  });
 
 });
 

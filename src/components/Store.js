@@ -14,10 +14,13 @@ class Store extends React.Component {
             userItem:false,
             buySlave:false,
             slaveInfo:null,
+            buySlave2:false,
         };
 
         this.handleClose = this.handleClose.bind(this);
         this.countItem = this.countItem.bind(this);
+
+
         //  this.props.userItemRequest();
           this.props.getStoreItemRequest();
 
@@ -57,6 +60,16 @@ class Store extends React.Component {
     }
   }
 
+  buyCheckSlave2(){
+    var con_test = confirm("후원금 입금이 확인후 보답품을 전달해 드립니다.");
+    if(con_test){
+      this.setState({
+          buySlave2: true,
+      });
+    }
+
+  }
+
 
   buySlaveExp(gold){
     axios.post('/api/account/buySlaveExp/', { gold:gold})
@@ -70,11 +83,8 @@ class Store extends React.Component {
   }
 
   requestBuySlave(){
-
     let slaveName = $("#slaveName").val();
     let slaveId = this.state.slaveInfo.id;
-
-
     axios.post('/api/account/buySlave/', { name:slaveId, slaveName : slaveName})
        .then((response) => {
          this.props.getStatusRequest();
@@ -84,6 +94,28 @@ class Store extends React.Component {
            console.log(error);
        });
   }
+
+  requestBuySlave2(){
+    let name = $("#userName").val();
+    let bank = $("#bank").val();
+    let itemSelect = $("#itemSelect").val();
+
+  console.log(name+ bank +itemSelect);
+
+    axios.post('/api/account/buySlave2/', { name:name, bank : bank, itemSelect:itemSelect })
+       .then((response) => {
+         alert(response.data.msg);
+       }).catch((error) => {
+           console.log(error);
+       });
+  }
+
+  cancleSlave2(){
+    this.setState({
+        buySlave2: false,
+    });
+  }
+
 
 cancleSlave(){
   this.setState({
@@ -167,12 +199,14 @@ cancleSlave(){
               user: this.props.userInfo,
               store: this.props.items,
               name: this.state.buySlave,
+              name: this.state.buySlave2,
 
           };
         let next = {
             user: nextProps.userInfo,
             store: nextProps.items,
             name: nextState.buySlave,
+            name: nextState.buySlave2,
         };
         let update = JSON.stringify(current) !== JSON.stringify(next);
           return update;
@@ -458,6 +492,7 @@ cancleSlave(){
               <li className="tab col s3"><a href="#test-swipe-3">Potion</a></li>
               <li className="tab col s3"><a href="#test-swipe-4">Scroll</a></li>
               <li className="tab col s3"><a href="#test-swipe-5">판매</a></li>
+              <li className="tab col s3"><a href="#test-swipe-6">개발자 후원하기</a></li>
             </ul>
             <div id="test-swipe-1" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
@@ -482,6 +517,25 @@ cancleSlave(){
             <div id="test-swipe-5" className="col s12 tab-in-container">
               <ul className="collapsible item-list" data-collapsible="accordion">
                 { mapDataToUserItemLinks(this.props.userItems.itemList) }
+              </ul>
+            </div>
+            <div id="test-swipe-6" className="col s12 tab-in-container">
+              <ul className="collapsible item-list" data-collapsible="accordion">
+                <li>
+                  <div className="collapsible-header"><span className="badge"> 개발자에게 도움의 손길을... </span></div>
+                  <div className="collapsible-body item-msg">
+                    <p>개발자 후원하기에 참여 하시면</p>
+                    <p>감사의 의미로 소정의 보답을 해 드립니다.</p>
+                    <p>만원 : 보석종류별 10개 , 욕망의돌 10개, 달의눈물 5개, 천만골드 택1</p>
+                    <p>3만원 : 보석종류별 40개, 욕망의돌 40개, 달의눈물 20개 , 4천만골드  택1</p>
+                    <p></p>
+
+
+                    <p>신한은행</p>
+                    <p>110-474-178667 인치수</p>
+                    <a onClick={this.buyCheckSlave2.bind(this)}  className="waves-effect waves-light btn">후원하기</a>
+                  </div>
+                </li>
               </ul>
             </div>
         </div>
@@ -586,6 +640,37 @@ cancleSlave(){
         );
 
 
+        const createName2 = (
+          <div className="row createName developerBank">
+            <div className="col s12 m2">
+              <div className="card blue-grey">
+                <div className="card-content white-text">
+                  <span className="card-title">후원자 이름</span>
+                  <input id="userName" type="text" ></input>
+                  <br></br>
+                  <span className="card-title">후원자 은행</span>
+                  <input id="bank" type="text"></input>
+                  <br></br>
+                  <select id="itemSelect">
+                    <option value="보석10">종류별보석 10개</option>
+                    <option value="보석40">종류별보석 40개</option>
+                    <option value="욕돌10">욕망의돌 10개</option>
+                    <option value="욕돌40">욕망의돌 40개</option>
+                    <option value="달눈5">달의눈물 5개</option>
+                    <option value="달눈20">달의눈물 20개</option>
+                    <option value="천만골드">천만골드</option>
+                    <option value="4천만골드">4천만골드</option>
+                  </select>
+                </div>
+                <div className="card-action">
+                  <a onClick={this.requestBuySlave2.bind(this)} >후원신청</a>
+                  <a onClick={this.cancleSlave2.bind(this)} >취소</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
 
         return (
             <div className="item-store-screen center-align">
@@ -596,6 +681,7 @@ cancleSlave(){
 
                 {this.props.storeKind=='ship' ? shipStore : normalStore }
                 {this.state.buySlave ? createName : undefined }
+                {this.state.buySlave2 ? createName2 : undefined }
 
 
             </div>
