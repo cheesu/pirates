@@ -27969,8 +27969,6 @@ var _authentication = __webpack_require__(72);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -28183,16 +28181,19 @@ var Store = function (_React$Component) {
   }, {
     key: 'shouldComponentUpdate',
     value: function shouldComponentUpdate(nextProps, nextState) {
-      var current = _defineProperty({
+      var current = {
         user: this.props.userInfo,
         store: this.props.items,
-        name: this.state.buySlave
-      }, 'name', this.state.buySlave2);
-      var next = _defineProperty({
+        name: this.state.buySlave,
+        name2: this.state.buySlave2
+
+      };
+      var next = {
         user: nextProps.userInfo,
         store: nextProps.items,
-        name: nextState.buySlave
-      }, 'name', nextState.buySlave2);
+        name: nextState.buySlave,
+        name2: nextState.buySlave2
+      };
       var update = JSON.stringify(current) !== JSON.stringify(next);
       return update;
     }

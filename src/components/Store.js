@@ -199,14 +199,14 @@ cancleSlave(){
               user: this.props.userInfo,
               store: this.props.items,
               name: this.state.buySlave,
-              name: this.state.buySlave2,
+              name2: this.state.buySlave2,
 
           };
         let next = {
             user: nextProps.userInfo,
             store: nextProps.items,
             name: nextState.buySlave,
-            name: nextState.buySlave2,
+            name2: nextState.buySlave2,
         };
         let update = JSON.stringify(current) !== JSON.stringify(next);
           return update;
