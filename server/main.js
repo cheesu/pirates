@@ -29,11 +29,30 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 
 /* mongodb connection */
+/*
 const db = mongoose.connection;
 db.on('error', console.error);
 db.once('open', () => { console.log('Connected to mongodb server'); });
- mongoose.connect('mongodb://cheesu:duswkr88##@ds145389.mlab.com:45389/cheesustudy');
+ //mongoose.connect('mongodb://cheesu:duswkr88##@ds145389.mlab.com:45389/cheesustudy');
 //mongoose.connect('mongodb://127.0.0.1:27017/codelab');
+mongoose.connect('mongodb+srv://cheesu:duswkr88##@cheesustudy.ujge0.mongodb.net/test?retryWrites=true&w=majority');
+*/
+/* mongodb connection 5.0버전 */
+
+mongoose
+  .connect("mongodb+srv://cheesu:duswkr88%23%23@cheesustudy.ujge0.mongodb.net/cheesustudy?retryWrites=true&w=majority", {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+
+
 
 /* use session */
 app.use(session({

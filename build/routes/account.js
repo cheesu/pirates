@@ -493,11 +493,10 @@ router.get('/changeOption/:grade', function (req, res) {
           "max": 30,
           "optionName": "현자의 지혜",
           "msg": "머리가 맑아집니다."
-        };
 
-        // 히든옵
+          // 히든옵
 
-        var _highOption1 = {
+        };var _highOption1 = {
           "per": 100,
           "option": "upStr",
           "max": 50,

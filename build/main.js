@@ -67,13 +67,24 @@ app.use((0, _morgan2.default)('dev'));
 app.use(_bodyParser2.default.json());
 
 /* mongodb connection */
-var db = _mongoose2.default.connection;
+/*
+const db = mongoose.connection;
 db.on('error', console.error);
-db.once('open', function () {
-  console.log('Connected to mongodb server');
-});
-_mongoose2.default.connect('mongodb://cheesu:duswkr88##@ds145389.mlab.com:45389/cheesustudy');
+db.once('open', () => { console.log('Connected to mongodb server'); });
+ //mongoose.connect('mongodb://cheesu:duswkr88##@ds145389.mlab.com:45389/cheesustudy');
 //mongoose.connect('mongodb://127.0.0.1:27017/codelab');
+mongoose.connect('mongodb+srv://cheesu:duswkr88##@cheesustudy.ujge0.mongodb.net/test?retryWrites=true&w=majority');
+*/
+/* mongodb connection 5.0버전 */
+
+_mongoose2.default.connect("mongodb+srv://cheesu:duswkr88%23%23@cheesustudy.ujge0.mongodb.net/cheesustudy?retryWrites=true&w=majority", {
+  useNewUrlParser: true,
+  useCreateIndex: true
+}).then(function () {
+  console.log("Connected to MongoDB");
+}).catch(function (err) {
+  console.log(err);
+});
 
 /* use session */
 app.use((0, _expressSession2.default)({
