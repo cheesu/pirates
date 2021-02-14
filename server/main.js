@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import express from 'express';
 import path from 'path';
-
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 
@@ -38,7 +37,7 @@ db.once('open', () => { console.log('Connected to mongodb server'); });
 mongoose.connect('mongodb+srv://cheesu:duswkr88##@cheesustudy.ujge0.mongodb.net/test?retryWrites=true&w=majority');
 */
 /* mongodb connection 5.0버 */
-
+//test
 
 /* mongodb connection 5.0버전 */
 
