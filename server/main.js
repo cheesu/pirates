@@ -37,6 +37,9 @@ db.once('open', () => { console.log('Connected to mongodb server'); });
 //mongoose.connect('mongodb://127.0.0.1:27017/codelab');
 mongoose.connect('mongodb+srv://cheesu:duswkr88##@cheesustudy.ujge0.mongodb.net/test?retryWrites=true&w=majority');
 */
+/* mongodb connection 5.0버 */
+
+
 /* mongodb connection 5.0버전 */
 
 mongoose
@@ -50,7 +53,6 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
 
 
 
