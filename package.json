@@ -66,6 +66,6 @@
     "throttle-debounce": "^1.0.1",
     "web-push": "^3.2.2",
   "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.11.5"
+    "webpack-dev-server": "^3.1.11"
   }
 }
